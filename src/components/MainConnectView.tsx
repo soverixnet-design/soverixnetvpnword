@@ -573,39 +573,140 @@ export const MainConnectView: React.FC<MainConnectViewProps> = ({
           </div>
 
           {/* Supported Apps & Platforms + Payment Methods Bar */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-6 border-t border-slate-800/80">
-            {/* Supported Applications */}
-            <div className="p-4 rounded-2xl bg-slate-950/60 border border-slate-800 flex flex-col justify-between">
-              <span className="text-xs font-bold text-slate-400 block mb-2">
-                📱 {lang === 'bn' ? 'যেসব অ্যাপস দিয়ে আমাদের ভিপিএন চালাবেন:' : 'Supported Apps & Platforms:'}
-              </span>
-              <div className="flex flex-wrap items-center gap-2">
-                {['v2rayNG (Android)', 'Shadowrocket (iPhone)', 'WireGuard', 'OpenVPN', 'Sing-box', 'HTTP Custom', 'Windows PC'].map((app) => (
-                  <span key={app} className="px-2.5 py-1 rounded-xl bg-slate-900 border border-slate-700/80 text-cyan-300 font-mono text-[11px] font-bold">
-                    {app}
-                  </span>
-                ))}
+          <div className="space-y-4 pt-6 border-t border-slate-800/80">
+            {/* Featured Official Android Apps (User Provided Direct Download Links) */}
+            <div className="p-5 rounded-2xl bg-gradient-to-r from-emerald-950/60 via-slate-900 to-cyan-950/40 border border-emerald-500/40 shadow-lg">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
+                <div>
+                  <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 text-[10px] font-black uppercase tracking-wider mb-1">
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                    <span>{lang === 'bn' ? 'অফিসিয়াল অ্যান্ডয়েড অ্যাপস' : 'Official Android APKs'}</span>
+                  </div>
+                  <h4 className="text-sm sm:text-base font-black text-white">
+                    {lang === 'bn' ? 'সরাসরি অ্যাপস ডাউনলোড করুন (যেগুলোতে সব দেশে ভিপিএন চলবে)' : 'Download Official VPN Apps (Works in All Countries)'}
+                  </h4>
+                  <p className="text-xs text-slate-300 mt-0.5">
+                    {lang === 'bn' 
+                      ? 'নিচের অ্যাপস দুটি ইন্সটল করে সরাসরি আমাদের দেওয়া কনফিগ ফাইল বা লিংক দিয়ে এক ক্লিকে কানেক্ট করুন।' 
+                      : 'Install these dedicated apps and import your Soverixnet VPN config with one tap.'}
+                  </p>
+                </div>
+
+                <a
+                  href={CONTACT_CONFIG.whatsappChannelUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="px-3.5 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 border border-emerald-500/30 text-emerald-400 text-xs font-bold flex items-center justify-center gap-1.5 shrink-0 transition-all"
+                >
+                  <span>📢</span>
+                  <span>{lang === 'bn' ? 'চ্যানেলে নতুন অ্যাপ নিন' : 'Get Configs in Channel'}</span>
+                </a>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                {/* App 1: AF V2Ray APK */}
+                <div className="p-4 rounded-xl bg-slate-950/90 border border-cyan-500/40 hover:border-cyan-400 transition-all flex flex-col justify-between">
+                  <div>
+                    <div className="flex items-center justify-between gap-2">
+                      <span className="text-xs font-black text-cyan-400 font-mono">
+                        {CONTACT_CONFIG.apps.afV2Ray.name}
+                      </span>
+                      <span className="text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-cyan-500/20 text-cyan-300 border border-cyan-500/30">
+                        {lang === 'bn' ? CONTACT_CONFIG.apps.afV2Ray.badgeBn : CONTACT_CONFIG.apps.afV2Ray.badge}
+                      </span>
+                    </div>
+                    <p className="text-xs font-bold text-white mt-1">
+                      {lang === 'bn' ? CONTACT_CONFIG.apps.afV2Ray.nameBn : CONTACT_CONFIG.apps.afV2Ray.name}
+                    </p>
+                    <p className="text-[11px] text-slate-400 mt-1 leading-relaxed">
+                      {lang === 'bn' ? CONTACT_CONFIG.apps.afV2Ray.descBn : CONTACT_CONFIG.apps.afV2Ray.descEn}
+                    </p>
+                  </div>
+
+                  <div className="mt-3 pt-3 border-t border-slate-900 flex items-center justify-between gap-2">
+                    <span className="text-[10px] text-slate-500 font-mono">APK File • v1.0</span>
+                    <a
+                      href={CONTACT_CONFIG.apps.afV2Ray.downloadUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="px-3.5 py-1.5 rounded-lg bg-cyan-500 hover:bg-cyan-400 text-black font-extrabold text-xs flex items-center gap-1.5 transition-all shadow-md shadow-cyan-500/20 cursor-pointer"
+                    >
+                      <Download className="w-3.5 h-3.5" />
+                      <span>{lang === 'bn' ? 'APK ডাউনলোড ➔' : 'Download APK ➔'}</span>
+                    </a>
+                  </div>
+                </div>
+
+                {/* App 2: Jiyam Plus VPN APK */}
+                <div className="p-4 rounded-xl bg-slate-950/90 border border-emerald-500/40 hover:border-emerald-400 transition-all flex flex-col justify-between">
+                  <div>
+                    <div className="flex items-center justify-between gap-2">
+                      <span className="text-xs font-black text-emerald-400 font-mono">
+                        {CONTACT_CONFIG.apps.jiyamPlus.name}
+                      </span>
+                      <span className="text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+                        {lang === 'bn' ? CONTACT_CONFIG.apps.jiyamPlus.badgeBn : CONTACT_CONFIG.apps.jiyamPlus.badge}
+                      </span>
+                    </div>
+                    <p className="text-xs font-bold text-white mt-1">
+                      {lang === 'bn' ? CONTACT_CONFIG.apps.jiyamPlus.nameBn : CONTACT_CONFIG.apps.jiyamPlus.name}
+                    </p>
+                    <p className="text-[11px] text-slate-400 mt-1 leading-relaxed">
+                      {lang === 'bn' ? CONTACT_CONFIG.apps.jiyamPlus.descBn : CONTACT_CONFIG.apps.jiyamPlus.descEn}
+                    </p>
+                  </div>
+
+                  <div className="mt-3 pt-3 border-t border-slate-900 flex items-center justify-between gap-2">
+                    <span className="text-[10px] text-slate-500 font-mono">Android App • Fast</span>
+                    <a
+                      href={CONTACT_CONFIG.apps.jiyamPlus.downloadUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="px-3.5 py-1.5 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-black font-extrabold text-xs flex items-center gap-1.5 transition-all shadow-md shadow-emerald-500/20 cursor-pointer"
+                    >
+                      <Download className="w-3.5 h-3.5" />
+                      <span>{lang === 'bn' ? 'APK ডাউনলোড ➔' : 'Download APK ➔'}</span>
+                    </a>
+                  </div>
+                </div>
               </div>
             </div>
 
-            {/* Payment methods */}
-            <div className="p-4 rounded-2xl bg-slate-950/60 border border-slate-800 flex flex-col justify-between">
-              <span className="text-xs font-bold text-slate-400 block mb-2">
-                💳 {lang === 'bn' ? 'সহজ পেমেন্ট মাধ্যমসমূহ:' : 'Accepted Payment Methods:'}
-              </span>
-              <div className="flex flex-wrap items-center gap-2">
-                {[
-                  { name: 'বিকাশ (bKash)', color: 'text-pink-400' },
-                  { name: 'নগদ (Nagad)', color: 'text-orange-400' },
-                  { name: 'রকেট (Rocket)', color: 'text-purple-400' },
-                  { name: 'মাদা কার্ড (Saudi Mada)', color: 'text-emerald-400' },
-                  { name: 'STC Pay', color: 'text-purple-300' },
-                  { name: 'Binance Pay (USDT)', color: 'text-amber-400' }
-                ].map((pm) => (
-                  <span key={pm.name} className={`px-2.5 py-1 rounded-xl bg-slate-900 border border-slate-700/80 font-bold text-[11px] ${pm.color}`}>
-                    {pm.name}
-                  </span>
-                ))}
+            {/* Other Supported Apps and Accepted Payment Methods Bar */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {/* Other supported apps */}
+              <div className="p-4 rounded-2xl bg-slate-950/60 border border-slate-800 flex flex-col justify-between">
+                <span className="text-xs font-bold text-slate-400 block mb-2">
+                  📱 {lang === 'bn' ? 'অন্যান্য সাপোর্টেড অ্যাপস:' : 'Other Supported Applications:'}
+                </span>
+                <div className="flex flex-wrap items-center gap-2">
+                  {['v2rayNG', 'Shadowrocket (iOS)', 'WireGuard', 'OpenVPN', 'Sing-box', 'HTTP Custom', 'HA Tunnel Plus', 'Windows PC'].map((app) => (
+                    <span key={app} className="px-2.5 py-1 rounded-xl bg-slate-900 border border-slate-700/80 text-cyan-300 font-mono text-[11px] font-bold">
+                      {app}
+                    </span>
+                  ))}
+                </div>
+              </div>
+
+              {/* Payment methods */}
+              <div className="p-4 rounded-2xl bg-slate-950/60 border border-slate-800 flex flex-col justify-between">
+                <span className="text-xs font-bold text-slate-400 block mb-2">
+                  💳 {lang === 'bn' ? 'সহজ পেমেন্ট মাধ্যমসমূহ:' : 'Accepted Payment Methods:'}
+                </span>
+                <div className="flex flex-wrap items-center gap-2">
+                  {[
+                    { name: 'বিকাশ (bKash)', color: 'text-pink-400' },
+                    { name: 'নগদ (Nagad)', color: 'text-orange-400' },
+                    { name: 'রকেট (Rocket)', color: 'text-purple-400' },
+                    { name: 'মাদা কার্ড (Saudi Mada)', color: 'text-emerald-400' },
+                    { name: 'STC Pay', color: 'text-purple-300' },
+                    { name: 'Binance Pay (USDT)', color: 'text-amber-400' }
+                  ].map((pm) => (
+                    <span key={pm.name} className={`px-2.5 py-1 rounded-xl bg-slate-900 border border-slate-700/80 font-bold text-[11px] ${pm.color}`}>
+                      {pm.name}
+                    </span>
+                  ))}
+                </div>
               </div>
             </div>
           </div>
@@ -636,18 +737,18 @@ export const MainConnectView: React.FC<MainConnectViewProps> = ({
                 </span>
               </div>
               <h4 className="text-base sm:text-lg font-black text-white mt-1 group-hover:text-emerald-300 transition-colors">
-                Global Free Internet
+                Soverixnet Internet unlimited Vpn
               </h4>
               <p className="text-xs text-slate-300 max-w-xl leading-relaxed">
                 {lang === 'bn' 
-                  ? 'ফ্রি ভিপিএন ট্রিক্স, হাই-স্পিড কনফিগ ফাইল ও সকল নতুন আপডেট পেতে আমাদের অফিসিয়াল WhatsApp চ্যানেলে যুক্ত থাকুন।' 
-                  : 'Follow Global Free Internet channel on WhatsApp for free high-speed VPN configs, payload tricks & daily server updates.'}
+                  ? 'ফ্রি ভিপিএন ট্রিক্স, হাই-স্পিড কনফিগ ফাইল ও সকল নতুন আপডেট পেতে আমাদের অফিসিয়াল Soverixnet Internet unlimited Vpn চ্যানেলে যুক্ত থাকুন।' 
+                  : 'Follow the Soverixnet Internet unlimited Vpn channel on WhatsApp for free high-speed VPN configs, payload tricks & daily server updates.'}
               </p>
             </div>
           </div>
 
           <a
-            href="https://whatsapp.com/channel/0029VbCB2eb1Hsq1gDX4HP13"
+            href={CONTACT_CONFIG.whatsappChannelUrl}
             target="_blank"
             rel="noopener noreferrer"
             className="w-full md:w-auto px-6 py-3 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-black font-extrabold text-xs sm:text-sm flex items-center justify-center gap-2 transition-all cursor-pointer shadow-lg shadow-emerald-500/25 shrink-0 transform group-hover:scale-105"
@@ -660,115 +761,78 @@ export const MainConnectView: React.FC<MainConnectViewProps> = ({
         </div>
       </div>
 
-      {/* Referral & Free VIP Rewards Interactive Banner */}
-      <div 
-        onClick={() => onNavigateTab('referrals')}
-        className="animate-fade-in-up delay-350 p-4 sm:p-5 rounded-3xl bg-gradient-to-r from-teal-950/50 via-slate-900 to-cyan-950/40 border border-teal-500/40 hover:border-teal-400 transition-all cursor-pointer shadow-xl relative overflow-hidden group"
-      >
-        <div className="absolute top-0 right-0 w-64 h-64 bg-teal-500/10 rounded-full blur-3xl pointer-events-none" />
-        <div className="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div className="flex items-center gap-3.5">
-            <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-teal-500 to-cyan-400 p-0.5 flex items-center justify-center text-black shadow-lg shadow-teal-500/25 shrink-0 group-hover:scale-105 transition-transform">
-              <Gift className="w-6 h-6 animate-bounce" />
+      {/* Fast Navigation Quick Links with Entry Stagger */}
+      <div className="animate-fade-in-up delay-350 grid grid-cols-1 sm:grid-cols-4 gap-3.5">
+        <button
+          onClick={() => onNavigateTab('vipPlans')}
+          className="p-4 rounded-2xl bg-gradient-to-r from-amber-950/40 via-slate-900 to-slate-950 border border-amber-500/40 hover:border-amber-400 transition-all flex items-center justify-between text-left group cursor-pointer shadow-lg shadow-amber-500/10"
+        >
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-amber-300 group-hover:scale-105 transition-transform">
+              <Crown className="w-5 h-5" />
             </div>
             <div>
-              <div className="flex items-center gap-2 flex-wrap">
-                <h4 className="text-sm sm:text-base font-extrabold text-white group-hover:text-teal-300 transition-colors">
-                  {lang === 'bn' ? '🎁 বন্ধুদের রেফার করে পান আজীবন ফ্রি ভিআইপি মেম্বারশিপ!' : '🎁 Refer Friends & Unlock Free Lifetime VIP Pass!'}
-                </h4>
-                <span className="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-teal-500/20 text-teal-300 border border-teal-500/30">
-                  +৳150 / +15 Days
-                </span>
-              </div>
-              <p className="text-xs text-slate-400 mt-0.5">
-                {lang === 'bn' 
-                  ? 'আপনার ইউনিক রেফারেল লিংক দিয়ে বন্ধু জয়েন করলেই দুজনেই পাবেন ফ্রি ভিআইপি দিন ও ক্যাশ কমিশন।' 
-                  : 'Get your unique invite link now. Earn 15 bonus days & ৳150 credit on every referral signup.'}
-              </p>
+              <h5 className="text-xs font-bold text-white group-hover:text-amber-300 transition-colors">
+                {lang === 'bn' ? 'প্যাকেজ ও মূল্য' : 'VIP Plans & Pricing'}
+              </h5>
+              <p className="text-[11px] text-slate-400">{lang === 'bn' ? 'বিকাশ/নগদ/মাদা দিয়ে নিন' : 'bKash, Nagad, Mada activation'}</p>
             </div>
           </div>
+          <ChevronRight className="w-4 h-4 text-amber-400 group-hover:translate-x-0.5 transition-transform" />
+        </button>
 
-          <div className="flex items-center gap-2 shrink-0">
-            <span className="text-xs font-bold text-teal-300 group-hover:underline flex items-center gap-1">
-              <span>{lang === 'bn' ? 'রেফারেল হাব দেখুন' : 'Open Referral Hub'}</span>
-              <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-            </span>
-          </div>
-        </div>
-      </div>
-
-      {/* Fast Navigation Quick Links with Entry Stagger */}
-      <div className="animate-fade-in-up delay-400 grid grid-cols-1 sm:grid-cols-4 gap-3.5">
         <button
-          onClick={() => onNavigateTab('benefits')}
+          onClick={() => onNavigateTab('arabSim')}
+          className="p-4 rounded-2xl bg-gradient-to-r from-emerald-950/40 via-slate-900 to-slate-950 border border-emerald-500/40 hover:border-emerald-400 transition-all flex items-center justify-between text-left group cursor-pointer shadow-lg shadow-emerald-500/10"
+        >
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-emerald-300 group-hover:scale-105 transition-transform">
+              <Zap className="w-5 h-5" />
+            </div>
+            <div>
+              <h5 className="text-xs font-bold text-white group-hover:text-emerald-300 transition-colors">
+                {lang === 'bn' ? '🇸🇦 আরব ফ্রি-নেট' : 'Arab SIM FreeNet'}
+              </h5>
+              <p className="text-[11px] text-slate-400">{lang === 'bn' ? 'STC, Mobily, Zain বাগ' : 'Saudi & Gulf FreeNet setups'}</p>
+            </div>
+          </div>
+          <ChevronRight className="w-4 h-4 text-emerald-400 group-hover:translate-x-0.5 transition-transform" />
+        </button>
+
+        <button
+          onClick={() => onNavigateTab('configs')}
           className="p-4 rounded-2xl bg-gradient-to-r from-cyan-950/40 via-slate-900 to-slate-950 border border-cyan-500/40 hover:border-cyan-400 transition-all flex items-center justify-between text-left group cursor-pointer shadow-lg shadow-cyan-500/10"
         >
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-cyan-500/20 border border-cyan-500/40 flex items-center justify-center text-cyan-300 group-hover:scale-105 transition-transform">
-              <Sparkles className="w-5 h-5" />
+              <Layers className="w-5 h-5" />
             </div>
             <div>
               <h5 className="text-xs font-bold text-white group-hover:text-cyan-300 transition-colors">
-                {lang === 'bn' ? 'কেন সোভারিক্সনেট? (লাভ)' : 'Why Soverixnet (Benefits)'}
+                {lang === 'bn' ? 'ডাউনলোড ও কনফিগ' : 'Downloads & Configs'}
               </h5>
-              <p className="text-[11px] text-slate-400">{lang === 'bn' ? 'সব সুবিধা ও নিরাপত্তা স্কোর' : 'Explore full advantages & risk test'}</p>
+              <p className="text-[11px] text-slate-400">{lang === 'bn' ? 'APK ও QR কোড স্ক্যান' : 'Official APK & QR scanner'}</p>
             </div>
           </div>
           <ChevronRight className="w-4 h-4 text-cyan-400 group-hover:translate-x-0.5 transition-transform" />
         </button>
 
         <button
-          onClick={() => onNavigateTab('worldMap')}
-          className="p-4 rounded-2xl bg-gradient-to-r from-slate-900 via-slate-900/80 to-slate-950 border border-slate-800 hover:border-cyan-500/40 transition-all flex items-center justify-between text-left group cursor-pointer"
+          onClick={() => onNavigateTab('servers')}
+          className="p-4 rounded-2xl bg-gradient-to-r from-purple-950/40 via-slate-900 to-slate-950 border border-purple-500/40 hover:border-purple-400 transition-all flex items-center justify-between text-left group cursor-pointer shadow-lg shadow-purple-500/10"
         >
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-cyan-400 group-hover:scale-105 transition-transform">
+            <div className="w-10 h-10 rounded-xl bg-purple-500/20 border border-purple-500/40 flex items-center justify-center text-purple-300 group-hover:scale-105 transition-transform">
               <Globe2 className="w-5 h-5" />
             </div>
             <div>
-              <h5 className="text-xs font-bold text-white group-hover:text-cyan-300 transition-colors">
-                {lang === 'bn' ? 'ইন্টারেক্টিভ সাইবার ম্যাপ' : 'Interactive Cyber Map'}
-              </h5>
-              <p className="text-[11px] text-slate-400">{lang === 'bn' ? 'বিশ্বজুড়ে নোড লোকেশন দেখুন' : 'Explore worldwide nodes visually'}</p>
-            </div>
-          </div>
-          <ChevronRight className="w-4 h-4 text-slate-500 group-hover:text-cyan-400 transition-colors" />
-        </button>
-
-        <button
-          onClick={() => onNavigateTab('speedTest')}
-          className="p-4 rounded-2xl bg-gradient-to-r from-slate-900 via-slate-900/80 to-slate-950 border border-slate-800 hover:border-cyan-500/40 transition-all flex items-center justify-between text-left group cursor-pointer"
-        >
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 group-hover:scale-105 transition-transform">
-              <Zap className="w-5 h-5" />
-            </div>
-            <div>
-              <h5 className="text-xs font-bold text-white group-hover:text-emerald-300 transition-colors">
-                {lang === 'bn' ? 'স্পিড ও লিক টেস্ট' : 'Speed & Leak Diagnostics'}
-              </h5>
-              <p className="text-[11px] text-slate-400">{lang === 'bn' ? 'DNS ও WebRTC টেস্ট করুন' : 'Verify Zero-Leak Shield'}</p>
-            </div>
-          </div>
-          <ChevronRight className="w-4 h-4 text-slate-500 group-hover:text-emerald-400 transition-colors" />
-        </button>
-
-        <button
-          onClick={() => onNavigateTab('configs')}
-          className="p-4 rounded-2xl bg-gradient-to-r from-slate-900 via-slate-900/80 to-slate-950 border border-slate-800 hover:border-cyan-500/40 transition-all flex items-center justify-between text-left group cursor-pointer"
-        >
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-purple-500/10 border border-purple-500/30 flex items-center justify-center text-purple-400 group-hover:scale-105 transition-transform">
-              <Layers className="w-5 h-5" />
-            </div>
-            <div>
               <h5 className="text-xs font-bold text-white group-hover:text-purple-300 transition-colors">
-                {lang === 'bn' ? 'মোবাইল কনফিগ এক্সপোর্টার' : 'Export Mobile Configs'}
+                {lang === 'bn' ? 'সার্ভার লিস্ট ও পিং' : 'Servers & Ping'}
               </h5>
-              <p className="text-[11px] text-slate-400">{lang === 'bn' ? 'QR কোড ও vless লিঙ্ক নিন' : 'WireGuard, V2Ray QR generator'}</p>
+              <p className="text-[11px] text-slate-400">{lang === 'bn' ? '৫০+ সুপারফাস্ট নোড' : '50+ Ultra-low latency nodes'}</p>
             </div>
           </div>
-          <ChevronRight className="w-4 h-4 text-slate-500 group-hover:text-purple-400 transition-colors" />
+          <ChevronRight className="w-4 h-4 text-purple-400 group-hover:translate-x-0.5 transition-transform" />
         </button>
       </div>
 
@@ -1231,11 +1295,11 @@ export const MainConnectView: React.FC<MainConnectViewProps> = ({
             </div>
 
             <button
-              onClick={() => onNavigateTab('speedTest')}
+              onClick={() => onNavigateTab('vipPlans')}
               className="px-4 py-3 rounded-2xl bg-cyan-500 hover:bg-cyan-400 text-black font-extrabold text-xs flex items-center gap-1.5 transition-all cursor-pointer shadow-md shadow-cyan-500/20"
             >
-              <Zap className="w-4 h-4" />
-              <span>{lang === 'bn' ? 'স্পিড ও লিক টেস্ট চালান ➔' : 'Run Full Diagnostics ➔'}</span>
+              <Crown className="w-4 h-4" />
+              <span>{lang === 'bn' ? 'ভিআইপি মেম্বারশিপ নিন ➔' : 'Get VIP Protection ➔'}</span>
             </button>
           </div>
         </div>
@@ -1304,82 +1368,94 @@ export const MainConnectView: React.FC<MainConnectViewProps> = ({
           </p>
         </div>
 
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
-          {/* Android */}
-          <div className="p-4 rounded-2xl bg-slate-900/80 border border-slate-800 hover:border-emerald-500/40 transition-all text-center flex flex-col items-center justify-between">
-            <Smartphone className="w-7 h-7 text-emerald-400 mb-2" />
-            <span className="text-xs font-bold text-white block">Android</span>
-            <span className="text-[10px] text-slate-400 mb-3">APK & Google Play</span>
-            <button
-              onClick={() => onNavigateTab('configs')}
-              className="w-full py-1 px-2 rounded-lg bg-emerald-500/20 text-emerald-300 text-[11px] font-bold border border-emerald-500/30 cursor-pointer"
-            >
-              {lang === 'bn' ? 'ডাউনলোড' : 'Download'}
-            </button>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
+          {/* Featured 1: AF V2Ray APK */}
+          <div className="p-4 rounded-2xl bg-gradient-to-b from-cyan-950/50 to-slate-900 border border-cyan-500/40 hover:border-cyan-400 transition-all text-left flex flex-col justify-between shadow-lg shadow-cyan-500/10">
+            <div>
+              <div className="flex items-center justify-between gap-2 mb-2">
+                <span className="px-2 py-0.5 rounded-full bg-cyan-500/20 text-cyan-300 font-mono text-[10px] font-black">
+                  {CONTACT_CONFIG.apps.afV2Ray.badge}
+                </span>
+                <span className="text-[10px] text-slate-400 font-mono">v1.0 APK</span>
+              </div>
+              <h3 className="text-sm font-black text-white flex items-center gap-2">
+                <Smartphone className="w-4 h-4 text-cyan-400 shrink-0" />
+                <span>AF V2Ray VPN</span>
+              </h3>
+              <p className="text-[11px] text-slate-300 mt-1 leading-relaxed">
+                {lang === 'bn' 
+                  ? 'সব দেশে চলবে। V2Ray, VLESS Reality ও Trojan কানেকশন সাপোর্ট।' 
+                  : 'Works in all countries worldwide. Fast V2Ray, VLESS Reality & Trojan.'}
+              </p>
+            </div>
+            <div className="mt-4 pt-3 border-t border-slate-800">
+              <a
+                href={CONTACT_CONFIG.apps.afV2Ray.downloadUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-full py-2 px-3 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-black font-extrabold text-xs flex items-center justify-center gap-1.5 transition-all shadow-md shadow-cyan-500/20 cursor-pointer"
+              >
+                <Download className="w-3.5 h-3.5" />
+                <span>{lang === 'bn' ? 'AF V2Ray APK ডাউনলোড' : 'Download AF V2Ray APK'}</span>
+              </a>
+            </div>
+          </div>
+
+          {/* Featured 2: Jiyam Plus VPN APK */}
+          <div className="p-4 rounded-2xl bg-gradient-to-b from-emerald-950/50 to-slate-900 border border-emerald-500/40 hover:border-emerald-400 transition-all text-left flex flex-col justify-between shadow-lg shadow-emerald-500/10">
+            <div>
+              <div className="flex items-center justify-between gap-2 mb-2">
+                <span className="px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 font-mono text-[10px] font-black">
+                  {CONTACT_CONFIG.apps.jiyamPlus.badge}
+                </span>
+                <span className="text-[10px] text-slate-400 font-mono">Gulf FreeNet</span>
+              </div>
+              <h3 className="text-sm font-black text-white flex items-center gap-2">
+                <Smartphone className="w-4 h-4 text-emerald-400 shrink-0" />
+                <span>Jiyam Plus VPN</span>
+              </h3>
+              <p className="text-[11px] text-slate-300 mt-1 leading-relaxed">
+                {lang === 'bn' 
+                  ? 'সৌদি আরব (STC, Mobily, Zain), দুবাই ও বাংলাদেশে সুপারফাস্ট ফ্রি ইন্টারনেট।' 
+                  : 'Special for Gulf SIM FreeNet (STC, Mobily, Zain) & 0-balance high-speed.'}
+              </p>
+            </div>
+            <div className="mt-4 pt-3 border-t border-slate-800">
+              <a
+                href={CONTACT_CONFIG.apps.jiyamPlus.downloadUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-full py-2 px-3 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-black font-extrabold text-xs flex items-center justify-center gap-1.5 transition-all shadow-md shadow-emerald-500/20 cursor-pointer"
+              >
+                <Download className="w-3.5 h-3.5" />
+                <span>{lang === 'bn' ? 'Jiyam Plus APK ডাউনলোড' : 'Download Jiyam Plus APK'}</span>
+              </a>
+            </div>
           </div>
 
           {/* Windows */}
           <div className="p-4 rounded-2xl bg-slate-900/80 border border-slate-800 hover:border-cyan-500/40 transition-all text-center flex flex-col items-center justify-between">
             <Laptop className="w-7 h-7 text-cyan-400 mb-2" />
-            <span className="text-xs font-bold text-white block">Windows</span>
-            <span className="text-[10px] text-slate-400 mb-3">64-bit .exe</span>
+            <span className="text-xs font-bold text-white block">Windows PC</span>
+            <span className="text-[10px] text-slate-400 mb-3">v2rayN & WireGuard</span>
             <button
               onClick={() => onNavigateTab('configs')}
-              className="w-full py-1 px-2 rounded-lg bg-cyan-500/20 text-cyan-300 text-[11px] font-bold border border-cyan-500/30 cursor-pointer"
+              className="w-full py-1.5 px-2 rounded-lg bg-cyan-500/20 text-cyan-300 text-[11px] font-bold border border-cyan-500/30 cursor-pointer"
             >
-              {lang === 'bn' ? 'ডাউনলোড' : 'Download'}
+              {lang === 'bn' ? 'কনফিগ ও সেটআপ' : 'Get Config'}
             </button>
           </div>
 
-          {/* iOS */}
+          {/* iOS iPhone / iPad */}
           <div className="p-4 rounded-2xl bg-slate-900/80 border border-slate-800 hover:border-indigo-500/40 transition-all text-center flex flex-col items-center justify-between">
             <Apple className="w-7 h-7 text-indigo-400 mb-2" />
-            <span className="text-xs font-bold text-white block">iOS</span>
-            <span className="text-[10px] text-slate-400 mb-3">iPhone & iPad</span>
+            <span className="text-xs font-bold text-white block">iOS (iPhone/iPad)</span>
+            <span className="text-[10px] text-slate-400 mb-3">Shadowrocket & Sing-box</span>
             <button
               onClick={() => onNavigateTab('configs')}
-              className="w-full py-1 px-2 rounded-lg bg-indigo-500/20 text-indigo-300 text-[11px] font-bold border border-indigo-500/30 cursor-pointer"
+              className="w-full py-1.5 px-2 rounded-lg bg-indigo-500/20 text-indigo-300 text-[11px] font-bold border border-indigo-500/30 cursor-pointer"
             >
-              {lang === 'bn' ? 'ডাউনলোড' : 'Download'}
-            </button>
-          </div>
-
-          {/* macOS */}
-          <div className="p-4 rounded-2xl bg-slate-900/80 border border-slate-800 hover:border-purple-500/40 transition-all text-center flex flex-col items-center justify-between">
-            <Apple className="w-7 h-7 text-purple-400 mb-2" />
-            <span className="text-xs font-bold text-white block">macOS</span>
-            <span className="text-[10px] text-slate-400 mb-3">M1/M2/M3 & Intel</span>
-            <button
-              onClick={() => onNavigateTab('configs')}
-              className="w-full py-1 px-2 rounded-lg bg-purple-500/20 text-purple-300 text-[11px] font-bold border border-purple-500/30 cursor-pointer"
-            >
-              {lang === 'bn' ? 'ডাউনলোড' : 'Download'}
-            </button>
-          </div>
-
-          {/* Linux */}
-          <div className="p-4 rounded-2xl bg-slate-900/80 border border-slate-800 hover:border-amber-500/40 transition-all text-center flex flex-col items-center justify-between">
-            <Terminal className="w-7 h-7 text-amber-400 mb-2" />
-            <span className="text-xs font-bold text-white block">Linux</span>
-            <span className="text-[10px] text-slate-400 mb-3">CLI & GUI (.deb)</span>
-            <button
-              onClick={() => onNavigateTab('configs')}
-              className="w-full py-1 px-2 rounded-lg bg-amber-500/20 text-amber-300 text-[11px] font-bold border border-amber-500/30 cursor-pointer"
-            >
-              {lang === 'bn' ? 'ডাউনলোড' : 'Download'}
-            </button>
-          </div>
-
-          {/* Configs */}
-          <div className="p-4 rounded-2xl bg-slate-900/80 border border-slate-800 hover:border-rose-500/40 transition-all text-center flex flex-col items-center justify-between">
-            <Layers className="w-7 h-7 text-rose-400 mb-2" />
-            <span className="text-xs font-bold text-white block">Configs</span>
-            <span className="text-[10px] text-slate-400 mb-3">WireGuard / V2Ray</span>
-            <button
-              onClick={() => onNavigateTab('configs')}
-              className="w-full py-1 px-2 rounded-lg bg-rose-500/20 text-rose-300 text-[11px] font-bold border border-rose-500/30 cursor-pointer"
-            >
-              {lang === 'bn' ? 'জেনারেট' : 'Export'}
+              {lang === 'bn' ? 'কনফিগ ও সেটআপ' : 'Get Config'}
             </button>
           </div>
         </div>
@@ -1505,6 +1581,12 @@ export const MainConnectView: React.FC<MainConnectViewProps> = ({
               aEn: 'Free servers offer standard connectivity. VIP subscribers unlock dedicated 10Gbps high-capacity servers, Arab SIM FreeNet configurations, and priority routing.'
             },
             {
+              qBn: 'কোন অ্যাপস দিয়ে সবচেয়ে ভালো ভিপিএন চলবে?',
+              qEn: 'Which apps work best with Soverixnet VPN?',
+              aBn: 'আমরা অফিসিয়ালি দুটি অ্যাপস রিকমেন্ড করি: ১. AF V2Ray APK (বিশ্বের যেকোনো দেশে আল্ট্রা স্পিডে চলার জন্য) এবং ২. Jiyam Plus VPN (সৌদি আরব ও মধ্যপ্রাচ্যে ০ ব্যালেন্সে ফ্রি-নেট চালানোর জন্য)। এছাড়াও v2rayNG, Shadowrocket ও WireGuard-এ চমৎকার কাজ করে।',
+              aEn: 'We officially recommend: 1. AF V2Ray APK (works smoothly in all countries worldwide) and 2. Jiyam Plus VPN (tailored for Gulf SIM zero-balance FreeNet). You can also use v2rayNG, Shadowrocket, and WireGuard.'
+            },
+            {
               qBn: 'কীভাবে পেমেন্ট করতে পারি এবং অ্যাক্টিভ হতে কতক্ষণ লাগে?',
               qEn: 'How do I pay and how quickly is VIP activated?',
               aBn: 'বিকাশ, নগদ, রকেট অথবা ক্রিপ্টোকারেন্সির মাধ্যমে সরাসরি পেমেন্ট করতে পারবেন। ট্রানজাকশন সাবমিট করার সাথে সাথেই ভিআইপি ইনস্ট্যান্ট চালু হয়ে যায়।',
@@ -1547,7 +1629,7 @@ export const MainConnectView: React.FC<MainConnectViewProps> = ({
           </div>
           <div>
             <h3 className="text-base sm:text-lg font-black text-white">
-              {lang === 'bn' ? 'যুক্ত হোন অফিসিয়াল WhatsApp চ্যানেলে: Global Free Internet' : 'Join Our Official WhatsApp Community'}
+              {lang === 'bn' ? 'যুক্ত হোন অফিসিয়াল WhatsApp চ্যানেলে: Soverixnet Internet unlimited Vpn' : 'Join Our Official WhatsApp Channel: Soverixnet Internet unlimited Vpn'}
             </h3>
             <p className="text-xs text-slate-400 mt-0.5">
               {lang === 'bn' 
@@ -1558,7 +1640,7 @@ export const MainConnectView: React.FC<MainConnectViewProps> = ({
         </div>
 
         <a
-          href="https://whatsapp.com/channel/0029VbCB2eb1Hsq1gDX4HP13"
+          href={CONTACT_CONFIG.whatsappChannelUrl}
           target="_blank"
           rel="noopener noreferrer"
           className="px-6 py-3 rounded-2xl bg-emerald-500 hover:bg-emerald-400 text-black font-black text-xs sm:text-sm flex items-center gap-2 shadow-lg shadow-emerald-500/25 transition-all shrink-0 cursor-pointer transform hover:scale-105"

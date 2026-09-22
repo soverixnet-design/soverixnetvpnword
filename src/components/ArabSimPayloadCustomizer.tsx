@@ -20,6 +20,7 @@ import {
   ExternalLink
 } from 'lucide-react';
 import { VPNServer } from '../types';
+import { CONTACT_CONFIG } from '../data/contact';
 import confetti from 'canvas-confetti';
 
 interface ArabSimPayloadCustomizerProps {
@@ -353,6 +354,38 @@ vless://8b392835-972b-47cc-b1c1-770dc30af179@${selectedServer.ip}:${customPort}?
             <span className="text-[11px] font-mono text-emerald-400 bg-emerald-950/40 px-2 py-0.5 rounded border border-emerald-500/30">
               Active Protocol: {selectedPreset.protocol}
             </span>
+          </div>
+        </div>
+
+        {/* Dedicated APK Downloads Bar inside ArabSim */}
+        <div className="mt-4 pt-4 border-t border-slate-800/80 flex flex-col sm:flex-row items-center justify-between gap-3">
+          <div className="flex items-center gap-2">
+            <Smartphone className="w-4 h-4 text-emerald-400" />
+            <span className="text-xs font-bold text-slate-200">
+              {lang === 'bn' ? 'ফ্রি-নেট চালানোর জন্য অফিসিয়াল অ্যাপস ডাউনলোড করুন:' : 'Download Official FreeNet Apps:'}
+            </span>
+          </div>
+
+          <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto">
+            <a
+              href={CONTACT_CONFIG.apps.afV2Ray.downloadUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex-1 sm:flex-initial px-3 py-1.5 rounded-xl bg-cyan-500/20 hover:bg-cyan-500/30 text-cyan-300 border border-cyan-500/40 text-xs font-bold flex items-center justify-center gap-1.5 transition-all"
+            >
+              <Download className="w-3.5 h-3.5 text-cyan-400" />
+              <span>AF V2Ray APK (সব দেশে চলবে)</span>
+            </a>
+
+            <a
+              href={CONTACT_CONFIG.apps.jiyamPlus.downloadUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex-1 sm:flex-initial px-3 py-1.5 rounded-xl bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-500/40 text-xs font-bold flex items-center justify-center gap-1.5 transition-all"
+            >
+              <Download className="w-3.5 h-3.5 text-emerald-400" />
+              <span>Jiyam Plus VPN APK (আরব স্পেশাল)</span>
+            </a>
           </div>
         </div>
       </div>

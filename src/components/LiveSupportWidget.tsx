@@ -12,6 +12,7 @@ import {
   Clock,
   ShieldCheck
 } from 'lucide-react';
+import { CONTACT_CONFIG } from '../data/contact';
 import confetti from 'canvas-confetti';
 
 interface LiveSupportWidgetProps {
@@ -24,9 +25,9 @@ export const LiveSupportWidget: React.FC<LiveSupportWidgetProps> = ({ lang }) =>
   const [userQuery, setUserQuery] = useState('');
   const [ticketSent, setTicketSent] = useState(false);
 
-  const WHATSAPP_CHANNEL_URL = 'https://whatsapp.com/channel/0029VbCB2eb1Hsq1gDX4HP13';
-  const TELEGRAM_COMMUNITY_URL = 'https://t.me/soverixnet_vpn';
-  const WHATSAPP_DIRECT_CHAT = 'https://wa.me/8801700000000?text=Hello%20SoverixNet%20Support%2C%20I%20need%20assistance';
+  const WHATSAPP_CHANNEL_URL = CONTACT_CONFIG.whatsappChannelUrl;
+  const TELEGRAM_COMMUNITY_URL = CONTACT_CONFIG.telegramUrl;
+  const WHATSAPP_DIRECT_CHAT = CONTACT_CONFIG.getWhatsAppUrl('Hello SoverixNet Support, I need assistance with VPN setup.');
 
   const FAQS = [
     {

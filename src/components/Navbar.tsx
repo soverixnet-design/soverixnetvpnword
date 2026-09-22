@@ -40,10 +40,10 @@ interface NavbarProps {
   theme: 'dark' | 'cyber-light';
   setTheme: (theme: 'dark' | 'cyber-light') => void;
   status: ConnectionStatus;
-  soundEnabled: boolean;
-  setSoundEnabled: (enabled: boolean) => void;
-  killSwitchActive: boolean;
-  onOpenQuickSettings: () => void;
+  soundEnabled?: boolean;
+  setSoundEnabled?: (enabled: boolean) => void;
+  killSwitchActive?: boolean;
+  onOpenQuickSettings?: () => void;
   onOpenAuthModal: (tab?: 'signin' | 'signup') => void;
 }
 
@@ -68,14 +68,11 @@ export const Navbar: React.FC<NavbarProps> = ({
 
   const navLinks = [
     { id: 'dashboard', label: lang === 'bn' ? 'হোম' : 'Home', icon: Radio },
-    { id: 'benefits', label: lang === 'bn' ? 'কেন সোভারিক্সনেট?' : 'Why Soverixnet?', icon: Sparkles },
-    { id: 'servers', label: lang === 'bn' ? 'দেশ ও সার্ভার' : 'Countries & Servers', icon: Globe },
     { id: 'vipPlans', label: lang === 'bn' ? 'প্যাকেজ ও মূল্য' : 'Packages & Pricing', icon: Crown, vipHighlight: true },
     { id: 'arabSim', label: lang === 'bn' ? '🇸🇦 আরব ফ্রি-নেট' : '🇸🇦 Arab FreeNet', icon: Zap, highlight: true },
-    { id: 'configs', label: lang === 'bn' ? 'ডাউনলোড' : 'Downloads', icon: FileCode2 },
-    { id: 'speedTest', label: lang === 'bn' ? 'স্পিড টেস্ট' : 'Speed Test', icon: Gauge },
-    { id: 'security', label: lang === 'bn' ? 'সিকিউরিটি' : 'Security', icon: Shield },
-    { id: 'referrals', label: lang === 'bn' ? 'রেফার ও আর্ন' : 'Referrals', icon: Gift, giftHighlight: true },
+    { id: 'configs', label: lang === 'bn' ? 'ডাউনলোড ও কনফিগ' : 'Downloads', icon: FileCode2 },
+    { id: 'servers', label: lang === 'bn' ? 'সার্ভারসমূহ' : 'Servers', icon: Globe },
+    { id: 'benefits', label: lang === 'bn' ? 'সুবিধাসমূহ' : 'Why Us?', icon: Sparkles },
     { id: 'account', label: lang === 'bn' ? 'অ্যাকাউন্ট' : 'Account', icon: User },
     ...(canAccessAdminPanel ? [{
       id: 'admin',
@@ -87,7 +84,6 @@ export const Navbar: React.FC<NavbarProps> = ({
       icon: isReseller && !isSuperAdmin ? Briefcase : ShieldAlert,
       adminOnly: true
     }] : []),
-    { id: 'logs', label: lang === 'bn' ? 'লাইভ লগ' : 'Logs', icon: Terminal },
   ];
 
   const toggleTheme = () => {
@@ -119,7 +115,7 @@ export const Navbar: React.FC<NavbarProps> = ({
 
           <div className="flex items-center gap-3 shrink-0 text-[11px]">
             <a
-              href="https://whatsapp.com/channel/0029VbCB2eb1Hsq1gDX4HP13"
+              href={CONTACT_CONFIG.whatsappChannelUrl}
               target="_blank"
               rel="noopener noreferrer"
               className="text-emerald-400 hover:text-emerald-300 font-bold flex items-center gap-1 transition-colors"
@@ -176,7 +172,7 @@ export const Navbar: React.FC<NavbarProps> = ({
 
           {/* Desktop Website Navigation Links */}
           <nav className="hidden xl:flex items-center gap-1 bg-slate-900/60 p-1.5 rounded-2xl border border-slate-800/80">
-            {navLinks.slice(0, 8).map((item) => {
+            {navLinks.map((item) => {
               const Icon = item.icon;
               const isActive = activeTab === item.id;
               return (
@@ -186,62 +182,30 @@ export const Navbar: React.FC<NavbarProps> = ({
                   className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold transition-all duration-200 cursor-pointer ${
                     isActive
                       ? 'bg-gradient-to-r from-cyan-500/20 to-blue-600/20 text-cyan-300 border border-cyan-500/40 shadow-sm shadow-cyan-500/20'
-                      : item.giftHighlight
-                      ? 'text-teal-300 hover:text-teal-200 hover:bg-teal-950/40'
                       : item.vipHighlight
                       ? 'text-amber-300 hover:text-amber-200 hover:bg-amber-950/30'
                       : item.highlight
                       ? 'text-emerald-300 hover:text-emerald-200 hover:bg-emerald-950/30'
+                      : item.adminOnly
+                      ? 'text-red-300 hover:bg-red-950/40'
                       : 'text-slate-300 hover:text-white hover:bg-slate-800/60'
                   }`}
                 >
                   <Icon className={`w-3.5 h-3.5 ${
                     isActive 
                       ? 'text-cyan-400' 
-                      : item.giftHighlight 
-                      ? 'text-teal-400 animate-pulse' 
                       : item.vipHighlight 
                       ? 'text-amber-400' 
                       : item.highlight 
                       ? 'text-emerald-400' 
+                      : item.adminOnly
+                      ? 'text-red-400'
                       : 'text-slate-400'
                   }`} />
                   <span>{item.label}</span>
                 </button>
               );
             })}
-
-            {/* More dropdown for additional items */}
-            <div className="relative group">
-              <button 
-                className="flex items-center gap-1 px-2.5 py-2 rounded-xl text-xs font-semibold text-slate-400 hover:text-white hover:bg-slate-800/60 transition-colors cursor-pointer"
-              >
-                <span>{lang === 'bn' ? 'আরও' : 'More'}</span>
-                <ChevronDown className="w-3.5 h-3.5" />
-              </button>
-              <div className="absolute right-0 top-full mt-1.5 w-48 py-2 bg-[#050b18] border border-slate-800 rounded-2xl shadow-2xl backdrop-blur-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
-                {navLinks.slice(8).map((item) => {
-                  const Icon = item.icon;
-                  const isActive = activeTab === item.id;
-                  return (
-                    <button
-                      key={item.id}
-                      onClick={() => handleNavClick(item.id)}
-                      className={`w-full flex items-center gap-2.5 px-3.5 py-2 text-left text-xs font-semibold transition-colors cursor-pointer ${
-                        isActive 
-                          ? 'bg-cyan-500/20 text-cyan-300' 
-                          : item.adminOnly 
-                          ? 'text-red-300 hover:bg-red-950/40' 
-                          : 'text-slate-300 hover:bg-slate-800/80 hover:text-white'
-                      }`}
-                    >
-                      <Icon className="w-4 h-4 text-cyan-400" />
-                      <span>{item.label}</span>
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
           </nav>
 
           {/* Right Action Utilities (Website Style) */}
@@ -263,20 +227,6 @@ export const Navbar: React.FC<NavbarProps> = ({
                 <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.77-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.312.045-.694.074-1.99-.46-1.657-.683-2.73-2.366-2.812-2.476-.083-.11-1.01-1.348-1.01-2.572 0-1.223.636-1.824.862-2.073.226-.249.493-.311.658-.311.164 0 .328.002.472.01.153.007.358-.058.56.427.207.499.704 1.722.766 1.847.062.125.103.271.021.434-.083.164-.124.266-.247.41-.124.144-.261.322-.373.432-.124.123-.254.256-.11.503.144.247.641 1.057 1.376 1.713.946.843 1.744 1.104 1.991 1.228.247.124.391.103.535-.062.145-.165.618-.719.783-.967.165-.247.33-.206.556-.123.226.082 1.436.677 1.683.801.247.124.412.185.473.288.062.103.062.597-.082 1.002zM12 2C6.477 2 2 6.477 2 12c0 1.891.528 3.659 1.442 5.174L2 22l4.981-1.306C8.441 21.545 10.16 22 12 22c5.523 0 10-4.477 10-10S17.523 2 12 2z"/>
               </svg>
               <span>{lang === 'bn' ? 'হোয়াটসঅ্যাপে ভিপিএন নিন' : 'Order on WhatsApp'}</span>
-            </a>
-
-            {/* WhatsApp Community Button */}
-            <a
-              href="https://whatsapp.com/channel/0029VbCB2eb1Hsq1gDX4HP13"
-              target="_blank"
-              rel="noopener noreferrer"
-              title="Official WhatsApp Channel"
-              className="hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-emerald-500/15 hover:bg-emerald-500/25 border border-emerald-500/40 text-emerald-400 text-xs font-bold transition-all shadow-sm shadow-emerald-500/10 cursor-pointer"
-            >
-              <svg className="w-4 h-4 fill-current text-emerald-400" viewBox="0 0 24 24">
-                <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.77-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.312.045-.694.074-1.99-.46-1.657-.683-2.73-2.366-2.812-2.476-.083-.11-1.01-1.348-1.01-2.572 0-1.223.636-1.824.862-2.073.226-.249.493-.311.658-.311.164 0 .328.002.472.01.153.007.358-.058.56.427.207.499.704 1.722.766 1.847.062.125.103.271.021.434-.083.164-.124.266-.247.41-.124.144-.261.322-.373.432-.124.123-.254.256-.11.503.144.247.641 1.057 1.376 1.713.946.843 1.744 1.104 1.991 1.228.247.124.391.103.535-.062.145-.165.618-.719.783-.967.165-.247.33-.206.556-.123.226.082 1.436.677 1.683.801.247.124.412.185.473.288.062.103.062.597-.082 1.002zM12 2C6.477 2 2 6.477 2 12c0 1.891.528 3.659 1.442 5.174L2 22l4.981-1.306C8.441 21.545 10.16 22 12 22c5.523 0 10-4.477 10-10S17.523 2 12 2z"/>
-              </svg>
-              <span>{lang === 'bn' ? 'WhatsApp চ্যানেল' : 'WhatsApp'}</span>
             </a>
 
             {/* VIP Plans Pill Button */}
@@ -303,19 +253,6 @@ export const Navbar: React.FC<NavbarProps> = ({
               ) : (
                 <Moon className="w-4 h-4 text-cyan-400" />
               )}
-            </button>
-
-            {/* Sound FX Toggle */}
-            <button
-              onClick={() => setSoundEnabled(!soundEnabled)}
-              title={soundEnabled ? 'Mute Sounds' : 'Enable Cyber Sounds'}
-              className={`p-2 rounded-xl border transition-all cursor-pointer hidden sm:flex ${
-                soundEnabled
-                  ? 'bg-slate-900 border-slate-700 text-cyan-400'
-                  : 'bg-slate-900/40 border-slate-800 text-slate-500 hover:text-slate-300'
-              }`}
-            >
-              {soundEnabled ? <Volume2 className="w-4 h-4" /> : <VolumeX className="w-4 h-4" />}
             </button>
 
             {/* Language Switcher */}
@@ -395,8 +332,6 @@ export const Navbar: React.FC<NavbarProps> = ({
                     className={`flex items-center gap-2 p-2.5 rounded-xl text-xs font-bold transition-all text-left cursor-pointer ${
                       isActive
                         ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/40'
-                        : item.giftHighlight
-                        ? 'text-teal-300 bg-teal-950/30 border border-teal-500/30'
                         : item.vipHighlight
                         ? 'text-amber-300 bg-amber-950/30 border border-amber-500/30'
                         : item.highlight
@@ -415,7 +350,7 @@ export const Navbar: React.FC<NavbarProps> = ({
 
             <div className="pt-3 border-t border-slate-800 flex items-center justify-between text-xs">
               <a
-                href="https://whatsapp.com/channel/0029VbCB2eb1Hsq1gDX4HP13"
+                href={CONTACT_CONFIG.whatsappChannelUrl}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center gap-1.5 text-emerald-400 font-bold"

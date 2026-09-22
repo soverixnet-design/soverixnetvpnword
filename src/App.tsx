@@ -8,22 +8,18 @@ import {
 import { SERVERS_DATA } from './data/servers';
 import { ServerManager } from './services/serverManager';
 import { TRANSLATIONS } from './data/translations';
+import { CONTACT_CONFIG } from './data/contact';
 import { Navbar } from './components/Navbar';
 import { MainConnectView } from './components/MainConnectView';
 import { BenefitsView } from './components/BenefitsView';
 import { VipPlansView } from './components/VipPlansView';
 import { ServerListModal } from './components/ServerListModal';
-import { WorldMapVisualizer } from './components/WorldMapVisualizer';
-import { SpeedTestView } from './components/SpeedTestView';
-import { SecurityToolsView } from './components/SecurityToolsView';
 import { ConfigGeneratorModal } from './components/ConfigGeneratorModal';
 import { ArabSimPayloadCustomizer } from './components/ArabSimPayloadCustomizer';
 import { PwaInstallAndPushBanner } from './components/PwaInstallAndPushBanner';
 import { LiveSupportWidget } from './components/LiveSupportWidget';
 import { AccountView } from './components/AccountView';
-import { ReferralRewardsView } from './components/ReferralRewardsView';
 import { AdminConsoleView } from './components/AdminConsoleView';
-import { LiveConsoleLogs } from './components/LiveConsoleLogs';
 import { AuthModal } from './components/AuthModal';
 import { ActionFeedbackToast, ToastFeedbackData } from './components/ActionFeedbackToast';
 import { soundEffects } from './services/soundEffects';
@@ -32,8 +28,7 @@ import { AuthProvider, useAuth } from './firebase/AuthContext';
 import { 
   ShieldCheck, 
   Globe2, 
-  X, 
-  Sliders
+  X
 } from 'lucide-react';
 
 const THEME_STORAGE_KEY = 'soverix_app_theme';
@@ -54,7 +49,6 @@ function AppContent() {
   const [activeProtocol, setActiveProtocol] = useState<VPNProtocol>('wireguard');
   const [soundEnabled, setSoundEnabled] = useState<boolean>(true);
   const [isServerModalOpen, setIsServerModalOpen] = useState<boolean>(false);
-  const [isQuickSettingsOpen, setIsQuickSettingsOpen] = useState<boolean>(false);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState<boolean>(false);
   const [authModalTab, setAuthModalTab] = useState<'signin' | 'signup'>('signin');
   const [sessionStartTime, setSessionStartTime] = useState<number | null>(null);
@@ -373,7 +367,6 @@ function AppContent() {
         soundEnabled={soundEnabled}
         setSoundEnabled={handleToggleSound}
         killSwitchActive={settings.killSwitch}
-        onOpenQuickSettings={() => setIsQuickSettingsOpen(true)}
         onOpenAuthModal={handleOpenAuthModal}
       />
 
@@ -408,68 +401,6 @@ function AppContent() {
           <VipPlansView
             lang={lang}
             onOpenAuthModal={handleOpenAuthModal}
-            onNavigateToReferrals={() => setActiveTab('referrals')}
-          />
-        )}
-
-        {/* Why Soverixnet / Benefits Tab */}
-        {activeTab === 'benefits' && (
-          <BenefitsView
-            lang={lang}
-            onConnectNow={() => {
-              setActiveTab('dashboard');
-              if (status === 'disconnected') {
-                handleToggleConnect();
-              }
-            }}
-          />
-        )}
-
-        {/* Server Nodes Tab */}
-        {activeTab === 'servers' && (
-          <ServerListModal
-            selectedServer={selectedServer}
-            onSelectServer={handleSelectServer}
-            lang={lang}
-            onNavigateTab={setActiveTab}
-          />
-        )}
-
-        {/* Interactive World Map Tab */}
-        {activeTab === 'worldMap' && (
-          <WorldMapVisualizer
-            selectedServer={selectedServer}
-            onSelectServer={handleSelectServer}
-            status={status}
-            lang={lang}
-            onToggleConnect={handleToggleConnect}
-          />
-        )}
-
-        {/* Speed Test & Diagnostics Tab */}
-        {activeTab === 'speedTest' && (
-          <SpeedTestView
-            selectedServer={selectedServer}
-            status={status}
-            lang={lang}
-          />
-        )}
-
-        {/* Security Shield & Split Tunneling Tab */}
-        {activeTab === 'security' && (
-          <SecurityToolsView
-            settings={settings}
-            onUpdateSettings={handleUpdateSettings}
-            lang={lang}
-          />
-        )}
-
-        {/* Referral & Rewards Program Hub Tab */}
-        {activeTab === 'referrals' && (
-          <ReferralRewardsView
-            lang={lang}
-            onNavigateToPlans={() => setActiveTab('vipPlans')}
-            onOpenAuth={() => handleOpenAuthModal('signup')}
           />
         )}
 
@@ -499,28 +430,40 @@ function AppContent() {
           />
         )}
 
+        {/* Server Nodes Tab */}
+        {activeTab === 'servers' && (
+          <ServerListModal
+            selectedServer={selectedServer}
+            onSelectServer={handleSelectServer}
+            lang={lang}
+            onNavigateTab={setActiveTab}
+          />
+        )}
+
+        {/* Why Soverixnet / Benefits Tab */}
+        {activeTab === 'benefits' && (
+          <BenefitsView
+            lang={lang}
+            onConnectNow={() => {
+              setActiveTab('dashboard');
+              if (status === 'disconnected') {
+                handleToggleConnect();
+              }
+            }}
+          />
+        )}
+
         {/* VIP Account Tab */}
         {activeTab === 'account' && (
           <AccountView 
             lang={lang} 
             onOpenAuthModal={handleOpenAuthModal} 
-            onNavigateToReferrals={() => setActiveTab('referrals')}
           />
         )}
 
         {/* Master Admin Console Tab */}
         {activeTab === 'admin' && (
           <AdminConsoleView lang={lang} />
-        )}
-
-        {/* Live Cyber Logs Tab */}
-        {activeTab === 'logs' && (
-          <LiveConsoleLogs
-            status={status}
-            activeProtocol={activeProtocol}
-            selectedServer={selectedServer}
-            lang={lang}
-          />
         )}
 
       </main>
@@ -582,80 +525,6 @@ function AppContent() {
         </div>
       )}
 
-      {/* Quick Settings Drawer Modal */}
-      {isQuickSettingsOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fade-in">
-          <div className="relative w-full max-w-md bg-[#050b18] border border-cyan-500/30 rounded-3xl p-6 shadow-2xl">
-            
-            <div className="flex items-center justify-between pb-3 mb-4 border-b border-slate-800">
-              <div className="flex items-center gap-2">
-                <Sliders className="w-5 h-5 text-cyan-400" />
-                <h4 className="text-base font-bold text-white">
-                  {lang === 'bn' ? 'দ্রুত নিরাপত্তা সেটিংস' : 'Quick Protection Controls'}
-                </h4>
-              </div>
-              <button
-                onClick={() => setIsQuickSettingsOpen(false)}
-                className="p-1.5 rounded-xl bg-slate-900 border border-slate-800 text-slate-400 hover:text-white cursor-pointer"
-              >
-                <X className="w-4 h-4" />
-              </button>
-            </div>
-
-            <div className="space-y-3">
-              <div className="p-3 rounded-2xl bg-slate-950/70 border border-slate-800 flex items-center justify-between">
-                <div>
-                  <h5 className="text-xs font-bold text-slate-200">{t.killSwitch}</h5>
-                  <p className="text-[10px] text-slate-400">{t.killSwitchDesc}</p>
-                </div>
-                <input 
-                  type="checkbox" 
-                  checked={settings.killSwitch} 
-                  onChange={(e) => handleUpdateSettings({ killSwitch: e.target.checked })} 
-                  className="w-4 h-4 accent-rose-500 cursor-pointer"
-                />
-              </div>
-
-              <div className="p-3 rounded-2xl bg-slate-950/70 border border-slate-800 flex items-center justify-between">
-                <div>
-                  <h5 className="text-xs font-bold text-slate-200">{t.cleanNet}</h5>
-                  <p className="text-[10px] text-slate-400">{t.cleanNetDesc}</p>
-                </div>
-                <input 
-                  type="checkbox" 
-                  checked={settings.cleanNetAdBlock} 
-                  onChange={(e) => handleUpdateSettings({ cleanNetAdBlock: e.target.checked })} 
-                  className="w-4 h-4 accent-cyan-500 cursor-pointer"
-                />
-              </div>
-
-              <div className="p-3 rounded-2xl bg-slate-950/70 border border-slate-800 flex items-center justify-between">
-                <div>
-                  <h5 className="text-xs font-bold text-slate-200">{t.stealthMode}</h5>
-                  <p className="text-[10px] text-slate-400">{t.stealthModeDesc}</p>
-                </div>
-                <input 
-                  type="checkbox" 
-                  checked={settings.stealthObfuscation} 
-                  onChange={(e) => handleUpdateSettings({ stealthObfuscation: e.target.checked })} 
-                  className="w-4 h-4 accent-purple-500 cursor-pointer"
-                />
-              </div>
-            </div>
-
-            <button
-              onClick={() => {
-                setIsQuickSettingsOpen(false);
-                setActiveTab('security');
-              }}
-              className="w-full mt-4 py-2.5 rounded-xl bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 text-xs font-bold transition-all text-center block cursor-pointer"
-            >
-              {lang === 'bn' ? 'সকল অ্যাডভান্সড সিকিউরিটি টুলস দেখুন ➔' : 'View Full Security Suite ➔'}
-            </button>
-          </div>
-        </div>
-      )}
-
       {/* Cyber Sleek Footer with SEO Authority Keywords */}
       <footer className="w-full border-t border-slate-800/80 bg-[#02050c] py-8 px-4 sm:px-6 lg:px-8 z-10 transition-colors duration-300">
         <div className="max-w-7xl mx-auto space-y-6 text-xs text-slate-500">
@@ -694,7 +563,7 @@ function AppContent() {
               </div>
               <div>
                 <span className="text-white font-bold text-xs block">
-                  {lang === 'bn' ? 'অফিসিয়াল WhatsApp চ্যানেল: Global Free Internet' : 'Official WhatsApp Channel: Global Free Internet'}
+                  {lang === 'bn' ? 'অফিসিয়াল WhatsApp চ্যানেল: Soverixnet Internet unlimited Vpn' : 'Official WhatsApp Channel: Soverixnet Internet unlimited Vpn'}
                 </span>
                 <span className="text-slate-400 text-[11px]">
                   {lang === 'bn' ? 'ফ্রি ইন্টারনেট ও আনলিমিটেড ভিপিএন ট্রিক্স পেতে যুক্ত থাকুন।' : 'Join our WhatsApp community for free VPN configs & tricks.'}
@@ -703,7 +572,7 @@ function AppContent() {
             </div>
 
             <a
-              href="https://whatsapp.com/channel/0029VbCB2eb1Hsq1gDX4HP13"
+              href={CONTACT_CONFIG.whatsappChannelUrl}
               target="_blank"
               rel="noopener noreferrer"
               className="px-4 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-black font-extrabold text-xs flex items-center gap-1.5 transition-all shadow-md shadow-emerald-500/20 shrink-0 cursor-pointer"

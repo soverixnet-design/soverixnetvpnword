@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { VPNServer, VPNProtocol } from '../types';
 import { TRANSLATIONS } from '../data/translations';
+import { CONTACT_CONFIG } from '../data/contact';
 import { 
   FileCode2, 
   Copy, 
@@ -412,14 +413,37 @@ MIIBojCCAUegAwIBAgIU...SOVERIXNET-ROOT-CA...
               : 'Scan with v2rayNG, Shadowrocket, NekoBox or WireGuard on your smartphone'}
           </p>
 
-          {/* Quick Client Setup Guide */}
-          <div className="mt-4 pt-3 border-t border-slate-800/80 w-full text-left space-y-1.5">
+          {/* Quick Client Setup Guide & Direct APK Downloads */}
+          <div className="mt-4 pt-3 border-t border-slate-800/80 w-full text-left space-y-2">
             <span className="text-[11px] font-bold text-cyan-300 block">
-              {lang === 'bn' ? '📱 ১-ক্লিক মোবাইল অ্যাপ সাপোর্ট:' : '📱 1-Click Mobile Apps:'}
+              {lang === 'bn' ? '📱 সরাসরি রেডি ভিপিএন অ্যাপস ডাউনলোড:' : '📱 Direct Recommended VPN Apps:'}
             </span>
-            <div className="text-[10px] text-slate-400 space-y-1">
-              <div>• <b>Android:</b> v2rayNG, HTTP Custom, HA Tunnel Plus</div>
-              <div>• <b>iOS:</b> Shadowrocket, Sing-box, WireGuard</div>
+
+            <div className="space-y-1.5">
+              <a
+                href={CONTACT_CONFIG.apps.afV2Ray.downloadUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-full py-1.5 px-2.5 rounded-lg bg-cyan-500/15 hover:bg-cyan-500/25 border border-cyan-500/40 text-cyan-300 text-[11px] font-bold flex items-center justify-between transition-all"
+              >
+                <span>AF V2Ray APK (সব দেশে চলবে)</span>
+                <Download className="w-3 h-3 text-cyan-400" />
+              </a>
+
+              <a
+                href={CONTACT_CONFIG.apps.jiyamPlus.downloadUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-full py-1.5 px-2.5 rounded-lg bg-emerald-500/15 hover:bg-emerald-500/25 border border-emerald-500/40 text-emerald-300 text-[11px] font-bold flex items-center justify-between transition-all"
+              >
+                <span>Jiyam Plus VPN APK (আরব স্পেশাল)</span>
+                <Download className="w-3 h-3 text-emerald-400" />
+              </a>
+            </div>
+
+            <div className="text-[10px] text-slate-400 pt-1 border-t border-slate-900">
+              <div>• <b>iPhone/iOS:</b> Shadowrocket, Sing-box, WireGuard</div>
+              <div>• <b>PC:</b> v2rayN, Clash Verge, WireGuard</div>
             </div>
           </div>
         </div>
