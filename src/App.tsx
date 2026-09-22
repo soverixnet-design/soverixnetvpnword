@@ -563,22 +563,33 @@ function AppContent() {
               </div>
               <div>
                 <span className="text-white font-bold text-xs block">
-                  {lang === 'bn' ? 'অফিসিয়াল WhatsApp চ্যানেল: Soverixnet Internet unlimited Vpn' : 'Official WhatsApp Channel: Soverixnet Internet unlimited Vpn'}
+                  {lang === 'bn' ? `অফিসিয়াল WhatsApp: ${CONTACT_CONFIG.whatsappDisplayNumber} (Soverixnet VPN)` : `Official WhatsApp: ${CONTACT_CONFIG.whatsappDisplayNumber} (Soverixnet VPN)`}
                 </span>
                 <span className="text-slate-400 text-[11px]">
-                  {lang === 'bn' ? 'ফ্রি ইন্টারনেট ও আনলিমিটেড ভিপিএন ট্রিক্স পেতে যুক্ত থাকুন।' : 'Join our WhatsApp community for free VPN configs & tricks.'}
+                  {lang === 'bn' ? 'ফ্রি ইন্টারনেট, ভিআইপি কনফিগ ও যেকোনো সাপোর্টের জন্য মেসেজ দিন।' : 'Get free internet configs, VIP accounts & instant customer support.'}
                 </span>
               </div>
             </div>
 
-            <a
-              href={CONTACT_CONFIG.whatsappChannelUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="px-4 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-black font-extrabold text-xs flex items-center gap-1.5 transition-all shadow-md shadow-emerald-500/20 shrink-0 cursor-pointer"
-            >
-              <span>{lang === 'bn' ? 'Follow on WhatsApp ➔' : 'Follow on WhatsApp ➔'}</span>
-            </a>
+            <div className="flex items-center gap-2 shrink-0">
+              <a
+                href={CONTACT_CONFIG.getWhatsAppUrl()}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="px-4 py-2 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-400 hover:from-emerald-400 hover:to-teal-300 text-black font-extrabold text-xs flex items-center gap-1.5 transition-all shadow-md shadow-emerald-500/20 cursor-pointer"
+              >
+                <span>💬 {CONTACT_CONFIG.whatsappDisplayNumber}</span>
+              </a>
+
+              <a
+                href={CONTACT_CONFIG.whatsappChannelUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="px-3.5 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-emerald-400 border border-emerald-500/30 font-bold text-xs flex items-center gap-1.5 transition-all cursor-pointer"
+              >
+                <span>📢 {lang === 'bn' ? 'চ্যানেল' : 'Channel'}</span>
+              </a>
+            </div>
           </div>
 
           <div className="pt-4 border-t border-slate-900 text-center text-[10px] text-slate-600 leading-relaxed max-w-4xl mx-auto">

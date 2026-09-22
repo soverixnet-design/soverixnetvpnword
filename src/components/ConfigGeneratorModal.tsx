@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { VPNServer, VPNProtocol } from '../types';
 import { TRANSLATIONS } from '../data/translations';
 import { CONTACT_CONFIG } from '../data/contact';
+import { OfficialAppsGrid } from './OfficialAppsGrid';
 import { 
   FileCode2, 
   Copy, 
@@ -223,7 +224,18 @@ MIIBojCCAUegAwIBAgIU...SOVERIXNET-ROOT-CA...
   return (
     <div className="space-y-6 max-w-7xl mx-auto animate-fade-in">
       
-      {/* Header */}
+      {/* Featured 4 Official VPN Apps Showcase */}
+      <div className="glass-panel p-6 sm:p-8 rounded-3xl border border-cyan-500/20 shadow-2xl relative overflow-hidden">
+        <OfficialAppsGrid 
+          lang={lang} 
+          title={lang === 'bn' ? 'অফিসিয়াল মোবাইল অ্যাপস ডাউনলোড' : 'Official Mobile App Downloads'}
+          subtitle={lang === 'bn' 
+            ? 'যেকোনো দেশে হাই-স্পিড ফ্রি-নেট চালাতে নিচের ৪টি অফিসিয়াল ৩ডি ডাউনলোড বাটনের মাধ্যমে সরাসরি APK ইন্সটল করুন।' 
+            : 'Download our 4 official VPN client APKs below to import these configs with zero configuration friction.'}
+        />
+      </div>
+
+      {/* Header & Protocol Config Exporter */}
       <div className="glass-panel p-6 sm:p-8 rounded-3xl border border-cyan-500/20 shadow-2xl relative overflow-hidden">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div className="flex items-center gap-3">
@@ -426,7 +438,7 @@ MIIBojCCAUegAwIBAgIU...SOVERIXNET-ROOT-CA...
                 rel="noopener noreferrer"
                 className="w-full py-1.5 px-2.5 rounded-lg bg-cyan-500/15 hover:bg-cyan-500/25 border border-cyan-500/40 text-cyan-300 text-[11px] font-bold flex items-center justify-between transition-all"
               >
-                <span>AF V2Ray APK (সব দেশে চলবে)</span>
+                <span>AF V2Ray APK</span>
                 <Download className="w-3 h-3 text-cyan-400" />
               </a>
 
@@ -436,8 +448,28 @@ MIIBojCCAUegAwIBAgIU...SOVERIXNET-ROOT-CA...
                 rel="noopener noreferrer"
                 className="w-full py-1.5 px-2.5 rounded-lg bg-emerald-500/15 hover:bg-emerald-500/25 border border-emerald-500/40 text-emerald-300 text-[11px] font-bold flex items-center justify-between transition-all"
               >
-                <span>Jiyam Plus VPN APK (আরব স্পেশাল)</span>
+                <span>Jiyam Plus VPN APK</span>
                 <Download className="w-3 h-3 text-emerald-400" />
+              </a>
+
+              <a
+                href={CONTACT_CONFIG.apps.mohinVip.downloadUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-full py-1.5 px-2.5 rounded-lg bg-amber-500/15 hover:bg-amber-500/25 border border-amber-500/40 text-amber-300 text-[11px] font-bold flex items-center justify-between transition-all"
+              >
+                <span>Mohin VIP VPN APK</span>
+                <Download className="w-3 h-3 text-amber-400" />
+              </a>
+
+              <a
+                href={CONTACT_CONFIG.apps.netSolution.downloadUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-full py-1.5 px-2.5 rounded-lg bg-purple-500/15 hover:bg-purple-500/25 border border-purple-500/40 text-purple-300 text-[11px] font-bold flex items-center justify-between transition-all"
+              >
+                <span>Net Solution VPN APK</span>
+                <Download className="w-3 h-3 text-purple-400" />
               </a>
             </div>
 

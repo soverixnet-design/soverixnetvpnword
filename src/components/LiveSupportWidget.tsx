@@ -158,6 +158,28 @@ export const LiveSupportWidget: React.FC<LiveSupportWidgetProps> = ({ lang }) =>
             {activeTab === 'contact' && (
               <div className="space-y-3">
                 <a
+                  href={WHATSAPP_DIRECT_CHAT}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="p-4 rounded-2xl bg-gradient-to-r from-emerald-950/70 via-slate-900 to-emerald-950/40 border border-emerald-500/50 hover:border-emerald-400 flex items-center justify-between transition-all group shadow-lg shadow-emerald-500/10"
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-bold text-lg">
+                      💬
+                    </div>
+                    <div>
+                      <h5 className="text-xs font-extrabold text-white group-hover:text-emerald-300 transition-colors">
+                        {lang === 'bn' ? `WhatsApp ডিরেক্ট সাপোর্ট (${CONTACT_CONFIG.whatsappDisplayNumber})` : `WhatsApp Support (${CONTACT_CONFIG.whatsappDisplayNumber})`}
+                      </h5>
+                      <p className="text-[10px] text-emerald-400 font-mono mt-0.5">
+                        {CONTACT_CONFIG.whatsappDisplayNumber} • {lang === 'bn' ? '২৪ ঘণ্টা দ্রুত রেসপন্স' : 'Fast 24/7 Response'}
+                      </p>
+                    </div>
+                  </div>
+                  <ExternalLink className="w-4 h-4 text-emerald-400 group-hover:translate-x-1 transition-transform" />
+                </a>
+
+                <a
                   href={WHATSAPP_CHANNEL_URL}
                   target="_blank"
                   rel="noopener noreferrer"

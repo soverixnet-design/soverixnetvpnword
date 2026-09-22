@@ -371,20 +371,40 @@ vless://8b392835-972b-47cc-b1c1-770dc30af179@${selectedServer.ip}:${customPort}?
               href={CONTACT_CONFIG.apps.afV2Ray.downloadUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex-1 sm:flex-initial px-3 py-1.5 rounded-xl bg-cyan-500/20 hover:bg-cyan-500/30 text-cyan-300 border border-cyan-500/40 text-xs font-bold flex items-center justify-center gap-1.5 transition-all"
+              className="flex-1 sm:flex-initial px-3 py-1.5 rounded-xl bg-gradient-to-b from-cyan-400 to-cyan-600 hover:from-cyan-300 hover:to-cyan-500 text-slate-950 font-black text-xs flex items-center justify-center gap-1.5 transition-all border-b-[3px] border-cyan-800 active:border-b-0 active:translate-y-[2px] shadow-md shadow-cyan-500/20"
             >
-              <Download className="w-3.5 h-3.5 text-cyan-400" />
-              <span>AF V2Ray APK (সব দেশে চলবে)</span>
+              <Download className="w-3.5 h-3.5 stroke-[2.5]" />
+              <span>AF V2Ray APK</span>
             </a>
 
             <a
               href={CONTACT_CONFIG.apps.jiyamPlus.downloadUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex-1 sm:flex-initial px-3 py-1.5 rounded-xl bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-500/40 text-xs font-bold flex items-center justify-center gap-1.5 transition-all"
+              className="flex-1 sm:flex-initial px-3 py-1.5 rounded-xl bg-gradient-to-b from-emerald-400 to-emerald-600 hover:from-emerald-300 hover:to-emerald-500 text-slate-950 font-black text-xs flex items-center justify-center gap-1.5 transition-all border-b-[3px] border-emerald-800 active:border-b-0 active:translate-y-[2px] shadow-md shadow-emerald-500/20"
             >
-              <Download className="w-3.5 h-3.5 text-emerald-400" />
-              <span>Jiyam Plus VPN APK (আরব স্পেশাল)</span>
+              <Download className="w-3.5 h-3.5 stroke-[2.5]" />
+              <span>Jiyam Plus VPN</span>
+            </a>
+
+            <a
+              href={CONTACT_CONFIG.apps.mohinVip.downloadUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex-1 sm:flex-initial px-3 py-1.5 rounded-xl bg-gradient-to-b from-amber-400 to-amber-600 hover:from-amber-300 hover:to-amber-500 text-slate-950 font-black text-xs flex items-center justify-center gap-1.5 transition-all border-b-[3px] border-amber-800 active:border-b-0 active:translate-y-[2px] shadow-md shadow-amber-500/20"
+            >
+              <Download className="w-3.5 h-3.5 stroke-[2.5]" />
+              <span>Mohin VIP VPN</span>
+            </a>
+
+            <a
+              href={CONTACT_CONFIG.apps.netSolution.downloadUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex-1 sm:flex-initial px-3 py-1.5 rounded-xl bg-gradient-to-b from-purple-400 to-purple-600 hover:from-purple-300 hover:to-purple-500 text-slate-950 font-black text-xs flex items-center justify-center gap-1.5 transition-all border-b-[3px] border-purple-800 active:border-b-0 active:translate-y-[2px] shadow-md shadow-purple-500/20"
+            >
+              <Download className="w-3.5 h-3.5 stroke-[2.5]" />
+              <span>Net Solution VPN</span>
             </a>
           </div>
         </div>
