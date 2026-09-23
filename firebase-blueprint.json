@@ -332,9 +332,69 @@
         }
       },
       "required": ["refId", "referrerUserId", "referredUserId", "rewardStatus"]
+    },
+    "Review": {
+      "title": "Review",
+      "description": "Public community user review, star rating, feedback/criticism, package used and live comments",
+      "type": "object",
+      "properties": {
+        "reviewId": {
+          "type": "string",
+          "description": "Unique identifier for the review",
+          "maxLength": 128
+        },
+        "authorName": {
+          "type": "string",
+          "description": "Display name of reviewer",
+          "maxLength": 128
+        },
+        "authorRole": {
+          "type": "string",
+          "description": "Role badge of author: VIP Member, Gamer, Gulf SIM User, Reseller, Visitor",
+          "maxLength": 64
+        },
+        "rating": {
+          "type": "number",
+          "description": "Star rating from 1 to 5"
+        },
+        "feedbackType": {
+          "type": "string",
+          "description": "Category: praise (প্রশংসা), criticism (অভিযোগ/তিরস্কার), suggestion (পরামর্শ), general (মতামত)",
+          "enum": ["praise", "criticism", "suggestion", "general"],
+          "maxLength": 32
+        },
+        "packageUsed": {
+          "type": "string",
+          "description": "SIM operator or VIP package used (e.g. STC Saudi, Mobily Saudi, Zain, Bangladesh All SIM, VIP Pro)",
+          "maxLength": 128
+        },
+        "comment": {
+          "type": "string",
+          "description": "User review text and feedback comment",
+          "maxLength": 1500
+        },
+        "helpfulVotes": {
+          "type": "number",
+          "description": "Count of user upvotes"
+        },
+        "verifiedBuyer": {
+          "type": "boolean",
+          "description": "Whether reviewer is a verified VIP account"
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "ISO timestamp of comment creation",
+          "maxLength": 64
+        }
+      },
+      "required": ["reviewId", "authorName", "rating", "comment", "createdAt"]
     }
   },
   "firestore": {
+    "/reviews/{reviewId}": {
+      "schema": "Review",
+      "description": "Public community comments, user ratings, package reviews and feedback feed visible to all visitors"
+    },
     "/users/{userId}": {
       "schema": "UserProfile",
       "description": "Primary user profile document containing subscription, role hierarchy (super_admin, admin, reseller, user), and user metadata"

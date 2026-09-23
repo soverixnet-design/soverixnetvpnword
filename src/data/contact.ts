@@ -16,7 +16,7 @@ export interface AppDownloadItem {
 }
 
 export const CONTACT_CONFIG = {
-  // Official WhatsApp number: +880 1342-930870
+  // Official WhatsApp number: +880 1342-930870 (digits only: 8801342930870)
   whatsappNumber: '8801342930870',
   whatsappDisplayNumber: '+880 1342-930870',
   whatsappChannelUrl: 'https://whatsapp.com/channel/0029Va8iGsyIyPtWmND2jm0A',
@@ -99,18 +99,20 @@ export const CONTACT_CONFIG = {
 
   // Helper to generate customized WhatsApp direct chat URLs with pre-filled messages
   getWhatsAppUrl: (customMessage?: string) => {
-    // Check if custom number is saved in localStorage
-    let phone = CONTACT_CONFIG.whatsappNumber;
+    // Official WhatsApp phone number: 8801342930870 (+880 1342-930870)
+    const phone = '8801342930870';
+    
+    // Clear any obsolete localStorage entry that might have cached an old number
     try {
-      const saved = localStorage.getItem('soverix_whatsapp_number');
-      if (saved && saved.trim()) {
-        phone = saved.replace(/[^0-9]/g, '');
+      if (typeof window !== 'undefined' && localStorage.getItem('soverix_whatsapp_number')) {
+        localStorage.removeItem('soverix_whatsapp_number');
       }
     } catch {}
 
     const defaultMsg = 'আসসালামু আলাইকুম, আমি Soverixnet VPN নিতে চাই। বিস্তারিত জানাবেন প্লিজ।';
     const message = customMessage || defaultMsg;
-    return `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
+    // Direct API deep-link works flawlessly across mobile WhatsApp apps, iOS, Android, and Web
+    return `https://api.whatsapp.com/send?phone=${phone}&text=${encodeURIComponent(message)}`;
   },
 
   getServerOrderUrl: (serverName: string, country: string, isFreeNet?: boolean) => {
@@ -125,4 +127,6 @@ export const CONTACT_CONFIG = {
     return CONTACT_CONFIG.getWhatsAppUrl(text);
   }
 };
+
+export const getAppList = CONTACT_CONFIG.getAppList;
 

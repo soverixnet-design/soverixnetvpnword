@@ -25,7 +25,8 @@ import {
   Menu,
   X,
   Download,
-  ChevronDown
+  ChevronDown,
+  Star
 } from 'lucide-react';
 import { ConnectionStatus } from '../types';
 import { TRANSLATIONS } from '../data/translations';
@@ -72,6 +73,7 @@ export const Navbar: React.FC<NavbarProps> = ({
     { id: 'arabSim', label: lang === 'bn' ? '🇸🇦 আরব ফ্রি-নেট' : '🇸🇦 Arab FreeNet', icon: Zap, highlight: true },
     { id: 'configs', label: lang === 'bn' ? 'ডাউনলোড ও কনফিগ' : 'Downloads', icon: FileCode2 },
     { id: 'servers', label: lang === 'bn' ? 'সার্ভারসমূহ' : 'Servers', icon: Globe },
+    { id: 'reviews', label: lang === 'bn' ? 'রিভিউ ও মন্তব্য' : 'Reviews', icon: Star },
     { id: 'benefits', label: lang === 'bn' ? 'সুবিধাসমূহ' : 'Why Us?', icon: Sparkles },
     { id: 'account', label: lang === 'bn' ? 'অ্যাকাউন্ট' : 'Account', icon: User },
     ...(canAccessAdminPanel ? [{
@@ -91,6 +93,17 @@ export const Navbar: React.FC<NavbarProps> = ({
   };
 
   const handleNavClick = (tabId: string) => {
+    if (tabId === 'reviews') {
+      setActiveTab('dashboard');
+      setIsMobileMenuOpen(false);
+      setTimeout(() => {
+        const el = document.getElementById('community-reviews');
+        if (el) {
+          el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }, 100);
+      return;
+    }
     setActiveTab(tabId);
     setIsMobileMenuOpen(false);
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -217,7 +230,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3.5 py-1.5 sm:py-2 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-400 hover:from-emerald-400 hover:to-teal-300 text-black font-extrabold text-xs transition-all shadow-md shadow-emerald-500/25 cursor-pointer hover:scale-105 shrink-0"
-              title={`WhatsApp: ${CONTACT_CONFIG.whatsappDisplayNumber}`}
+              title="WhatsApp Support"
             >
               <span className="flex h-2 w-2 relative">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-black opacity-60"></span>
@@ -226,7 +239,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               <svg className="w-3.5 h-3.5 fill-current text-black shrink-0" viewBox="0 0 24 24">
                 <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.77-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.312.045-.694.074-1.99-.46-1.657-.683-2.73-2.366-2.812-2.476-.083-.11-1.01-1.348-1.01-2.572 0-1.223.636-1.824.862-2.073.226-.249.493-.311.658-.311.164 0 .328.002.472.01.153.007.358-.058.56.427.207.499.704 1.722.766 1.847.062.125.103.271.021.434-.083.164-.124.266-.247.41-.124.144-.261.322-.373.432-.124.123-.254.256-.11.503.144.247.641 1.057 1.376 1.713.946.843 1.744 1.104 1.991 1.228.247.124.391.103.535-.062.145-.165.618-.719.783-.967.165-.247.33-.206.556-.123.226.082 1.436.677 1.683.801.247.124.412.185.473.288.062.103.062.597-.082 1.002zM12 2C6.477 2 2 6.477 2 12c0 1.891.528 3.659 1.442 5.174L2 22l4.981-1.306C8.441 21.545 10.16 22 12 22c5.523 0 10-4.477 10-10S17.523 2 12 2z"/>
               </svg>
-              <span className="font-mono">{CONTACT_CONFIG.whatsappDisplayNumber}</span>
+              <span className="font-black">{lang === 'bn' ? 'WhatsApp চ্যাট' : 'WhatsApp'}</span>
             </a>
 
             {/* VIP Plans Pill Button */}
@@ -353,10 +366,15 @@ export const Navbar: React.FC<NavbarProps> = ({
                 href={CONTACT_CONFIG.getWhatsAppUrl()}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-full py-2 px-3 rounded-xl bg-emerald-500/15 border border-emerald-500/40 text-emerald-400 font-bold text-xs flex items-center justify-between"
+                className="w-full py-2.5 px-3 rounded-xl bg-emerald-500/20 border border-emerald-500/40 text-emerald-400 font-bold text-xs flex items-center justify-between"
               >
-                <span>💬 {lang === 'bn' ? 'হোয়াটসঅ্যাপ হেল্প' : 'WhatsApp Support'}</span>
-                <span className="font-mono text-[11px]">{CONTACT_CONFIG.whatsappDisplayNumber}</span>
+                <span className="flex items-center gap-2">
+                  <svg className="w-4 h-4 fill-emerald-400 shrink-0" viewBox="0 0 24 24">
+                    <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.77-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.312.045-.694.074-1.99-.46-1.657-.683-2.73-2.366-2.812-2.476-.083-.11-1.01-1.348-1.01-2.572 0-1.223.636-1.824.862-2.073.226-.249.493-.311.658-.311.164 0 .328.002.472.01.153.007.358-.058.56.427.207.499.704 1.722.766 1.847.062.125.103.271.021.434-.083.164-.124.266-.247.41-.124.144-.261.322-.373.432-.124.123-.254.256-.11.503.144.247.641 1.057 1.376 1.713.946.843 1.744 1.104 1.991 1.228.247.124.391.103.535-.062.145-.165.618-.719.783-.967.165-.247.33-.206.556-.123.226.082 1.436.677 1.683.801.247.124.412.185.473.288.062.103.062.597-.082 1.002zM12 2C6.477 2 2 6.477 2 12c0 1.891.528 3.659 1.442 5.174L2 22l4.981-1.306C8.441 21.545 10.16 22 12 22c5.523 0 10-4.477 10-10S17.523 2 12 2z"/>
+                  </svg>
+                  <span>{lang === 'bn' ? 'হোয়াটসঅ্যাপ সরাসরি চ্যাট' : 'WhatsApp Direct Chat'}</span>
+                </span>
+                <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 font-bold">● Live Support</span>
               </a>
 
               <div className="flex items-center justify-between text-xs">

@@ -18,6 +18,7 @@ import { ConfigGeneratorModal } from './components/ConfigGeneratorModal';
 import { ArabSimPayloadCustomizer } from './components/ArabSimPayloadCustomizer';
 import { PwaInstallAndPushBanner } from './components/PwaInstallAndPushBanner';
 import { LiveSupportWidget } from './components/LiveSupportWidget';
+import { FloatingDownloadBar } from './components/FloatingDownloadBar';
 import { AccountView } from './components/AccountView';
 import { AdminConsoleView } from './components/AdminConsoleView';
 import { AuthModal } from './components/AuthModal';
@@ -563,7 +564,7 @@ function AppContent() {
               </div>
               <div>
                 <span className="text-white font-bold text-xs block">
-                  {lang === 'bn' ? `অফিসিয়াল WhatsApp: ${CONTACT_CONFIG.whatsappDisplayNumber} (Soverixnet VPN)` : `Official WhatsApp: ${CONTACT_CONFIG.whatsappDisplayNumber} (Soverixnet VPN)`}
+                  {lang === 'bn' ? 'অফিসিয়াল WhatsApp চ্যাট ও সাপোর্ট (Soverixnet VPN)' : 'Official WhatsApp Support (Soverixnet VPN)'}
                 </span>
                 <span className="text-slate-400 text-[11px]">
                   {lang === 'bn' ? 'ফ্রি ইন্টারনেট, ভিআইপি কনফিগ ও যেকোনো সাপোর্টের জন্য মেসেজ দিন।' : 'Get free internet configs, VIP accounts & instant customer support.'}
@@ -578,7 +579,10 @@ function AppContent() {
                 rel="noopener noreferrer"
                 className="px-4 py-2 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-400 hover:from-emerald-400 hover:to-teal-300 text-black font-extrabold text-xs flex items-center gap-1.5 transition-all shadow-md shadow-emerald-500/20 cursor-pointer"
               >
-                <span>💬 {CONTACT_CONFIG.whatsappDisplayNumber}</span>
+                <svg className="w-4 h-4 fill-current text-black shrink-0" viewBox="0 0 24 24">
+                  <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.77-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.312.045-.694.074-1.99-.46-1.657-.683-2.73-2.366-2.812-2.476-.083-.11-1.01-1.348-1.01-2.572 0-1.223.636-1.824.862-2.073.226-.249.493-.311.658-.311.164 0 .328.002.472.01.153.007.358-.058.56.427.207.499.704 1.722.766 1.847.062.125.103.271.021.434-.083.164-.124.266-.247.41-.124.144-.261.322-.373.432-.124.123-.254.256-.11.503.144.247.641 1.057 1.376 1.713.946.843 1.744 1.104 1.991 1.228.247.124.391.103.535-.062.145-.165.618-.719.783-.967.165-.247.33-.206.556-.123.226.082 1.436.677 1.683.801.247.124.412.185.473.288.062.103.062.597-.082 1.002zM12 2C6.477 2 2 6.477 2 12c0 1.891.528 3.659 1.442 5.174L2 22l4.981-1.306C8.441 21.545 10.16 22 12 22c5.523 0 10-4.477 10-10S17.523 2 12 2z"/>
+                </svg>
+                <span>{lang === 'bn' ? 'WhatsApp মেসেজ' : 'Chat on WhatsApp'}</span>
               </a>
 
               <a
@@ -598,6 +602,9 @@ function AppContent() {
 
         </div>
       </footer>
+
+      {/* Global Floating Quick Download & WhatsApp Dock */}
+      <FloatingDownloadBar lang={lang} />
 
       {/* Global Live Support & Helpdesk Floating Widget */}
       <LiveSupportWidget lang={lang} />

@@ -134,3 +134,19 @@ export interface UserSession {
   joinedDate: string;
   accountToken: string;
 }
+
+export type FeedbackCategory = 'praise' | 'criticism' | 'suggestion' | 'general';
+
+export interface CommunityReview {
+  reviewId: string;
+  authorName: string;
+  authorRole?: string;
+  rating: number; // 1 to 5
+  feedbackType: FeedbackCategory;
+  packageUsed?: string;
+  comment: string;
+  helpfulVotes: number;
+  verifiedBuyer?: boolean;
+  createdAt: string;
+  replyFromAdmin?: string;
+}

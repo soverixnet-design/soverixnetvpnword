@@ -169,10 +169,10 @@ export const LiveSupportWidget: React.FC<LiveSupportWidgetProps> = ({ lang }) =>
                     </div>
                     <div>
                       <h5 className="text-xs font-extrabold text-white group-hover:text-emerald-300 transition-colors">
-                        {lang === 'bn' ? `WhatsApp ডিরেক্ট সাপোর্ট (${CONTACT_CONFIG.whatsappDisplayNumber})` : `WhatsApp Support (${CONTACT_CONFIG.whatsappDisplayNumber})`}
+                        {lang === 'bn' ? 'WhatsApp অফিসিয়াল সাপোর্ট' : 'WhatsApp Official Support'}
                       </h5>
-                      <p className="text-[10px] text-emerald-400 font-mono mt-0.5">
-                        {CONTACT_CONFIG.whatsappDisplayNumber} • {lang === 'bn' ? '২৪ ঘণ্টা দ্রুত রেসপন্স' : 'Fast 24/7 Response'}
+                      <p className="text-[10px] text-emerald-400 mt-0.5">
+                        {lang === 'bn' ? '২৪ ঘণ্টা লাইভ চ্যাট ও দ্রুত সেটআপ হেল্প' : 'Fast 24/7 Live Chat & Quick Setup Help'}
                       </p>
                     </div>
                   </div>

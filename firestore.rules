@@ -114,10 +114,35 @@ service cloud.firestore {
              (!('createdAt' in data) || (data.createdAt is string && data.createdAt.size() <= 64));
     }
 
+    // Validation for Review
+    function isValidReview(data, reviewId) {
+      return data.reviewId is string && data.reviewId == reviewId &&
+             data.authorName is string && data.authorName.size() > 0 && data.authorName.size() <= 128 &&
+             data.rating is number && data.rating >= 1 && data.rating <= 5 &&
+             data.comment is string && data.comment.size() > 0 && data.comment.size() <= 1500 &&
+             (!('authorRole' in data) || (data.authorRole is string && data.authorRole.size() <= 64)) &&
+             (!('feedbackType' in data) || (data.feedbackType is string && (data.feedbackType == 'praise' || data.feedbackType == 'criticism' || data.feedbackType == 'suggestion' || data.feedbackType == 'general'))) &&
+             (!('packageUsed' in data) || (data.packageUsed is string && data.packageUsed.size() <= 128)) &&
+             (!('helpfulVotes' in data) || data.helpfulVotes is number) &&
+             (!('verifiedBuyer' in data) || data.verifiedBuyer is bool) &&
+             (!('createdAt' in data) || (data.createdAt is string && data.createdAt.size() <= 64));
+    }
+
     // Health / Test Connection endpoint
     match /test/{testId} {
       allow read: if true;
       allow write: if false;
+    }
+
+    // Public Community Reviews & Comments collection
+    match /reviews/{reviewId} {
+      allow read: if true; // Everyone can see all reviews and comments
+      allow create: if isValidId(reviewId) && isValidReview(incoming(), reviewId);
+      allow update: if isValidId(reviewId) && (
+        isSuperAdmin() || 
+        (incoming().diff(existing()).affectedKeys().hasOnly(['helpfulVotes']) && incoming().helpfulVotes == existing().helpfulVotes + 1)
+      );
+      allow delete: if isSuperAdmin() && isValidId(reviewId);
     }
 
     // Users collection and subcollections

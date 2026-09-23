@@ -53,6 +53,7 @@ import { PROTOCOL_INFO, SERVERS_DATA } from '../data/servers';
 import { CONTACT_CONFIG } from '../data/contact';
 import { OfficialAppsGrid } from './OfficialAppsGrid';
 import { ProtocolTooltip, ProtocolComparisonModal } from './ProtocolTooltip';
+import { CommunityReviewsSection } from './CommunityReviewsSection';
 import { NetworkSpeedService } from '../services/networkSpeedService';
 import { autoReconnectService, AutoReconnectState } from '../services/autoReconnectService';
 import { useAuth } from '../firebase/AuthContext';
@@ -286,22 +287,22 @@ export const MainConnectView: React.FC<MainConnectViewProps> = ({
           {/* Eyebrow badge */}
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-cyan-500/15 border border-cyan-400/40 text-cyan-300 text-xs font-bold shadow-sm mb-4">
             <ShieldCheck className="w-4 h-4 text-cyan-400" />
-            <span>{lang === 'bn' ? 'মিলিটারী-গ্রেড পোস্ট-কোয়ান্টাম সাইবার শিল্ড ও নো-লগ ভিপিএন নেটওয়ার্ক' : 'Military-Grade Post-Quantum Cyber Shield & Zero-Log VPN'}</span>
+            <span>{lang === 'bn' ? '⚡ ১০০% নিরাপদ, নো-লগ ও আল্ট্রা হাই-স্পিড ভিপিএন নেটওয়ার্ক' : 'Ultra Fast & 100% No-Logs Premium VPN'}</span>
           </div>
 
           <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black text-white tracking-tight leading-[1.15]">
             {lang === 'bn' ? (
               <>
-                সীমাহীন স্বাধীনতা ও সুরক্ষায় বিশ্বের দ্রুততম ভিপিএন —{' '}
+                সীমাহীন গতি ও স্বাধীনতায় ইন্টারনেট চালান —{' '}
                 <span className="bg-gradient-to-r from-cyan-400 via-teal-300 to-indigo-400 bg-clip-text text-transparent">
-                  Soverixnet
+                  Soverixnet VPN
                 </span>
               </>
             ) : (
               <>
-                Next-Gen Quantum Cyber Shield & Global{' '}
+                Unmetered Speed & True Privacy —{' '}
                 <span className="bg-gradient-to-r from-cyan-400 via-teal-300 to-indigo-400 bg-clip-text text-transparent">
-                  Free-Net Gateway
+                  Soverixnet VPN
                 </span>
               </>
             )}
@@ -309,8 +310,8 @@ export const MainConnectView: React.FC<MainConnectViewProps> = ({
 
           <p className="mt-4 text-sm sm:text-base lg:text-lg text-slate-300 max-w-3xl leading-relaxed">
             {lang === 'bn' 
-              ? '১০ জিবিপিএস ব্যান্ডউইথ, র‍্যাম-অনলি নো-লগ অবকাঠামো, সৌদি আরব ও মধ্যপ্রাচ্যের (STC, Mobily, Zain) আল্ট্রা-স্পিড ফ্রি-নেট পেলোড এবং পাবজি/ফ্রিফায়ার গেমারদের জন্য ৮ms আল্ট্রা-লো পিং BDIX এক্সিলারেশন।' 
-              : 'Ultra-fast 10Gbps unmetered bandwidth, RAM-only diskless zero-log infrastructure, Gulf SIM FreeNet SNI payloads (STC, Mobily, Zain), and 8ms low-ping gaming tunnels.'}
+              ? 'সৌদি আরব ও মধ্যপ্রাচ্যের সকল সিম (STC, Mobily, Zain), বাংলাদেশ এবং বিশ্বজুড়ে বাফারিং ছাড়া ইউটিউব, টিকটক, সোশ্যাল মিডিয়া ব্রাউজিং ও লো-পিং অনলাইন গেমিংয়ের নির্ভরযোগ্য সমাধান।' 
+              : 'Ultra-fast servers for Gulf SIMs (STC, Mobily, Zain), seamless 4K streaming, buffer-free social media, and ultra-low ping gaming worldwide.'}
           </p>
 
           {/* Quick Action Navigation CTAs (WhatsApp Order & Showcase) */}
@@ -324,7 +325,7 @@ export const MainConnectView: React.FC<MainConnectViewProps> = ({
               <svg className="w-4 h-4 fill-current text-black" viewBox="0 0 24 24">
                 <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.77-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.312.045-.694.074-1.99-.46-1.657-.683-2.73-2.366-2.812-2.476-.083-.11-1.01-1.348-1.01-2.572 0-1.223.636-1.824.862-2.073.226-.249.493-.311.658-.311.164 0 .328.002.472.01.153.007.358-.058.56.427.207.499.704 1.722.766 1.847.062.125.103.271.021.434-.083.164-.124.266-.247.41-.124.144-.261.322-.373.432-.124.123-.254.256-.11.503.144.247.641 1.057 1.376 1.713.946.843 1.744 1.104 1.991 1.228.247.124.391.103.535-.062.145-.165.618-.719.783-.967.165-.247.33-.206.556-.123.226.082 1.436.677 1.683.801.247.124.412.185.473.288.062.103.062.597-.082 1.002zM12 2C6.477 2 2 6.477 2 12c0 1.891.528 3.659 1.442 5.174L2 22l4.981-1.306C8.441 21.545 10.16 22 12 22c5.523 0 10-4.477 10-10S17.523 2 12 2z"/>
               </svg>
-              <span>{lang === 'bn' ? `💬 হোয়াটসঅ্যাপে ভিপিএন নিন (${CONTACT_CONFIG.whatsappDisplayNumber})` : `💬 WhatsApp Order (${CONTACT_CONFIG.whatsappDisplayNumber})`}</span>
+              <span>{lang === 'bn' ? '💬 হোয়াটসঅ্যাপে ভিপিএন নিন' : '💬 WhatsApp Order'}</span>
             </a>
 
             <button
@@ -422,8 +423,8 @@ export const MainConnectView: React.FC<MainConnectViewProps> = ({
             
             <p className="text-sm sm:text-base text-slate-300 mt-3 leading-relaxed">
               {lang === 'bn' 
-                ? 'এটি Soverixnet VPN এর শোকেস ও বিজ্ঞাপন ওয়েবসাইট। কোনো ঝামেলা ছাড়াই সরাসরি আমাদের হোয়াটসঅ্যাপে মেসেজ দিন — আমরা আপনার মোবাইল (Android / iPhone) বা কম্পিউটারের জন্য প্রিমিয়াম ভিপিএন অ্যাপ, ইউজার আইডি এবং হাই-স্পিড কনফিগ ফাইল প্রদান করব এবং নিজে বুঝিয়ে দেব।'
-                : 'Welcome to Soverixnet VPN official showcase. For personal or business VPN configs, contact our WhatsApp directly. We deliver ready-to-use v2rayNG, WireGuard & OpenVPN apps and configs instantly.'}
+                ? 'কোনো জটিলতা ছাড়াই সরাসরি আমাদের হোয়াটসঅ্যাপে মেসেজ দিন — আমরা আপনার মোবাইল (Android / iPhone) বা কম্পিউটারের জন্য রেডি ভিপিএন অ্যাপ, ইউজার অ্যাকাউন্ট ও হাই-স্পিড কনফিগ ফাইল ২ মিনিটের মধ্যে বুঝিয়ে দেব।'
+                : 'Message us directly on WhatsApp for instant setup on Android, iPhone, or Windows PC. We provide verified apps, user accounts, and high-speed configs in under 2 minutes.'}
             </p>
           </div>
 
@@ -438,15 +439,15 @@ export const MainConnectView: React.FC<MainConnectViewProps> = ({
               <div>
                 <div className="flex items-center gap-2">
                   <span className="text-emerald-400 font-mono font-bold text-xs uppercase tracking-wider">
-                    ⚡ 24/7 Live Support & Instant Delivery
+                    ⚡ 24/7 Live Support & Instant Setup
                   </span>
                 </div>
                 <h3 className="text-xl sm:text-2xl font-black text-white mt-1">
-                  {lang === 'bn' ? 'হোয়াটসঅ্যাপে ভিপিএন অর্ডার করুন' : 'Order VPN via WhatsApp Now'}
+                  {lang === 'bn' ? 'হোয়াটসঅ্যাপে সরাসরি ভিপিএন অর্ডার করুন' : 'Order VPN via WhatsApp'}
                 </h3>
                 <p className="text-xs sm:text-sm text-slate-300 mt-1 max-w-xl">
                   {lang === 'bn'
-                    ? 'মেসেজ দেওয়ার ২ মিনিটের মধ্যে আপনি টেস্ট বা পেইড ভিপিএন লিঙ্ক পেয়ে যাবেন।'
+                    ? 'মেসেজ দেওয়ার সাথে সাথে হাই-স্পিড একাউন্ট ও কনফিগ লিঙ্ক পেয়ে যাবেন।'
                     : 'Get your personal high-speed VPN link & configuration within 2 minutes of contacting us.'}
                 </p>
               </div>
@@ -457,12 +458,12 @@ export const MainConnectView: React.FC<MainConnectViewProps> = ({
                 href={CONTACT_CONFIG.getWhatsAppUrl()}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-full sm:w-auto px-8 py-4 rounded-2xl bg-gradient-to-r from-emerald-400 via-emerald-500 to-teal-400 hover:from-emerald-300 hover:to-teal-300 text-black font-black text-base flex items-center justify-center gap-3 shadow-xl shadow-emerald-500/30 transition-all cursor-pointer transform hover:scale-105"
+                className="w-full sm:w-auto px-7 py-3.5 rounded-2xl bg-gradient-to-r from-emerald-400 via-emerald-500 to-teal-400 hover:from-emerald-300 hover:to-teal-300 text-black font-black text-sm flex items-center justify-center gap-2.5 shadow-xl shadow-emerald-500/30 transition-all cursor-pointer transform hover:scale-105"
               >
                 <svg className="w-5 h-5 fill-current text-black" viewBox="0 0 24 24">
                   <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.77-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.312.045-.694.074-1.99-.46-1.657-.683-2.73-2.366-2.812-2.476-.083-.11-1.01-1.348-1.01-2.572 0-1.223.636-1.824.862-2.073.226-.249.493-.311.658-.311.164 0 .328.002.472.01.153.007.358-.058.56.427.207.499.704 1.722.766 1.847.062.125.103.271.021.434-.083.164-.124.266-.247.41-.124.144-.261.322-.373.432-.124.123-.254.256-.11.503.144.247.641 1.057 1.376 1.713.946.843 1.744 1.104 1.991 1.228.247.124.391.103.535-.062.145-.165.618-.719.783-.967.165-.247.33-.206.556-.123.226.082 1.436.677 1.683.801.247.124.412.185.473.288.062.103.062.597-.082 1.002zM12 2C6.477 2 2 6.477 2 12c0 1.891.528 3.659 1.442 5.174L2 22l4.981-1.306C8.441 21.545 10.16 22 12 22c5.523 0 10-4.477 10-10S17.523 2 12 2z"/>
                 </svg>
-                <span>{lang === 'bn' ? 'হোয়াটসঅ্যাপে চ্যাট করুন ➔' : 'Chat on WhatsApp ➔'}</span>
+                <span>{lang === 'bn' ? 'হোয়াটসঅ্যাপে মেসেজ দিন' : 'Chat on WhatsApp'}</span>
               </a>
 
               <a
@@ -573,17 +574,35 @@ export const MainConnectView: React.FC<MainConnectViewProps> = ({
             </div>
           </div>
 
-          {/* Supported Apps & Platforms + Payment Methods Bar */}
-          <div className="space-y-4 pt-6 border-t border-slate-800/80">
-            {/* Featured Official Android Apps - All 4 Apps in Consistent Pattern with 3D Buttons */}
-            <div className="p-4 sm:p-6 rounded-3xl bg-gradient-to-r from-emerald-950/40 via-slate-900/80 to-cyan-950/40 border border-cyan-500/30 shadow-xl">
-              <OfficialAppsGrid 
-                lang={lang} 
-                title={lang === 'bn' ? '৪টি সুপারফাস্ট অফিসিয়াল ভিপিএন অ্যাপ (সকল দেশে কার্যকর)' : '4 Official High-Speed VPN Apps (Works in All Countries)'}
-                subtitle={lang === 'bn' 
-                  ? 'নিচের যেকোনো ৩ডি ডাউনলোড বাটনে ক্লিক করে সরাসরি অফিসিয়াল APK ফাইল ইন্সটল করুন। কোনো বাড়তি বিজ্ঞাপন বা ঝামেলা নেই।' 
-                  : 'Click any 3D button below to download the official APK file directly. No ads, no popups.'}
-              />
+          {/* Quick Apps & Payment Methods Bar */}
+          <div className="pt-6 border-t border-slate-800/80 space-y-4">
+            
+            {/* Quick 1-click CTA to the dedicated Apps Hub (Removing duplicate full grid) */}
+            <div className="p-4 rounded-2xl bg-slate-950/60 border border-slate-800/90 flex flex-col sm:flex-row items-center justify-between gap-3">
+              <div className="flex items-center gap-3 text-center sm:text-left">
+                <div className="w-10 h-10 rounded-xl bg-cyan-500/15 border border-cyan-500/30 flex items-center justify-center text-cyan-400 shrink-0">
+                  <Smartphone className="w-5 h-5" />
+                </div>
+                <div>
+                  <h4 className="text-xs sm:text-sm font-bold text-white">
+                    {lang === 'bn' ? '৪টি অফিসিয়াল ভিপিএন অ্যাপ (Mohin VIP, Net Solution, AF V2Ray, Jiyam Plus)' : '4 Official VPN Apps (Mohin VIP, Net Solution, AF V2Ray, Jiyam Plus)'}
+                  </h4>
+                  <p className="text-[11px] text-slate-400 mt-0.5">
+                    {lang === 'bn' ? 'হাই-কোয়ালিটি ৩ডি বাটনে ক্লিক করে সরাসরি APK ফাইল ডাউনলোড করুন।' : 'Direct APK download with tactile 3D buttons.'}
+                  </p>
+                </div>
+              </div>
+
+              <button
+                onClick={() => {
+                  const el = document.getElementById('official-apps-hub');
+                  if (el) el.scrollIntoView({ behavior: 'smooth' });
+                }}
+                className="w-full sm:w-auto px-4 py-2.5 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-black text-xs flex items-center justify-center gap-1.5 transition-all shadow-md shadow-cyan-500/20 cursor-pointer shrink-0"
+              >
+                <Download className="w-4 h-4 stroke-[2.5]" />
+                <span>{lang === 'bn' ? 'অ্যাপস ডাউনলোড দেখুন ➔' : 'View Download Hub ➔'}</span>
+              </button>
             </div>
 
             {/* Other Supported Apps and Accepted Payment Methods Bar */}
@@ -629,51 +648,6 @@ export const MainConnectView: React.FC<MainConnectViewProps> = ({
       </div>
 
 
-
-      {/* Official WhatsApp Channel Join Banner */}
-      <div className="animate-fade-in-up delay-350 glass-panel rounded-3xl p-5 sm:p-6 border border-emerald-500/40 bg-gradient-to-r from-emerald-950/40 via-slate-900 to-[#030712] shadow-2xl relative overflow-hidden group">
-        <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none group-hover:bg-emerald-500/20 transition-all duration-700" />
-        
-        <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-5">
-          <div className="flex items-center gap-4 text-left">
-            <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-700 flex items-center justify-center text-white shadow-lg shadow-emerald-500/30 border border-emerald-300/30 shrink-0 transform group-hover:scale-105 transition-transform">
-              <svg className="w-7 h-7 fill-current" viewBox="0 0 24 24">
-                <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.77-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.312.045-.694.074-1.99-.46-1.657-.683-2.73-2.366-2.812-2.476-.083-.11-1.01-1.348-1.01-2.572 0-1.223.636-1.824.862-2.073.226-.249.493-.311.658-.311.164 0 .328.002.472.01.153.007.358-.058.56.427.207.499.704 1.722.766 1.847.062.125.103.271.021.434-.083.164-.124.266-.247.41-.124.144-.261.322-.373.432-.124.123-.254.256-.11.503.144.247.641 1.057 1.376 1.713.946.843 1.744 1.104 1.991 1.228.247.124.391.103.535-.062.145-.165.618-.719.783-.967.165-.247.33-.206.556-.123.226.082 1.436.677 1.683.801.247.124.412.185.473.288.062.103.062.597-.082 1.002zM12 2C6.477 2 2 6.477 2 12c0 1.891.528 3.659 1.442 5.174L2 22l4.981-1.306C8.441 21.545 10.16 22 12 22c5.523 0 10-4.477 10-10S17.523 2 12 2z"/>
-              </svg>
-            </div>
-            <div>
-              <div className="flex items-center gap-2 flex-wrap">
-                <span className="px-2 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-emerald-500/20 text-emerald-400 border border-emerald-500/40">
-                  {lang === 'bn' ? 'অফিসিয়াল WhatsApp চ্যানেল' : 'Official WhatsApp Channel'}
-                </span>
-                <span className="text-[10px] text-emerald-300 font-mono flex items-center gap-1">
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" /> Live Free Configs
-                </span>
-              </div>
-              <h4 className="text-base sm:text-lg font-black text-white mt-1 group-hover:text-emerald-300 transition-colors">
-                Soverixnet Internet unlimited Vpn
-              </h4>
-              <p className="text-xs text-slate-300 max-w-xl leading-relaxed">
-                {lang === 'bn' 
-                  ? 'ফ্রি ভিপিএন ট্রিক্স, হাই-স্পিড কনফিগ ফাইল ও সকল নতুন আপডেট পেতে আমাদের অফিসিয়াল Soverixnet Internet unlimited Vpn চ্যানেলে যুক্ত থাকুন।' 
-                  : 'Follow the Soverixnet Internet unlimited Vpn channel on WhatsApp for free high-speed VPN configs, payload tricks & daily server updates.'}
-              </p>
-            </div>
-          </div>
-
-          <a
-            href={CONTACT_CONFIG.whatsappChannelUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="w-full md:w-auto px-6 py-3 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-black font-extrabold text-xs sm:text-sm flex items-center justify-center gap-2 transition-all cursor-pointer shadow-lg shadow-emerald-500/25 shrink-0 transform group-hover:scale-105"
-          >
-            <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
-              <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.77-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.312.045-.694.074-1.99-.46-1.657-.683-2.73-2.366-2.812-2.476-.083-.11-1.01-1.348-1.01-2.572 0-1.223.636-1.824.862-2.073.226-.249.493-.311.658-.311.164 0 .328.002.472.01.153.007.358-.058.56.427.207.499.704 1.722.766 1.847.062.125.103.271.021.434-.083.164-.124.266-.247.41-.124.144-.261.322-.373.432-.124.123-.254.256-.11.503.144.247.641 1.057 1.376 1.713.946.843 1.744 1.104 1.991 1.228.247.124.391.103.535-.062.145-.165.618-.719.783-.967.165-.247.33-.206.556-.123.226.082 1.436.677 1.683.801.247.124.412.185.473.288.062.103.062.597-.082 1.002zM12 2C6.477 2 2 6.477 2 12c0 1.891.528 3.659 1.442 5.174L2 22l4.981-1.306C8.441 21.545 10.16 22 12 22c5.523 0 10-4.477 10-10S17.523 2 12 2z"/>
-            </svg>
-            <span>{lang === 'bn' ? 'WhatsApp চ্যানেলে যুক্ত হোন ➔' : 'Join WhatsApp Channel ➔'}</span>
-          </a>
-        </div>
-      </div>
 
       {/* Fast Navigation Quick Links with Entry Stagger */}
       <div className="animate-fade-in-up delay-350 grid grid-cols-1 sm:grid-cols-4 gap-3.5">
@@ -1222,7 +1196,7 @@ export const MainConnectView: React.FC<MainConnectViewProps> = ({
       </section>
 
       {/* SECTION 5: Multi-Platform Client & Direct 3D Apps Hub */}
-      <section className="relative overflow-hidden rounded-3xl p-6 sm:p-8 border border-slate-800 bg-slate-950/70 shadow-xl space-y-6">
+      <section id="official-apps-hub" className="relative overflow-hidden rounded-3xl p-6 sm:p-8 border border-slate-800 bg-slate-950/70 shadow-xl space-y-6">
         <OfficialAppsGrid 
           lang={lang}
           title={lang === 'bn' ? 'অফিসিয়াল মোবাইল অ্যাপস হাব (ডাউনলোড বাটন)' : 'Official Mobile Apps Hub (3D Download Buttons)'}
@@ -1277,86 +1251,8 @@ export const MainConnectView: React.FC<MainConnectViewProps> = ({
         </div>
       </section>
 
-      {/* SECTION 7: Verified Customer Testimonials & Reviews */}
-      <section className="space-y-4">
-        <div className="text-center max-w-xl mx-auto">
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-500/10 text-amber-400 text-xs font-bold border border-amber-500/30 mb-2">
-            <Star className="w-3.5 h-3.5 fill-amber-400" />
-            <span>{lang === 'bn' ? 'ব্যবহারকারীদের মতামত' : 'Real Testimonials'}</span>
-          </div>
-          <h2 className="text-xl sm:text-2xl font-black text-white">
-            {lang === 'bn' ? 'সোভারিক্সনেট ইউজারদের বাস্তব অভিজ্ঞতা' : 'What Our Users Say'}
-          </h2>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="p-5 rounded-3xl bg-slate-950/80 border border-slate-800 flex flex-col justify-between">
-            <div>
-              <div className="flex items-center gap-1 text-amber-400 mb-3">
-                {[...Array(5)].map((_, i) => (
-                  <Star key={i} className="w-3.5 h-3.5 fill-amber-400" />
-                ))}
-              </div>
-              <p className="text-xs text-slate-300 italic leading-relaxed">
-                "{lang === 'bn' 
-                  ? 'পাবজি খেলার জন্য বেস্ট ভিপিএন। ঢাকা BDIX নোডে পিং মাত্র ৮ms পাই, কোনো ফ্রেমড্রপ বা ল্যাগ হয় না!' 
-                  : 'The best VPN for PUBG Mobile. I get 8ms ping on the Dhaka BDIX node with zero packet drops!'}"
-              </p>
-            </div>
-            <div className="mt-4 pt-3 border-t border-slate-900 flex items-center justify-between">
-              <div>
-                <span className="text-xs font-bold text-white block">তানভীর আহমেদ</span>
-                <span className="text-[10px] text-slate-400">ঢাকা, বাংলাদেশ (PUBG Pro)</span>
-              </div>
-              <span className="text-lg">🇧🇩</span>
-            </div>
-          </div>
-
-          <div className="p-5 rounded-3xl bg-slate-950/80 border border-emerald-500/30 flex flex-col justify-between">
-            <div>
-              <div className="flex items-center gap-1 text-amber-400 mb-3">
-                {[...Array(5)].map((_, i) => (
-                  <Star key={i} className="w-3.5 h-3.5 fill-amber-400" />
-                ))}
-              </div>
-              <p className="text-xs text-slate-300 italic leading-relaxed">
-                "{lang === 'bn' 
-                  ? 'সৌদি আরবে STC সিমে কোনো ব্যালেন্স ছাড়াই চমৎকার স্পিডে ইউটিউব এবং ফেসবুক চালাতে পারছি।' 
-                  : 'Works smoothly in Saudi Arabia on STC SIM without balance. YouTube and HD calls work effortlessly!'}"
-              </p>
-            </div>
-            <div className="mt-4 pt-3 border-t border-slate-900 flex items-center justify-between">
-              <div>
-                <span className="text-xs font-bold text-white block">মোহাম্মদ রফিক</span>
-                <span className="text-[10px] text-slate-400">রিয়াদ, কেএসএ (STC FreeNet)</span>
-              </div>
-              <span className="text-lg">🇸🇦</span>
-            </div>
-          </div>
-
-          <div className="p-5 rounded-3xl bg-slate-950/80 border border-slate-800 flex flex-col justify-between">
-            <div>
-              <div className="flex items-center gap-1 text-amber-400 mb-3">
-                {[...Array(5)].map((_, i) => (
-                  <Star key={i} className="w-3.5 h-3.5 fill-amber-400" />
-                ))}
-              </div>
-              <p className="text-xs text-slate-300 italic leading-relaxed">
-                "{lang === 'bn' 
-                  ? 'দুবাই থেকে দেশে হোয়াটসঅ্যাপ ও ইমোতে পরিষ্কার ক্রিস্টাল ক্লিয়ার ভিডিও কল করা যায়।' 
-                  : 'Allows crystal-clear WhatsApp and IMO video calls from Dubai without any voice delay!'}"
-              </p>
-            </div>
-            <div className="mt-4 pt-3 border-t border-slate-900 flex items-center justify-between">
-              <div>
-                <span className="text-xs font-bold text-white block">আশরাফুল ইসলাম</span>
-                <span className="text-[10px] text-slate-400">দুবাই, ইউএই (VoIP User)</span>
-              </div>
-              <span className="text-lg">🇦🇪</span>
-            </div>
-          </div>
-        </div>
-      </section>
+      {/* SECTION 7: Live Public Community Reviews & Star Ratings */}
+      <CommunityReviewsSection lang={lang} />
 
       {/* SECTION 8: Frequently Asked Questions (FAQ) Accordion */}
       <section className="space-y-4">
