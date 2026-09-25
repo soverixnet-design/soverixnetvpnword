@@ -405,6 +405,7 @@ function AppContent() {
         killSwitchActive={settings.killSwitch}
         onOpenAuthModal={handleOpenAuthModal}
         onOpenPromoModal={() => setIsWelcomePromoOpen(true)}
+        siteSettings={siteSettings}
       />
 
       {/* Main App Content View Container */}

@@ -32,7 +32,7 @@ import {
 import { ConnectionStatus } from '../types';
 import { TRANSLATIONS } from '../data/translations';
 import { useAuth } from '../firebase/AuthContext';
-import { CONTACT_CONFIG, getSiteSettings } from '../data/contact';
+import { CONTACT_CONFIG, getSiteSettings, SiteSettingsData } from '../data/contact';
 
 interface NavbarProps {
   activeTab: string;
@@ -48,6 +48,7 @@ interface NavbarProps {
   onOpenQuickSettings?: () => void;
   onOpenAuthModal: (tab?: 'signin' | 'signup') => void;
   onOpenPromoModal?: () => void;
+  siteSettings?: SiteSettingsData;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
@@ -64,16 +65,18 @@ export const Navbar: React.FC<NavbarProps> = ({
   onOpenQuickSettings,
   onOpenAuthModal,
   onOpenPromoModal,
+  siteSettings: incomingSettings,
 }) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [siteSettings, setSiteSettings] = useState(getSiteSettings());
+  const [localSettings, setLocalSettings] = useState(getSiteSettings());
+  const siteSettings = incomingSettings || localSettings;
   const t = TRANSLATIONS[lang];
   const isConnected = status === 'connected';
   const { user, isSuperAdmin, isAdmin, isReseller, canAccessAdminPanel, userProfile } = useAuth();
 
   React.useEffect(() => {
     const handleUpdate = () => {
-      setSiteSettings(getSiteSettings());
+      setLocalSettings(getSiteSettings());
     };
     window.addEventListener('soverix_settings_changed', handleUpdate);
     return () => window.removeEventListener('soverix_settings_changed', handleUpdate);

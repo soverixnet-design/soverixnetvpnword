@@ -120,16 +120,16 @@ export const BannersManager: React.FC<BannersManagerProps> = ({ lang, onUpdated 
 
   const handleSaveBanner = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!formTitleBn.trim() && !formTitleEn.trim()) return;
+    if (!formImageUrl.trim() && !formTitleBn.trim() && !formTitleEn.trim()) return;
 
     const bannerObj: SiteBanner = {
       id: editingBannerId || `banner-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
-      titleBn: formTitleBn.trim() || formTitleEn.trim(),
-      titleEn: formTitleEn.trim() || formTitleBn.trim(),
-      subtitleBn: formSubtitleBn.trim() || formSubtitleEn.trim(),
-      subtitleEn: formSubtitleEn.trim() || formSubtitleBn.trim(),
-      badgeBn: formBadgeBn.trim() || '🔥 অফার',
-      badgeEn: formBadgeEn.trim() || '🔥 PROMO',
+      titleBn: formTitleBn.trim() || formTitleEn.trim() || '',
+      titleEn: formTitleEn.trim() || formTitleBn.trim() || '',
+      subtitleBn: formSubtitleBn.trim() || formSubtitleEn.trim() || '',
+      subtitleEn: formSubtitleEn.trim() || formSubtitleBn.trim() || '',
+      badgeBn: formBadgeBn.trim() || '',
+      badgeEn: formBadgeEn.trim() || '',
       imageUrl: formImageUrl.trim() || PRESET_IMAGES[0].url,
       actionUrl: formActionUrl.trim() || CONTACT_CONFIG.getWhatsAppUrl(),
       actionLabelBn: formActionLabelBn.trim() || 'মেসেজ দিন',
@@ -408,21 +408,20 @@ export const BannersManager: React.FC<BannersManagerProps> = ({ lang, onUpdated 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
                   <label className="block text-slate-400 font-bold mb-1">
-                    {lang === 'bn' ? 'ব্যানার শিরোনাম (বাংলা)' : 'Banner Title (Bengali)'} *
+                    {lang === 'bn' ? 'ব্যানার শিরোনাম (বাংলা - ঐচ্ছিক)' : 'Banner Title (Bengali - Optional)'}
                   </label>
                   <input
                     type="text"
                     value={formTitleBn}
                     onChange={(e) => setFormTitleBn(e.target.value)}
-                    placeholder="যেমন: 🇸🇦 সৌদি আরব ৫জি ফ্রি-নেট অফার"
+                    placeholder={lang === 'bn' ? 'ফাঁকা রাখলে ব্যানারে শুধু ছবি থাকবে' : 'Leave empty for pure image banner'}
                     className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-white focus:outline-none focus:border-cyan-500"
-                    required
                   />
                 </div>
 
                 <div>
                   <label className="block text-slate-400 font-bold mb-1">
-                    {lang === 'bn' ? 'ব্যানার শিরোনাম (ইংরেজি)' : 'Banner Title (English)'}
+                    {lang === 'bn' ? 'ব্যানার শিরোনাম (ইংরেজি - ঐচ্ছিক)' : 'Banner Title (English - Optional)'}
                   </label>
                   <input
                     type="text"
