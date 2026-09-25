@@ -30,7 +30,7 @@ interface AppsManagerProps {
 
 export const AppsManager: React.FC<AppsManagerProps> = ({ lang, onUpdated }) => {
   const [settings, setSettings] = useState<SiteSettingsData>(getSiteSettings());
-  const apps = settings.customApps || DEFAULT_CUSTOM_APPS;
+  const apps = Array.isArray(settings.customApps) ? settings.customApps : DEFAULT_CUSTOM_APPS;
 
   // Add / Edit Modal
   const [modalOpen, setModalOpen] = useState(false);

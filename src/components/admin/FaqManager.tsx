@@ -27,7 +27,7 @@ interface FaqManagerProps {
 
 export const FaqManager: React.FC<FaqManagerProps> = ({ lang, onUpdated }) => {
   const [settings, setSettings] = useState<SiteSettingsData>(getSiteSettings());
-  const faqs = settings.customFaqs || DEFAULT_CUSTOM_FAQS;
+  const faqs = Array.isArray(settings.customFaqs) ? settings.customFaqs : DEFAULT_CUSTOM_FAQS;
 
   const [modalOpen, setModalOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);

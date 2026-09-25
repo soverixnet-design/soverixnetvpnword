@@ -132,7 +132,7 @@ const DEFAULT_VIP_PLANS: CustomPlanItem[] = [
 
 export const VipPlansManager: React.FC<VipPlansManagerProps> = ({ lang, onUpdated }) => {
   const [settings, setSettings] = useState<SiteSettingsData>(getSiteSettings());
-  const plans = settings.customPlans && settings.customPlans.length > 0 ? settings.customPlans : DEFAULT_VIP_PLANS;
+  const plans = settings.customPlans !== undefined ? settings.customPlans : DEFAULT_VIP_PLANS;
 
   const [modalOpen, setModalOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);

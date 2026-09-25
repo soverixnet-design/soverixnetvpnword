@@ -634,13 +634,13 @@ export const getSiteSettings = (): SiteSettingsData => {
         return {
           ...DEFAULT_SITE_SETTINGS,
           ...parsed,
-          banners: Array.isArray(parsed.banners) && parsed.banners.length > 0 ? parsed.banners : DEFAULT_BANNERS,
+          banners: Array.isArray(parsed.banners) ? parsed.banners : DEFAULT_BANNERS,
           designTheme: { ...DEFAULT_DESIGN_THEME, ...(parsed.designTheme || {}) },
           sectionVisibility: { ...DEFAULT_SECTION_VISIBILITY, ...(parsed.sectionVisibility || {}) },
-          customApps: Array.isArray(parsed.customApps) && parsed.customApps.length > 0 ? parsed.customApps : DEFAULT_CUSTOM_APPS,
-          customBenefits: Array.isArray(parsed.customBenefits) && parsed.customBenefits.length > 0 ? parsed.customBenefits : DEFAULT_CUSTOM_BENEFITS,
-          customFaqs: Array.isArray(parsed.customFaqs) && parsed.customFaqs.length > 0 ? parsed.customFaqs : DEFAULT_CUSTOM_FAQS,
-          customVideos: Array.isArray(parsed.customVideos) && parsed.customVideos.length > 0 ? parsed.customVideos : DEFAULT_CUSTOM_VIDEOS,
+          customApps: Array.isArray(parsed.customApps) ? parsed.customApps : DEFAULT_CUSTOM_APPS,
+          customBenefits: Array.isArray(parsed.customBenefits) ? parsed.customBenefits : DEFAULT_CUSTOM_BENEFITS,
+          customFaqs: Array.isArray(parsed.customFaqs) ? parsed.customFaqs : DEFAULT_CUSTOM_FAQS,
+          customVideos: Array.isArray(parsed.customVideos) ? parsed.customVideos : DEFAULT_CUSTOM_VIDEOS,
           heroContent: { ...DEFAULT_HERO_CONTENT, ...(parsed.heroContent || {}) },
           whatsappCtaContent: { ...DEFAULT_WHATSAPP_CTA, ...(parsed.whatsappCtaContent || {}) },
         };

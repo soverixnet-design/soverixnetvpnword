@@ -139,22 +139,22 @@ export const MediaGalleryManager: React.FC<MediaGalleryManagerProps> = ({ lang, 
     setTimeout(() => setNotice(null), 4000);
   };
 
-  const handleSetAsNewBanner = async (item: MediaGalleryItem) => {
+  const handleSetAsNewBanner = async (item: MediaGalleryItem, placement: 'hero' | 'bottom' = 'hero') => {
     const current = getSiteSettings();
     const newBanner: SiteBanner = {
       id: 'banner-' + Date.now(),
-      titleBn: 'নতুন স্পেশাল অফার ব্যানার',
-      titleEn: 'New Special Promotional Banner',
+      titleBn: placement === 'bottom' ? 'বিশেষ অফার ব্যানার (বিজ্ঞাপন)' : 'নতুন স্পেশাল অফার ব্যানার',
+      titleEn: placement === 'bottom' ? 'Special Promotional Offer' : 'New Special Promotional Banner',
       subtitleBn: 'সৌদি আরব ও মধ্যপ্রাচ্যে আল্ট্রা স্পিড ৫জি আনলিমিটেড ইন্টারনেট।',
       subtitleEn: 'Ultra-fast 5G unlimited Internet across Saudi Arabia and the Middle East.',
-      badgeBn: '🔥 নতুন অফার',
-      badgeEn: '🔥 NEW PROMO',
+      badgeBn: placement === 'bottom' ? '⚡ বিশেষ ডিল' : '🔥 নতুন অফার',
+      badgeEn: placement === 'bottom' ? '⚡ SPECIAL DEAL' : '🔥 NEW PROMO',
       imageUrl: item.url,
       actionUrl: 'https://api.whatsapp.com/send?phone=' + current.whatsappNumber,
       actionLabelBn: 'WhatsApp-এ মেসেজ দিন',
       actionLabelEn: 'Chat on WhatsApp',
-      themeGradient: 'emerald',
-      placement: 'hero',
+      themeGradient: placement === 'bottom' ? 'cyan' : 'emerald',
+      placement: placement,
       isActive: true,
       order: (current.banners?.length || 0) + 1,
     };
@@ -165,7 +165,11 @@ export const MediaGalleryManager: React.FC<MediaGalleryManagerProps> = ({ lang, 
       await setDoc(doc(db, 'settings', 'general'), { banners: updatedBanners }, { merge: true });
     } catch {}
 
-    setNotice(lang === 'bn' ? 'ছবিটি দিয়ে একটি নতুন হোমপেজ ব্যানার তৈরি করা হয়েছে!' : 'Created new active homepage banner with this image!');
+    setNotice(
+      lang === 'bn' 
+        ? (placement === 'bottom' ? 'ছবিটি দিয়ে একটি নতুন নিচের বিজ্ঞাপন ব্যানার তৈরি হয়েছে!' : 'ছবিটি দিয়ে একটি নতুন শীর্ষ হিরো ব্যানার তৈরি হয়েছে!')
+        : (placement === 'bottom' ? 'Created new Bottom Promo banner with this image!' : 'Created new Top Hero banner with this image!')
+    );
     setTimeout(() => setNotice(null), 4000);
   };
 
@@ -280,16 +284,38 @@ export const MediaGalleryManager: React.FC<MediaGalleryManagerProps> = ({ lang, 
           </span>
         </div>
 
-        {/* Info Pill */}
-        <div className="flex flex-wrap items-center gap-3 pt-2 border-t border-slate-800 text-[11px] text-slate-400">
-          <span className="flex items-center gap-1.5 text-cyan-400 font-bold">
-            <CheckCircle2 className="w-3.5 h-3.5" />
-            {lang === 'bn' ? 'ছবি স্বয়ংক্রিয়ভাবে সাইজ অপ্টিমাইজ হয়' : 'In-browser smart compression active'}
-          </span>
-          <span>•</span>
-          <span>{lang === 'bn' ? 'সাপোর্ট: JPG, PNG, WebP, GIF' : 'Supports: JPG, PNG, WebP, GIF'}</span>
-          <span>•</span>
-          <span className="font-mono text-emerald-400">{items.length} {lang === 'bn' ? 'টি ছবি গ্যালারিতে আছে' : 'images in gallery'}</span>
+        {/* Info & Placement Guide Pill */}
+        <div className="space-y-2 pt-2 border-t border-slate-800 text-[11px] text-slate-400">
+          <div className="flex flex-wrap items-center gap-3">
+            <span className="flex items-center gap-1.5 text-cyan-400 font-bold">
+              <CheckCircle2 className="w-3.5 h-3.5" />
+              {lang === 'bn' ? 'ছবি স্বয়ংক্রিয়ভাবে সাইজ অপ্টিমাইজ হয়' : 'In-browser smart compression active'}
+            </span>
+            <span>•</span>
+            <span>{lang === 'bn' ? 'সাপোর্ট: JPG, PNG, WebP, GIF' : 'Supports: JPG, PNG, WebP, GIF'}</span>
+            <span>•</span>
+            <span className="font-mono text-emerald-400">{items.length} {lang === 'bn' ? 'টি ছবি গ্যালারিতে আছে' : 'images in gallery'}</span>
+          </div>
+
+          <div className="p-3 rounded-2xl bg-cyan-950/30 border border-cyan-500/20 text-slate-300 text-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+            <div className="flex items-start sm:items-center gap-2">
+              <Info className="w-4 h-4 text-cyan-400 shrink-0 mt-0.5 sm:mt-0" />
+              <span>
+                {lang === 'bn'
+                  ? '💡 ছবি আপলোড করার পর এটি আপনি ৩টি নির্দিষ্ট স্থানে বসাতে পারবেন: (১) শীর্ষ হিরো ব্যানার, (২) নিচের বিজ্ঞাপন ব্যানার, অথবা (৩) সাইট লোগো।'
+                  : '💡 After uploading, set the image location: (1) Top Hero Banner, (2) Bottom Promo Banner, or (3) Main Site Logo.'}
+              </span>
+            </div>
+            {onNavigateToTab && (
+              <button
+                type="button"
+                onClick={() => onNavigateToTab('banners')}
+                className="px-3 py-1.5 rounded-xl bg-cyan-500/20 hover:bg-cyan-500/30 border border-cyan-500/40 text-cyan-300 font-bold text-[11px] shrink-0 cursor-pointer"
+              >
+                {lang === 'bn' ? 'ব্যানার নিয়ন্ত্রণ দেখুন ➔' : 'Manage Banners ➔'}
+              </button>
+            )}
+          </div>
         </div>
       </div>
 
@@ -346,15 +372,28 @@ export const MediaGalleryManager: React.FC<MediaGalleryManagerProps> = ({ lang, 
               {/* Action Buttons */}
               <div className="space-y-1.5 pt-2 border-t border-slate-800/80 text-xs">
                 
-                {/* 1-Click Set as Banner */}
-                <button
-                  type="button"
-                  onClick={() => handleSetAsNewBanner(item)}
-                  className="w-full py-1.5 px-2.5 rounded-xl bg-cyan-950/60 hover:bg-cyan-900/80 border border-cyan-500/40 text-cyan-300 font-bold text-[11px] flex items-center justify-center gap-1.5 transition-all cursor-pointer"
-                >
-                  <Sparkles className="w-3 h-3 text-cyan-400" />
-                  <span>{lang === 'bn' ? 'ব্যানার হিসেবে যুক্ত করুন' : 'Create Banner with This'}</span>
-                </button>
+                {/* 1-Click Set as Banner: Top or Bottom Choice */}
+                <div className="grid grid-cols-2 gap-1.5">
+                  <button
+                    type="button"
+                    onClick={() => handleSetAsNewBanner(item, 'hero')}
+                    title={lang === 'bn' ? 'ওয়েবসাইটের একদম উপরে হিরো ব্যানার হিসেবে যুক্ত করুন' : 'Set as Top Hero Banner'}
+                    className="py-1.5 px-2 rounded-xl bg-cyan-950/60 hover:bg-cyan-900/80 border border-cyan-500/40 text-cyan-300 font-bold text-[10px] flex items-center justify-center gap-1 transition-all cursor-pointer truncate"
+                  >
+                    <span>🔝</span>
+                    <span>{lang === 'bn' ? 'শীর্ষ ব্যানার' : 'Top Hero'}</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => handleSetAsNewBanner(item, 'bottom')}
+                    title={lang === 'bn' ? 'ওয়েবসাইটের নিচে বিজ্ঞাপন ব্যানার হিসেবে যুক্ত করুন' : 'Set as Bottom Promo Banner'}
+                    className="py-1.5 px-2 rounded-xl bg-emerald-950/60 hover:bg-emerald-900/80 border border-emerald-500/40 text-emerald-300 font-bold text-[10px] flex items-center justify-center gap-1 transition-all cursor-pointer truncate"
+                  >
+                    <span>⬇️</span>
+                    <span>{lang === 'bn' ? 'নিচের ব্যানার' : 'Bottom Banner'}</span>
+                  </button>
+                </div>
 
                 {/* 1-Click Set as Logo */}
                 <button

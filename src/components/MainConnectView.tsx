@@ -61,6 +61,7 @@ import {
 } from '../data/contact';
 import { OfficialAppsGrid } from './OfficialAppsGrid';
 import { VideoTutorialsSection } from './VideoTutorialsSection';
+import { DynamicHeroBanners } from './DynamicHeroBanners';
 import { ProtocolTooltip, ProtocolComparisonModal } from './ProtocolTooltip';
 import { CommunityReviewsSection } from './CommunityReviewsSection';
 import { NetworkSpeedService } from '../services/networkSpeedService';
@@ -1276,6 +1277,16 @@ export const MainConnectView: React.FC<MainConnectViewProps> = ({
           })}
         </div>
       </section>
+
+      {/* SECTION: Bottom Promotional Banners (when placement='bottom') */}
+      {siteSettings.sectionVisibility?.bannersSlider !== false && (
+        <DynamicHeroBanners 
+          banners={siteSettings.banners || []} 
+          lang={lang} 
+          onNavigateTab={onNavigateTab}
+          placement="bottom" 
+        />
+      )}
 
       {/* SECTION 9: WhatsApp Community Call-to-Action */}
       <section className="p-6 sm:p-8 rounded-3xl bg-gradient-to-r from-emerald-950/60 via-slate-950 to-emerald-950/40 border border-emerald-500/40 shadow-xl flex flex-col sm:flex-row items-center justify-between gap-6">

@@ -6,14 +6,21 @@ interface DynamicHeroBannersProps {
   banners: SiteBanner[];
   lang: 'en' | 'bn';
   onNavigateTab?: (tab: string) => void;
+  placement?: 'hero' | 'bottom';
 }
 
 export const DynamicHeroBanners: React.FC<DynamicHeroBannersProps> = ({
   banners,
   lang,
-  onNavigateTab
+  onNavigateTab,
+  placement = 'hero'
 }) => {
-  const activeBanners = banners.filter((b) => b.isActive);
+  // If placement is specified, match placement (defaulting untagged to hero)
+  const activeBanners = banners.filter((b) => {
+    if (!b.isActive) return false;
+    const bannerPlacement = b.placement || 'hero';
+    return bannerPlacement === placement;
+  });
   const [currentIndex, setCurrentIndex] = useState(0);
 
   // Auto-advance slider every 6 seconds if multiple banners exist

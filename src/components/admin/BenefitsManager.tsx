@@ -48,7 +48,7 @@ const ICON_OPTIONS = [
 
 export const BenefitsManager: React.FC<BenefitsManagerProps> = ({ lang, onUpdated }) => {
   const [settings, setSettings] = useState<SiteSettingsData>(getSiteSettings());
-  const benefits = settings.customBenefits || DEFAULT_CUSTOM_BENEFITS;
+  const benefits = Array.isArray(settings.customBenefits) ? settings.customBenefits : DEFAULT_CUSTOM_BENEFITS;
 
   const [modalOpen, setModalOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);

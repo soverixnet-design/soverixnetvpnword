@@ -40,7 +40,7 @@ interface VideoManagerProps {
 export const VideoManager: React.FC<VideoManagerProps> = ({ lang, onUpdated }) => {
   const [videos, setVideos] = useState<CustomVideoItem[]>(() => {
     const s = getSiteSettings();
-    return s.customVideos || DEFAULT_CUSTOM_VIDEOS;
+    return Array.isArray(s.customVideos) ? s.customVideos : DEFAULT_CUSTOM_VIDEOS;
   });
 
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -263,10 +263,10 @@ export const VideoManager: React.FC<VideoManagerProps> = ({ lang, onUpdated }) =
         <div className="pt-2 flex flex-wrap items-center gap-3 text-[11px] text-slate-400 border-t border-slate-900">
           <span className="flex items-center gap-1.5 text-cyan-400 font-bold">
             <CheckCircle2 className="w-3.5 h-3.5" />
-            {lang === 'bn' ? 'ইউটিউব লিংক দিলে স্বয়ংক্রিয়ভাবে থাম্বনেইল চলে আসবে' : 'Auto-extracts YouTube thumbnails'}
+            {lang === 'bn' ? '📍 অবস্থান: ওয়েবসাইটের হোমপেজে অফিসিয়াল অ্যাপস ও আরব সিম সেকশনের নিচে "ভিডিও টিউটোরিয়াল" সেকশনে প্রদর্শিত হয়' : '📍 Location: Displayed in the "Video Tutorials" section on homepage under Official APKs'}
           </span>
           <span>•</span>
-          <span>{lang === 'bn' ? 'কাস্টম কভার ফটো ফোন গ্যালারি থেকে আপলোড করা যায়' : 'Custom cover photo from phone gallery supported'}</span>
+          <span>{lang === 'bn' ? 'ইউটিউব লিংক দিলে স্বয়ংক্রিয়ভাবে থাম্বনেইল চলে আসবে' : 'Auto-extracts YouTube thumbnails'}</span>
           <span>•</span>
           <span className="font-mono text-emerald-400">{videos.length} {lang === 'bn' ? 'টি ভিডিও প্রকাশিত' : 'videos published'}</span>
         </div>

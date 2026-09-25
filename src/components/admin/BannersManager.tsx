@@ -41,7 +41,7 @@ const PRESET_IMAGES = [
 
 export const BannersManager: React.FC<BannersManagerProps> = ({ lang, onUpdated }) => {
   const [settings, setSettings] = useState<SiteSettingsData>(getSiteSettings());
-  const banners = settings.banners || DEFAULT_BANNERS;
+  const banners = Array.isArray(settings.banners) ? settings.banners : DEFAULT_BANNERS;
 
   // Add / Edit Modal State
   const [modalOpen, setModalOpen] = useState(false);
@@ -304,10 +304,19 @@ export const BannersManager: React.FC<BannersManagerProps> = ({ lang, onUpdated 
                 </button>
               </div>
 
-              {/* Theme Tag */}
-              <div className="absolute bottom-2 left-3">
-                <span className="text-[10px] uppercase font-bold text-slate-300 bg-black/70 px-2 py-0.5 rounded">
+              {/* Theme & Placement Tags */}
+              <div className="absolute bottom-2 left-3 flex items-center gap-1.5 flex-wrap">
+                <span className="text-[10px] uppercase font-bold text-slate-300 bg-black/80 px-2 py-0.5 rounded border border-slate-700">
                   Theme: {b.themeGradient || 'cyan'}
+                </span>
+                <span className={`text-[10px] font-black px-2 py-0.5 rounded border shadow-sm ${
+                  b.placement === 'bottom' 
+                    ? 'bg-emerald-500/80 text-black border-emerald-400 font-extrabold' 
+                    : 'bg-cyan-500/80 text-black border-cyan-400 font-extrabold'
+                }`}>
+                  {b.placement === 'bottom' 
+                    ? (lang === 'bn' ? '⬇️ নিচের সেকশন' : '⬇️ Bottom Promo') 
+                    : (lang === 'bn' ? '🔝 শীর্ষ হিরো সেকশন' : '🔝 Top Hero')}
                 </span>
               </div>
             </div>
@@ -454,7 +463,7 @@ export const BannersManager: React.FC<BannersManagerProps> = ({ lang, onUpdated 
                 </div>
               </div>
 
-              {/* Badge & Theme Gradient */}
+              {/* Badge & Theme Gradient & Placement */}
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                 <div>
                   <label className="block text-slate-400 font-bold mb-1">
@@ -497,6 +506,66 @@ export const BannersManager: React.FC<BannersManagerProps> = ({ lang, onUpdated 
                     <option value="purple">Electric Purple (Futuristic)</option>
                     <option value="rose">Crimson Red (Speed Rush)</option>
                   </select>
+                </div>
+              </div>
+
+              {/* Banner Exact Placement Location on Website */}
+              <div className="p-4 rounded-2xl bg-cyan-950/20 border border-cyan-500/30 space-y-2">
+                <label className="block text-cyan-300 font-black text-xs sm:text-sm flex items-center gap-2">
+                  <Sparkles className="w-4 h-4 text-cyan-400" />
+                  <span>{lang === 'bn' ? '📍 ব্যানারটি ওয়েবসাইটের কোথায় থাকবে? (Placement Location)' : '📍 Where should this banner be displayed?'}</span>
+                </label>
+                
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+                  <label 
+                    className={`p-3 rounded-xl border flex items-start gap-3 cursor-pointer transition-all ${
+                      formPlacement === 'hero' 
+                        ? 'bg-cyan-500/15 border-cyan-400 text-white shadow-md' 
+                        : 'bg-slate-950/60 border-slate-800 text-slate-400 hover:border-slate-700'
+                    }`}
+                  >
+                    <input 
+                      type="radio" 
+                      name="bannerPlacement" 
+                      value="hero"
+                      checked={formPlacement === 'hero'}
+                      onChange={() => setFormPlacement('hero')}
+                      className="mt-1 text-cyan-500 focus:ring-0"
+                    />
+                    <div>
+                      <span className="font-bold text-xs text-white block">
+                        🔝 {lang === 'bn' ? 'উপরে হিরো সেকশন (Top Main Banner)' : 'Top Hero Section (Main Banner)'}
+                      </span>
+                      <span className="text-[11px] text-slate-400">
+                        {lang === 'bn' ? 'ওয়েবসাইট খোলার সাথে সাথে সবার উপরে বড় স্লাইডার হিসেবে দেখাবে।' : 'Displayed right at the top under the navbar as a hero slider.'}
+                      </span>
+                    </div>
+                  </label>
+
+                  <label 
+                    className={`p-3 rounded-xl border flex items-start gap-3 cursor-pointer transition-all ${
+                      formPlacement === 'bottom' 
+                        ? 'bg-emerald-500/15 border-emerald-400 text-white shadow-md' 
+                        : 'bg-slate-950/60 border-slate-800 text-slate-400 hover:border-slate-700'
+                    }`}
+                  >
+                    <input 
+                      type="radio" 
+                      name="bannerPlacement" 
+                      value="bottom"
+                      checked={formPlacement === 'bottom'}
+                      onChange={() => setFormPlacement('bottom')}
+                      className="mt-1 text-emerald-500 focus:ring-0"
+                    />
+                    <div>
+                      <span className="font-bold text-xs text-white block">
+                        ⬇️ {lang === 'bn' ? 'নিচে বিজ্ঞাপনের সাথে (Bottom Promo Banner)' : 'Bottom Promo Section'}
+                      </span>
+                      <span className="text-[11px] text-slate-400">
+                        {lang === 'bn' ? 'পেজের একদম নিচের দিকে হোয়াটসঅ্যাপ অর্ডার সেকশনের পূর্বে দেখাবে।' : 'Displayed near the bottom before the WhatsApp footer section.'}
+                      </span>
+                    </div>
+                  </label>
                 </div>
               </div>
 
