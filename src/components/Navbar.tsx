@@ -26,7 +26,8 @@ import {
   X,
   Download,
   ChevronDown,
-  Star
+  Star,
+  Film
 } from 'lucide-react';
 import { ConnectionStatus } from '../types';
 import { TRANSLATIONS } from '../data/translations';
@@ -82,6 +83,7 @@ export const Navbar: React.FC<NavbarProps> = ({
     { id: 'dashboard', label: lang === 'bn' ? 'হোম' : 'Home', icon: Radio, show: siteSettings.sectionVisibility?.heroConnect !== false },
     { id: 'vipPlans', label: lang === 'bn' ? 'প্যাকেজ ও মূল্য' : 'Packages & Pricing', icon: Crown, vipHighlight: true, show: siteSettings.sectionVisibility?.vipPlans !== false },
     { id: 'arabSim', label: lang === 'bn' ? '🇸🇦 আরব ফ্রি-নেট' : '🇸🇦 Arab FreeNet', icon: Zap, highlight: true, show: siteSettings.sectionVisibility?.arabSimPayload !== false },
+    { id: 'videos', label: lang === 'bn' ? 'ভিডিও গাইড' : 'Video Guides', icon: Film, show: siteSettings.sectionVisibility?.videoTutorials !== false },
     { id: 'configs', label: lang === 'bn' ? 'ডাউনলোড ও কনফিগ' : 'Downloads', icon: FileCode2, show: true },
     { id: 'servers', label: lang === 'bn' ? 'সার্ভারসমূহ' : 'Servers', icon: Globe, show: siteSettings.sectionVisibility?.serverNodes !== false },
     { id: 'reviews', label: lang === 'bn' ? 'রিভিউ ও মন্তব্য' : 'Reviews', icon: Star, show: siteSettings.sectionVisibility?.communityReviews !== false },
@@ -103,6 +105,17 @@ export const Navbar: React.FC<NavbarProps> = ({
   };
 
   const handleNavClick = (tabId: string) => {
+    if (tabId === 'videos') {
+      setActiveTab('dashboard');
+      setIsMobileMenuOpen(false);
+      setTimeout(() => {
+        const el = document.getElementById('video-tutorials-section');
+        if (el) {
+          el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }, 100);
+      return;
+    }
     if (tabId === 'reviews') {
       setActiveTab('dashboard');
       setIsMobileMenuOpen(false);

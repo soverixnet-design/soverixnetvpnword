@@ -60,6 +60,7 @@ import {
   DEFAULT_WHATSAPP_CTA 
 } from '../data/contact';
 import { OfficialAppsGrid } from './OfficialAppsGrid';
+import { VideoTutorialsSection } from './VideoTutorialsSection';
 import { ProtocolTooltip, ProtocolComparisonModal } from './ProtocolTooltip';
 import { CommunityReviewsSection } from './CommunityReviewsSection';
 import { NetworkSpeedService } from '../services/networkSpeedService';
@@ -1224,6 +1225,14 @@ export const MainConnectView: React.FC<MainConnectViewProps> = ({
           </div>
         </div>
       </section>
+
+      {/* SECTION 6: Video Tutorials & Live Step-by-Step Guides */}
+      {siteSettings.sectionVisibility?.videoTutorials !== false && (
+        <VideoTutorialsSection 
+          lang={lang} 
+          onNavigateTab={onNavigateTab} 
+        />
+      )}
 
       {/* SECTION 7: Live Public Community Reviews & Star Ratings */}
       <CommunityReviewsSection lang={lang} />

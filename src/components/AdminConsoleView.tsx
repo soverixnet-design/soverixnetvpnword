@@ -47,7 +47,11 @@ import {
   LogIn,
   Palette,
   Eye,
-  Image as ImageIcon
+  Image as ImageIcon,
+  FolderOpen,
+  FileText,
+  LayoutGrid,
+  Film
 } from 'lucide-react';
 import { collection, onSnapshot, doc, updateDoc, setDoc, deleteDoc } from 'firebase/firestore';
 import { db } from '../firebase/config';
@@ -64,6 +68,7 @@ import { AllTextsManager } from './admin/AllTextsManager';
 import { BenefitsManager } from './admin/BenefitsManager';
 import { VipPlansManager } from './admin/VipPlansManager';
 import { FaqManager } from './admin/FaqManager';
+import { VideoManager } from './admin/VideoManager';
 
 interface AdminConsoleViewProps {
   lang: 'en' | 'bn';
@@ -120,7 +125,7 @@ export const AdminConsoleView: React.FC<AdminConsoleViewProps> = ({ lang }) => {
     isSuperAdmin
   );
 
-  const [activeAdminTab, setActiveAdminTab] = useState<'gallery' | 'banners' | 'apps' | 'texts' | 'benefits' | 'plans' | 'faqs' | 'design' | 'sections' | 'servers' | 'users' | 'reviews' | 'site_settings' | 'app_links' | 'sheets'>('gallery');
+  const [activeAdminTab, setActiveAdminTab] = useState<'videos' | 'gallery' | 'banners' | 'apps' | 'texts' | 'benefits' | 'plans' | 'faqs' | 'design' | 'sections' | 'servers' | 'users' | 'reviews' | 'site_settings' | 'app_links' | 'sheets'>('videos');
   const [usersList, setUsersList] = useState<UserProfileData[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [filterRole, setFilterRole] = useState<'all' | 'user' | 'reseller' | 'admin'>('all');
@@ -747,12 +752,12 @@ export const AdminConsoleView: React.FC<AdminConsoleViewProps> = ({ lang }) => {
             </div>
 
             <h2 className="text-xl sm:text-3xl font-black text-white tracking-wide">
-              {lang === 'bn' ? 'সার্ভার নোড ফ্লিট ও ওনার এডমিন প্যানেল' : 'Server Fleet & Global Node Operations'}
+              {lang === 'bn' ? 'সহজ ও সম্পূর্ণ কন্ট্রোল প্যানেল' : 'Soverix Complete Admin Center'}
             </h2>
             <p className="text-xs sm:text-sm text-slate-300 max-w-2xl leading-relaxed">
               {lang === 'bn' 
-                ? 'রিয়েল-টাইমে নতুন হাই-স্পিড সার্ভার নোড তৈরি করুন, যেকোনো সার্ভারের আইপি ও কনফিগ এডিট করুন, ইউজারদের VIP এক্সেস ও গুগল শিট সিঙ্ক পরিচালনা করুন।' 
-                : 'Dynamically add, modify, or remove VPN server nodes with instant network propagation across all client interfaces.'}
+                ? 'আপনার ফোন বা কম্পিউটার থেকে সরাসরি ছবি আপলোড করুন, ওয়েবসাইটের যেকোনো লেখা বদলান এবং অ্যাপস ও ভিআইপি প্ল্যানের রেট নিজের মতো সাজান।' 
+                : 'Upload photos directly from gallery, edit texts and headings, manage VPN apps, VIP pricing, and server fleet.'}
             </p>
           </div>
 
@@ -830,190 +835,182 @@ export const AdminConsoleView: React.FC<AdminConsoleViewProps> = ({ lang }) => {
 
       </div>
 
-      {/* Navigation Sub-Tabs */}
-      <div className="flex items-center gap-2 border-b border-slate-800 pb-3 overflow-x-auto scrollbar-thin">
-        {/* 1. Direct Gallery & Media */}
-        <button
-          onClick={() => setActiveAdminTab('gallery')}
-          className={`flex items-center gap-2 px-4 py-2.5 rounded-2xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
-            activeAdminTab === 'gallery'
-              ? 'bg-gradient-to-r from-emerald-500/30 to-teal-500/30 text-emerald-300 border border-emerald-500/50 shadow-md shadow-emerald-500/20'
-              : 'text-slate-400 hover:text-white bg-slate-900/60 border border-slate-800'
-          }`}
-        >
-          <ImageIcon className="w-4 h-4 text-emerald-400" />
-          <span>{lang === 'bn' ? '📷 ফটো ও মিডিয়া গ্যালারি' : '📷 Media Gallery'}</span>
-        </button>
+      {/* 5 Main Simplified & Beautiful Categories (হিবিজিবি মুক্ত পরিষ্কার নেভিগেশন) */}
+      {(() => {
+        const categoryGroups = [
+          {
+            id: 'media',
+            nameBn: 'ছবি, ভিডিও ও ব্যানার',
+            nameEn: 'Photos, Videos & Banners',
+            descBn: 'ভিডিও পাবলিশ, গ্যালারি থেকে ছবি ও ব্যানার কন্ট্রোল',
+            descEn: 'Publish videos, manage photo gallery and banners',
+            icon: Film,
+            color: 'emerald',
+            activeTabDefault: 'videos',
+            tabs: [
+              { id: 'videos', labelBn: '🎬 ভিডিও পাবলিশার ও গাইড', labelEn: '🎬 Video Publisher', icon: Film },
+              { id: 'gallery', labelBn: '📷 ফটো গ্যালারি ও আপলোড', labelEn: '📷 Photo Gallery', icon: ImageIcon },
+              { id: 'banners', labelBn: '🚀 ব্যানার কন্ট্রোল', labelEn: '🚀 Promotional Banners', icon: Sparkles },
+              { id: 'design', labelBn: '🎨 সাইট লোগো ও থিম', labelEn: '🎨 Logo & Theme Colors', icon: Palette },
+            ]
+          },
+          {
+            id: 'content',
+            nameBn: 'সাইটের লেখা',
+            nameEn: 'Texts & Content',
+            descBn: 'প্রধান শিরোনাম, ৮টি সুবিধার কার্ড ও সাধারণ প্রশ্নোত্তর',
+            descEn: 'Hero text, feature benefits, and FAQ answers',
+            icon: Radio,
+            color: 'cyan',
+            activeTabDefault: 'texts',
+            tabs: [
+              { id: 'texts', labelBn: '📝 প্রধান শিরোনাম ও টেক্সট', labelEn: '📝 Headings & Hero', icon: Radio },
+              { id: 'benefits', labelBn: '⭐ ৮টি বিশেষ সুবিধার কার্ড', labelEn: '⭐ 8 Benefit Cards', icon: Zap },
+              { id: 'faqs', labelBn: '❓ সাধারণ প্রশ্নোত্তর (FAQ)', labelEn: '❓ FAQs', icon: HelpCircle },
+            ]
+          },
+          {
+            id: 'apps_plans',
+            nameBn: 'অ্যাপস ও প্যাকেজ',
+            nameEn: 'Apps & VIP Plans',
+            descBn: 'ভিপিএন এপিকে ডাউনলোড লিংক ও ভিআইপি প্ল্যানের রেট',
+            descEn: 'APK app downloads and VIP pricing tiers',
+            icon: Smartphone,
+            color: 'amber',
+            activeTabDefault: 'apps',
+            tabs: [
+              { id: 'apps', labelBn: '📲 ভিপিএন অ্যাপস ডাউনলোড', labelEn: '📲 VPN Apps Hub', icon: Smartphone },
+              { id: 'plans', labelBn: '👑 ভিআইপি প্ল্যান ও দাম', labelEn: '👑 VIP Plans & Pricing', icon: Crown },
+            ]
+          },
+          {
+            id: 'fleet_users',
+            nameBn: 'সার্ভার ও গ্রাহক',
+            nameEn: 'Servers & Customers',
+            descBn: 'ভিপিএন নোড স্পিড, ইউজার তালিকা ও গ্রাহকদের রিভিউ',
+            descEn: 'Server fleet, user management, and reviews',
+            icon: Server,
+            color: 'purple',
+            activeTabDefault: 'servers',
+            tabs: [
+              { id: 'servers', labelBn: `⚡ সার্ভার তালিকা (${serverList.length})`, labelEn: `⚡ Server Fleet (${serverList.length})`, icon: Server },
+              { id: 'users', labelBn: `👥 গ্রাহক ও ইউজার (${usersList.length})`, labelEn: `👥 Users (${usersList.length})`, icon: Users },
+              { id: 'reviews', labelBn: `⭐ কাস্টমার রিভিউ (${reviewsList.length})`, labelEn: `⭐ Reviews (${reviewsList.length})`, icon: MessageSquare },
+            ]
+          },
+          {
+            id: 'settings_ctrl',
+            nameBn: 'সেটিংস ও নিয়ন্ত্রণ',
+            nameEn: 'Settings & Control',
+            descBn: 'হোয়াটসঅ্যাপ নাম্বার ও সেকশন চালু/বন্ধ করার অপশন',
+            descEn: 'WhatsApp contacts and section visibility',
+            icon: Settings,
+            color: 'teal',
+            activeTabDefault: 'site_settings',
+            tabs: [
+              { id: 'site_settings', labelBn: '📞 হোয়াটসঅ্যাপ নাম্বার', labelEn: '📞 WhatsApp Contacts', icon: Settings },
+              { id: 'sections', labelBn: '👁️ সেকশন চালু/বন্ধ', labelEn: '👁️ Show / Hide Sections', icon: SlidersHorizontal },
+              { id: 'sheets', labelBn: '📊 গুগল শিট সিঙ্ক', labelEn: '📊 Google Sheets', icon: FileSpreadsheet },
+            ]
+          },
+        ];
 
-        {/* 2. Banners */}
-        <button
-          onClick={() => setActiveAdminTab('banners')}
-          className={`flex items-center gap-2 px-4 py-2.5 rounded-2xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
-            activeAdminTab === 'banners'
-              ? 'bg-gradient-to-r from-cyan-500/30 to-blue-500/30 text-cyan-300 border border-cyan-500/50 shadow-md shadow-cyan-500/20'
-              : 'text-slate-400 hover:text-white bg-slate-900/60 border border-slate-800'
-          }`}
-        >
-          <Sparkles className="w-4 h-4 text-cyan-400" />
-          <span>{lang === 'bn' ? '🖼️ ব্যানার কন্ট্রোল' : '🖼️ Banners'}</span>
-        </button>
+        const currentCategory = categoryGroups.find(c => c.tabs.some(t => t.id === activeAdminTab)) || categoryGroups[0];
 
-        {/* 3. Official APKs */}
-        <button
-          onClick={() => setActiveAdminTab('apps')}
-          className={`flex items-center gap-2 px-4 py-2.5 rounded-2xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
-            activeAdminTab === 'apps'
-              ? 'bg-gradient-to-r from-blue-500/30 to-indigo-500/30 text-blue-300 border border-blue-500/50 shadow-md shadow-blue-500/20'
-              : 'text-slate-400 hover:text-white bg-slate-900/60 border border-slate-800'
-          }`}
-        >
-          <Smartphone className="w-4 h-4 text-blue-400" />
-          <span>{lang === 'bn' ? '📱 এপিকে অ্যাপস হাব' : '📱 Official APKs'}</span>
-        </button>
+        return (
+          <div className="space-y-4">
+            {/* Top 5 Primary Category Cards */}
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
+              {categoryGroups.map((cat) => {
+                const isSelectedCat = currentCategory.id === cat.id;
+                const CatIcon = cat.icon;
 
-        {/* 4. All Texts & Headings */}
-        <button
-          onClick={() => setActiveAdminTab('texts')}
-          className={`flex items-center gap-2 px-4 py-2.5 rounded-2xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
-            activeAdminTab === 'texts'
-              ? 'bg-gradient-to-r from-cyan-500/30 to-teal-500/30 text-cyan-300 border border-cyan-500/50 shadow-md shadow-cyan-500/20'
-              : 'text-slate-400 hover:text-white bg-slate-900/60 border border-slate-800'
-          }`}
-        >
-          <Radio className="w-4 h-4 text-cyan-400" />
-          <span>{lang === 'bn' ? '✍️ সকল টেক্সট ও হিরো' : '✍️ Texts & Headings'}</span>
-        </button>
+                return (
+                  <button
+                    key={cat.id}
+                    type="button"
+                    onClick={() => {
+                      if (!isSelectedCat) {
+                        setActiveAdminTab(cat.activeTabDefault as any);
+                      }
+                    }}
+                    className={`p-3.5 rounded-2xl sm:rounded-3xl border transition-all duration-300 text-left cursor-pointer flex flex-col justify-between relative group ${
+                      isSelectedCat
+                        ? 'bg-gradient-to-b from-cyan-950/60 to-slate-950 border-cyan-400 shadow-xl shadow-cyan-500/20 ring-2 ring-cyan-500/40'
+                        : 'bg-slate-950/70 border-slate-800 hover:border-slate-700 hover:bg-slate-900/60'
+                    }`}
+                  >
+                    <div className="flex items-center justify-between mb-2">
+                      <div className={`p-2 rounded-xl ${
+                        isSelectedCat 
+                          ? 'bg-cyan-500 text-slate-950 shadow-md' 
+                          : 'bg-slate-900 text-slate-400 group-hover:text-white'
+                      }`}>
+                        <CatIcon className="w-5 h-5" />
+                      </div>
+                      {isSelectedCat && (
+                        <span className="w-2.5 h-2.5 rounded-full bg-cyan-400 animate-pulse shadow-sm shadow-cyan-400" />
+                      )}
+                    </div>
 
-        {/* 5. Benefits / Why Choose Us */}
-        <button
-          onClick={() => setActiveAdminTab('benefits')}
-          className={`flex items-center gap-2 px-4 py-2.5 rounded-2xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
-            activeAdminTab === 'benefits'
-              ? 'bg-gradient-to-r from-amber-500/30 to-yellow-500/30 text-amber-300 border border-amber-500/50 shadow-md shadow-amber-500/20'
-              : 'text-slate-400 hover:text-white bg-slate-900/60 border border-slate-800'
-          }`}
-        >
-          <Zap className="w-4 h-4 text-amber-400" />
-          <span>{lang === 'bn' ? '⭐ সুবিধা ও ফিচার কার্ড' : '⭐ Benefits Cards'}</span>
-        </button>
+                    <div>
+                      <h3 className={`font-black text-xs sm:text-sm tracking-tight ${
+                        isSelectedCat ? 'text-white' : 'text-slate-300 group-hover:text-white'
+                      }`}>
+                        {lang === 'bn' ? cat.nameBn : cat.nameEn}
+                      </h3>
+                      <p className="text-[10px] text-slate-400 line-clamp-1 mt-0.5 leading-snug">
+                        {lang === 'bn' ? cat.descBn : cat.descEn}
+                      </p>
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
 
-        {/* 6. VIP Plans & Pricing */}
-        <button
-          onClick={() => setActiveAdminTab('plans')}
-          className={`flex items-center gap-2 px-4 py-2.5 rounded-2xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
-            activeAdminTab === 'plans'
-              ? 'bg-gradient-to-r from-amber-500/30 to-orange-500/30 text-amber-300 border border-amber-500/50 shadow-md shadow-amber-500/20'
-              : 'text-slate-400 hover:text-white bg-slate-900/60 border border-slate-800'
-          }`}
-        >
-          <Crown className="w-4 h-4 text-amber-400" />
-          <span>{lang === 'bn' ? '👑 ভিআইপি প্ল্যান ও প্রাইস' : '👑 VIP Plans'}</span>
-        </button>
+            {/* Sub-Navigation Pill Bar for Active Category */}
+            <div className="p-2 sm:p-2.5 rounded-2xl bg-slate-950/90 border border-slate-800/90 shadow-lg flex flex-wrap items-center justify-between gap-2">
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="text-[11px] font-bold text-slate-400 px-2 py-1 uppercase tracking-wider hidden sm:inline-block">
+                  {lang === 'bn' ? `${currentCategory.nameBn} সাব-মেনু:` : 'Sub-options:'}
+                </span>
 
-        {/* 7. FAQs */}
-        <button
-          onClick={() => setActiveAdminTab('faqs')}
-          className={`flex items-center gap-2 px-4 py-2.5 rounded-2xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
-            activeAdminTab === 'faqs'
-              ? 'bg-gradient-to-r from-purple-500/30 to-indigo-500/30 text-purple-300 border border-purple-500/50 shadow-md shadow-purple-500/20'
-              : 'text-slate-400 hover:text-white bg-slate-900/60 border border-slate-800'
-          }`}
-        >
-          <HelpCircle className="w-4 h-4 text-purple-400" />
-          <span>{lang === 'bn' ? '❓ প্রশ্নোত্তর (FAQ)' : '❓ FAQs'}</span>
-        </button>
+                {currentCategory.tabs.map((t) => {
+                  const isActiveTab = activeAdminTab === t.id;
+                  const SubIcon = t.icon;
 
-        {/* 8. Design & Themes */}
-        <button
-          onClick={() => setActiveAdminTab('design')}
-          className={`flex items-center gap-2 px-4 py-2.5 rounded-2xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
-            activeAdminTab === 'design'
-              ? 'bg-gradient-to-r from-purple-500/30 to-pink-500/30 text-purple-300 border border-purple-500/50 shadow-md shadow-purple-500/20'
-              : 'text-slate-400 hover:text-white bg-slate-900/60 border border-slate-800'
-          }`}
-        >
-          <Palette className="w-4 h-4 text-purple-400" />
-          <span>{lang === 'bn' ? '🎨 ডিজাইন ও লোগো' : '🎨 Design & Themes'}</span>
-        </button>
+                  return (
+                    <button
+                      key={t.id}
+                      type="button"
+                      onClick={() => setActiveAdminTab(t.id as any)}
+                      className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
+                        isActiveTab
+                          ? 'bg-gradient-to-r from-cyan-500 via-teal-500 to-emerald-500 text-slate-950 shadow-md shadow-cyan-500/25 font-black scale-[1.02]'
+                          : 'text-slate-300 hover:text-white bg-slate-900/80 hover:bg-slate-800 border border-slate-800'
+                      }`}
+                    >
+                      <SubIcon className={`w-4 h-4 ${isActiveTab ? 'text-slate-950' : 'text-cyan-400'}`} />
+                      <span>{lang === 'bn' ? t.labelBn : t.labelEn}</span>
+                    </button>
+                  );
+                })}
+              </div>
 
-        {/* 9. Sections & Remove */}
-        <button
-          onClick={() => setActiveAdminTab('sections')}
-          className={`flex items-center gap-2 px-4 py-2.5 rounded-2xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
-            activeAdminTab === 'sections'
-              ? 'bg-gradient-to-r from-teal-500/30 to-emerald-500/30 text-teal-300 border border-teal-500/50 shadow-md shadow-teal-500/20'
-              : 'text-slate-400 hover:text-white bg-slate-900/60 border border-slate-800'
-          }`}
-        >
-          <SlidersHorizontal className="w-4 h-4 text-teal-400" />
-          <span>{lang === 'bn' ? '👁️ সেকশন রিমুভার' : '👁️ Sections & Remove'}</span>
-        </button>
+              {/* Friendly Language Hint */}
+              <div className="hidden lg:flex items-center gap-1.5 text-[11px] text-emerald-400 font-semibold px-2">
+                <CheckCircle2 className="w-3.5 h-3.5" />
+                <span>{lang === 'bn' ? 'সরাসরি রিয়েলটাইমে হোমপেজে সেভ হবে' : 'Changes apply live to homepage'}</span>
+              </div>
+            </div>
+          </div>
+        );
+      })()}
 
-        {/* 10. Servers Fleet */}
-        <button
-          onClick={() => setActiveAdminTab('servers')}
-          className={`flex items-center gap-2 px-3.5 py-2.5 rounded-2xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
-            activeAdminTab === 'servers'
-              ? 'bg-amber-500/20 text-amber-300 border border-amber-500/40 shadow-sm shadow-amber-500/10'
-              : 'text-slate-400 hover:text-white bg-slate-900/60 border border-slate-800'
-          }`}
-        >
-          <Server className="w-4 h-4 text-amber-400" />
-          <span>{lang === 'bn' ? 'সার্ভার নোড ফ্লিট' : 'Server Fleet'} ({serverList.length})</span>
-        </button>
-
-        {/* 11. Users & Customers */}
-        <button
-          onClick={() => setActiveAdminTab('users')}
-          className={`flex items-center gap-2 px-3.5 py-2.5 rounded-2xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
-            activeAdminTab === 'users'
-              ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 shadow-sm shadow-cyan-500/10'
-              : 'text-slate-400 hover:text-white bg-slate-900/60 border border-slate-800'
-          }`}
-        >
-          <Users className="w-4 h-4 text-cyan-400" />
-          <span>{lang === 'bn' ? 'ইউজার ও গ্রাহক' : 'Users & Customers'} ({usersList.length})</span>
-        </button>
-
-        {/* 12. Reviews */}
-        <button
-          onClick={() => setActiveAdminTab('reviews')}
-          className={`flex items-center gap-2 px-3.5 py-2.5 rounded-2xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
-            activeAdminTab === 'reviews'
-              ? 'bg-purple-500/20 text-purple-300 border border-purple-500/40 shadow-sm shadow-purple-500/10'
-              : 'text-slate-400 hover:text-white bg-slate-900/60 border border-slate-800'
-          }`}
-        >
-          <MessageSquare className="w-4 h-4 text-purple-400" />
-          <span>{lang === 'bn' ? 'রিভিউ মডারেশন' : 'Reviews'} ({reviewsList.length})</span>
-        </button>
-
-        {/* 13. Site Settings */}
-        <button
-          onClick={() => setActiveAdminTab('site_settings')}
-          className={`flex items-center gap-2 px-3.5 py-2.5 rounded-2xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
-            activeAdminTab === 'site_settings'
-              ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 shadow-sm shadow-emerald-500/10'
-              : 'text-slate-400 hover:text-white bg-slate-900/60 border border-slate-800'
-          }`}
-        >
-          <Settings className="w-4 h-4 text-emerald-400" />
-          <span>{lang === 'bn' ? 'হোয়াটসঅ্যাপ নাম্বার' : 'WhatsApp Contacts'}</span>
-        </button>
-
-        {/* 14. Google Sheets */}
-        <button
-          onClick={() => setActiveAdminTab('sheets')}
-          className={`flex items-center gap-2 px-3.5 py-2.5 rounded-2xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
-            activeAdminTab === 'sheets'
-              ? 'bg-teal-500/20 text-teal-300 border border-teal-500/40 shadow-sm shadow-teal-500/10'
-              : 'text-slate-400 hover:text-white bg-slate-900/60 border border-slate-800'
-          }`}
-        >
-          <FileSpreadsheet className="w-4 h-4 text-teal-400" />
-          <span>{lang === 'bn' ? 'গুগল শিট সিঙ্ক' : 'Google Sheets'}</span>
-        </button>
-      </div>
+      {/* TAB: VIDEO PUBLISHER & MANAGER */}
+      {activeAdminTab === 'videos' && (
+        <VideoManager lang={lang} />
+      )}
 
       {/* TAB: MEDIA & PHOTO GALLERY MANAGER */}
       {activeAdminTab === 'gallery' && (

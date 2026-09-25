@@ -51,6 +51,7 @@ export interface SectionVisibilityConfig {
   topNoticeMarquee: boolean;
   bannersSlider: boolean;
   officialApks: boolean;
+  videoTutorials: boolean;
   arabSimPayload: boolean;
   vipPlans: boolean;
   serverNodes: boolean;
@@ -119,6 +120,25 @@ export interface CustomFaqItem {
   isActive: boolean;
 }
 
+export interface CustomVideoItem {
+  id: string;
+  titleBn: string;
+  titleEn: string;
+  descBn: string;
+  descEn: string;
+  videoUrl: string; // YouTube URL, Shorts, direct MP4, or embed
+  thumbnailUrl?: string; // Image URL for poster / card thumbnail
+  duration?: string; // e.g. "04:12"
+  category: 'sim_setup' | 'app_tutorial' | 'speed_proof' | 'general';
+  badgeBn?: string;
+  badgeEn?: string;
+  isFeatured?: boolean;
+  order: number;
+  isActive: boolean;
+  viewsCount?: number;
+  createdAt?: string;
+}
+
 export interface HeroContentConfig {
   badgeBn: string;
   badgeEn: string;
@@ -165,6 +185,7 @@ export interface SiteSettingsData {
   customApps?: CustomAppItem[];
   customBenefits?: CustomBenefitItem[];
   customFaqs?: CustomFaqItem[];
+  customVideos?: CustomVideoItem[];
   heroContent?: HeroContentConfig;
   whatsappCtaContent?: WhatsappCtaConfig;
   updatedBy?: string;
@@ -244,6 +265,7 @@ export const DEFAULT_SECTION_VISIBILITY: SectionVisibilityConfig = {
   topNoticeMarquee: true,
   bannersSlider: true,
   officialApks: true,
+  videoTutorials: true,
   arabSimPayload: true,
   vipPlans: true,
   serverNodes: true,
@@ -479,6 +501,81 @@ export const DEFAULT_CUSTOM_FAQS: CustomFaqItem[] = [
   }
 ];
 
+export const DEFAULT_CUSTOM_VIDEOS: CustomVideoItem[] = [
+  {
+    id: 'video-saudi-freenet-setup',
+    titleBn: '🇸🇦 সৌদি আরব STC, Zain ও Mobily সিমে ফ্রি-নেট কিভাবে সেটআপ করবেন',
+    titleEn: '🇸🇦 Saudi Arabia STC, Zain & Mobily Free-Net Setup Guide',
+    descBn: 'কোনো ব্যালেন্স বা এমবি ছাড়াই সৌদি আরবে আনলিমিটেড হাই-স্পিড ইন্টারনেট চালানোর সম্পূর্ণ টিউটোরিয়াল। অ্যাপ সেটিংস ও SNI হোস্ট।',
+    descEn: 'Complete step-by-step setup guide for zero-balance unlimited internet across Saudi Arabia networks.',
+    videoUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+    thumbnailUrl: 'https://images.unsplash.com/photo-1544197150-b99a580bb7a8?auto=format&fit=crop&w=800&q=80',
+    duration: '04:12',
+    category: 'sim_setup',
+    badgeBn: '🔥 সবচেয়ে জনপ্রিয়',
+    badgeEn: '🔥 MOST POPULAR',
+    isFeatured: true,
+    order: 1,
+    isActive: true,
+    viewsCount: 12480,
+    createdAt: '2026-03-01',
+  },
+  {
+    id: 'video-afv2ray-app-guide',
+    titleBn: '📱 AF V2Ray এবং Jiyam Plus VPN অ্যাপ ইনস্টল ও কানেক্ট করার নিয়ম',
+    titleEn: '📱 How to Install and Connect AF V2Ray & Jiyam Plus VPN',
+    descBn: 'অ্যান্ড্রয়েড ফোনে এপিকে ডাউনলোড করে ১-ট্যাপে ভিআইপি সার্ভারে সুপারফাস্ট কানেক্ট করার সহজ ভিডিও নির্দেশিকা।',
+    descEn: 'How to install the official APKs on Android and connect to ultra-fast servers with 1 tap.',
+    videoUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+    thumbnailUrl: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=800&q=80',
+    duration: '03:30',
+    category: 'app_tutorial',
+    badgeBn: '📱 অ্যাপ টিউটোরিয়াল',
+    badgeEn: '📱 APP TUTORIAL',
+    isFeatured: false,
+    order: 2,
+    isActive: true,
+    viewsCount: 8920,
+    createdAt: '2026-03-05',
+  },
+  {
+    id: 'video-speedtest-proof',
+    titleBn: '⚡ লাইভ স্পিড টেস্ট ও আনলিমিটেড ডাউনলোড স্পিড প্রুফ (১০ Gbps)',
+    titleEn: '⚡ 10 Gbps Live Speed Test & Zero Buffering 4K Streaming Proof',
+    descBn: 'বাস্তবে কত স্পিড পাওয়া যায় দেখুন। ইউটিউব ৪K ভিডিও, টিকটক ও ফেসবুক ভিডিও কোনো বাফারিং ছাড়াই চলে।',
+    descEn: 'Live network speed test showing ultra-high download speeds with zero lag and bufferless 4K streaming.',
+    videoUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+    thumbnailUrl: 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&w=800&q=80',
+    duration: '02:45',
+    category: 'speed_proof',
+    badgeBn: '⚡ লাইভ প্রুফ',
+    badgeEn: '⚡ LIVE PROOF',
+    isFeatured: false,
+    order: 3,
+    isActive: true,
+    viewsCount: 15300,
+    createdAt: '2026-03-10',
+  },
+  {
+    id: 'video-vip-pin-activation',
+    titleBn: '👑 ভিআইপি ইউজারনেম ও পাসওয়ার্ড দিয়ে একাউন্ট অ্যাক্টিভ করার পদ্ধতি',
+    titleEn: '👑 How to Activate VIP Account using Username & PIN Code',
+    descBn: 'বিকাশ বা নগদ দিয়ে পেমেন্ট করার পর পাওয়া ভিআইপি কোড অ্যাপে বসিয়ে সাথে সাথে একটিভ করে নিন।',
+    descEn: 'Quick activation instructions after purchasing VIP pass via bKash, Nagad, Mada or STC Pay.',
+    videoUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+    thumbnailUrl: 'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=800&q=80',
+    duration: '03:15',
+    category: 'app_tutorial',
+    badgeBn: '👑 ভিআইপি গাইড',
+    badgeEn: '👑 VIP GUIDE',
+    isFeatured: false,
+    order: 4,
+    isActive: true,
+    viewsCount: 6410,
+    createdAt: '2026-03-15',
+  },
+];
+
 export const DEFAULT_HERO_CONTENT: HeroContentConfig = {
   badgeBn: '⚡ Next-Gen Cyber Shield & FreeNet',
   badgeEn: '⚡ Next-Gen Cyber Shield & FreeNet',
@@ -523,6 +620,7 @@ export const DEFAULT_SITE_SETTINGS: SiteSettingsData = {
   customApps: DEFAULT_CUSTOM_APPS,
   customBenefits: DEFAULT_CUSTOM_BENEFITS,
   customFaqs: DEFAULT_CUSTOM_FAQS,
+  customVideos: DEFAULT_CUSTOM_VIDEOS,
   heroContent: DEFAULT_HERO_CONTENT,
   whatsappCtaContent: DEFAULT_WHATSAPP_CTA,
 };
@@ -542,6 +640,7 @@ export const getSiteSettings = (): SiteSettingsData => {
           customApps: Array.isArray(parsed.customApps) && parsed.customApps.length > 0 ? parsed.customApps : DEFAULT_CUSTOM_APPS,
           customBenefits: Array.isArray(parsed.customBenefits) && parsed.customBenefits.length > 0 ? parsed.customBenefits : DEFAULT_CUSTOM_BENEFITS,
           customFaqs: Array.isArray(parsed.customFaqs) && parsed.customFaqs.length > 0 ? parsed.customFaqs : DEFAULT_CUSTOM_FAQS,
+          customVideos: Array.isArray(parsed.customVideos) && parsed.customVideos.length > 0 ? parsed.customVideos : DEFAULT_CUSTOM_VIDEOS,
           heroContent: { ...DEFAULT_HERO_CONTENT, ...(parsed.heroContent || {}) },
           whatsappCtaContent: { ...DEFAULT_WHATSAPP_CTA, ...(parsed.whatsappCtaContent || {}) },
         };

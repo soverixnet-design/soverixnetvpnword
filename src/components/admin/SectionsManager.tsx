@@ -24,7 +24,8 @@ import {
   Radio,
   Sparkles,
   Layers,
-  HelpCircle
+  HelpCircle,
+  PlaySquare
 } from 'lucide-react';
 
 interface SectionsManagerProps {
@@ -78,6 +79,15 @@ const ALL_SECTIONS: SectionMeta[] = [
     descEn: 'Cards showcasing direct download links for all 4 official Android APKs.',
     icon: Smartphone,
     category: 'core',
+  },
+  {
+    key: 'videoTutorials',
+    titleBn: 'ভিডিও টিউটোরিয়াল ও গাইড হাব (Video Guides Section)',
+    titleEn: 'Video Tutorials & Setup Guides Hub',
+    descBn: 'ইউটিউব বা সরাসরি ভিডিও প্লেয়ার, আরব সিম ফ্রি-নেট সেটিং ও অ্যাপ টিউটোরিয়াল সেকশন।',
+    descEn: 'Video player showcase with Gulf SIM setup tutorials and app guides.',
+    icon: PlaySquare,
+    category: 'marketing',
   },
   {
     key: 'arabSimPayload',
@@ -174,6 +184,7 @@ export const SectionsManager: React.FC<SectionsManagerProps> = ({ lang, onUpdate
       topNoticeMarquee: true,
       bannersSlider: true,
       officialApks: true,
+      videoTutorials: true,
       arabSimPayload: true,
       vipPlans: true,
       serverNodes: true,

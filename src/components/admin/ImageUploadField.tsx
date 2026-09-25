@@ -38,6 +38,7 @@ export const ImageUploadField: React.FC<ImageUploadFieldProps> = ({
   required = false,
 }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const cameraInputRef = useRef<HTMLInputElement>(null);
   const [isUploading, setIsUploading] = useState(false);
   const [showGalleryModal, setShowGalleryModal] = useState(false);
   const [uploadError, setUploadError] = useState<string | null>(null);
@@ -76,6 +77,9 @@ export const ImageUploadField: React.FC<ImageUploadFieldProps> = ({
       if (fileInputRef.current) {
         fileInputRef.current.value = '';
       }
+      if (cameraInputRef.current) {
+        cameraInputRef.current.value = '';
+      }
     }
   };
 
@@ -85,19 +89,19 @@ export const ImageUploadField: React.FC<ImageUploadFieldProps> = ({
   };
 
   return (
-    <div className="space-y-1.5 text-xs">
+    <div className="space-y-2 text-xs">
       <div className="flex items-center justify-between">
-        <label className="font-bold text-slate-300 flex items-center gap-1.5">
-          <ImageIcon className="w-3.5 h-3.5 text-cyan-400" />
+        <label className="font-bold text-slate-200 flex items-center gap-1.5 text-xs">
+          <ImageIcon className="w-4 h-4 text-cyan-400" />
           <span>{label}</span>
-          {required && <span className="text-red-400">*</span>}
+          {required && <span className="text-red-400 font-bold">*</span>}
         </label>
 
         {value && (
           <button
             type="button"
             onClick={() => onChange('')}
-            className="text-[11px] text-red-400 hover:text-red-300 flex items-center gap-1 cursor-pointer"
+            className="text-[11px] text-red-400 hover:text-red-300 flex items-center gap-1 cursor-pointer bg-red-950/30 px-2 py-0.5 rounded-lg border border-red-900/40"
           >
             <X className="w-3 h-3" />
             <span>{lang === 'bn' ? 'ছবি মুছুন' : 'Clear'}</span>
@@ -109,47 +113,69 @@ export const ImageUploadField: React.FC<ImageUploadFieldProps> = ({
         <p className="text-[11px] text-slate-400 leading-tight">{helpText}</p>
       )}
 
-      {/* Upload & Gallery Actions Buttons Bar */}
-      <div className="flex flex-wrap items-center gap-2">
-        {/* Hidden direct file input */}
-        <input
-          ref={fileInputRef}
-          type="file"
-          accept="image/*"
-          capture="environment"
-          onChange={handleFileChange}
-          className="hidden"
-        />
+      {/* Hidden file inputs: 
+          1) File picker / Gallery input: WITHOUT capture attribute so Android & iOS open gallery/photos!
+          2) Optional Camera input: WITH capture attribute if explicitly needed
+      */}
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept="image/png,image/jpeg,image/jpg,image/webp,image/gif,image/*"
+        onChange={handleFileChange}
+        className="hidden"
+      />
+      <input
+        ref={cameraInputRef}
+        type="file"
+        accept="image/*"
+        capture="environment"
+        onChange={handleFileChange}
+        className="hidden"
+      />
 
-        {/* 1. Direct Gallery Upload Button */}
+      {/* Interactive Action Buttons */}
+      <div className="flex flex-wrap items-center gap-2">
+        {/* 1. Direct Gallery / File Picker Button (NO CAMERA TRIGGER) */}
         <button
           type="button"
           onClick={() => fileInputRef.current?.click()}
           disabled={isUploading}
-          className="py-2 px-3.5 rounded-xl bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white font-bold text-xs flex items-center gap-2 shadow-lg shadow-cyan-600/20 transition-all cursor-pointer disabled:opacity-50"
+          className="py-2.5 px-4 rounded-xl bg-gradient-to-r from-cyan-600 via-teal-600 to-emerald-600 hover:from-cyan-500 hover:to-emerald-500 text-white font-bold text-xs flex items-center gap-2 shadow-lg shadow-cyan-600/25 transition-all cursor-pointer disabled:opacity-50"
         >
           {isUploading ? (
             <>
               <div className="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-              <span>{lang === 'bn' ? 'আপলোড হচ্ছে...' : 'Uploading...'}</span>
+              <span>{lang === 'bn' ? 'ছবি আপলোড হচ্ছে...' : 'Uploading...'}</span>
             </>
           ) : (
             <>
-              <Camera className="w-4 h-4 text-cyan-200" />
-              <span>{lang === 'bn' ? '📷 গ্যালারি থেকে সরাসরি আপলোড করুন' : '📷 Upload from Device Gallery'}</span>
+              <Upload className="w-4 h-4 text-cyan-200" />
+              <span>{lang === 'bn' ? '📁 গ্যালারি / ফাইল থেকে ছবি বাছুন' : '📁 Choose from Gallery / Files'}</span>
             </>
           )}
         </button>
 
-        {/* 2. Choose from Saved Media Bank */}
+        {/* 2. Optional Camera Button (Direct Camera Trigger) */}
+        <button
+          type="button"
+          onClick={() => cameraInputRef.current?.click()}
+          disabled={isUploading}
+          title={lang === 'bn' ? 'ক্যামেরা দিয়ে সরাসরি নতুন ছবি তুলুন' : 'Take photo with camera'}
+          className="py-2.5 px-3 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-300 hover:text-white font-semibold text-xs flex items-center gap-1.5 transition-all cursor-pointer"
+        >
+          <Camera className="w-3.5 h-3.5 text-cyan-400" />
+          <span>{lang === 'bn' ? 'ক্যামেরা' : 'Camera'}</span>
+        </button>
+
+        {/* 3. Choose from Saved Media Bank */}
         <button
           type="button"
           onClick={() => setShowGalleryModal(true)}
-          className="py-2 px-3 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-300 hover:text-white font-medium text-xs flex items-center gap-1.5 transition-all cursor-pointer"
+          className="py-2.5 px-3 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-300 hover:text-white font-semibold text-xs flex items-center gap-1.5 transition-all cursor-pointer"
         >
           <FolderOpen className="w-3.5 h-3.5 text-amber-400" />
           <span>{lang === 'bn' ? 'মিডিয়া লাইব্রেরি' : 'Media Library'}</span>
-          <span className="text-[10px] bg-slate-800 px-1.5 py-0.2 rounded-full text-slate-400">
+          <span className="text-[10px] bg-slate-800 px-1.5 py-0.5 rounded-full text-slate-400 font-mono">
             {galleryItems.length}
           </span>
         </button>

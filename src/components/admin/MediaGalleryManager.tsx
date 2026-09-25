@@ -38,10 +38,12 @@ interface MediaGalleryManagerProps {
 export const MediaGalleryManager: React.FC<MediaGalleryManagerProps> = ({ lang, onNavigateToTab }) => {
   const [items, setItems] = useState<MediaGalleryItem[]>(() => getSavedGalleryImages());
   const [isUploading, setIsUploading] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
   const [previewImage, setPreviewImage] = useState<MediaGalleryItem | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const cameraInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     const handleUpdate = () => {
@@ -51,9 +53,9 @@ export const MediaGalleryManager: React.FC<MediaGalleryManagerProps> = ({ lang, 
     return () => window.removeEventListener('soverix_gallery_updated', handleUpdate);
   }, []);
 
-  const handleUploadFromDevice = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files;
-    if (!files || files.length === 0) return;
+  const processFiles = async (fileList: FileList | File[]) => {
+    const files = Array.from(fileList).filter((f) => f.type.startsWith('image/'));
+    if (files.length === 0) return;
 
     setIsUploading(true);
     let count = 0;
@@ -80,6 +82,31 @@ export const MediaGalleryManager: React.FC<MediaGalleryManagerProps> = ({ lang, 
     } finally {
       setIsUploading(false);
       if (fileInputRef.current) fileInputRef.current.value = '';
+      if (cameraInputRef.current) cameraInputRef.current.value = '';
+    }
+  };
+
+  const handleUploadFromDevice = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
+    await processFiles(files);
+  };
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(true);
+  };
+
+  const handleDragLeave = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(false);
+  };
+
+  const handleDrop = async (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(false);
+    if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+      await processFiles(e.dataTransfer.files);
     }
   };
 
@@ -159,64 +186,110 @@ export const MediaGalleryManager: React.FC<MediaGalleryManagerProps> = ({ lang, 
       )}
 
       {/* Header & Direct Upload Box */}
-      <div className="p-6 rounded-3xl bg-gradient-to-r from-[#0d1627] via-slate-950 to-[#0c1f2e] border border-cyan-500/30 shadow-2xl space-y-4">
+      <div 
+        onDragOver={handleDragOver}
+        onDragLeave={handleDragLeave}
+        onDrop={handleDrop}
+        className={`p-6 rounded-3xl bg-gradient-to-r from-[#0d1627] via-slate-950 to-[#0c1f2e] border transition-all duration-300 shadow-2xl space-y-4 ${
+          isDragging 
+            ? 'border-cyan-400 bg-cyan-950/40 ring-4 ring-cyan-500/30 scale-[1.01]' 
+            : 'border-cyan-500/30'
+        }`}
+      >
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 text-xs font-bold mb-2">
-              <Camera className="w-3.5 h-3.5" />
-              <span>{lang === 'bn' ? 'ডাইরেক্ট ফোন/কম্পিউটার গ্যালারি আপলোডার' : 'Direct Gallery Image Bank'}</span>
+              <FolderOpen className="w-3.5 h-3.5 text-cyan-400" />
+              <span>{lang === 'bn' ? 'সরাসরি গ্যালারি ও ফটো লাইব্রেরি' : 'Direct Gallery Image Bank'}</span>
             </div>
             <h2 className="text-xl sm:text-2xl font-black text-white">
-              {lang === 'bn' ? 'ছবি ও মিডিয়া গ্যালারি ম্যানেজার' : 'Media & Gallery Assets Manager'}
+              {lang === 'bn' ? 'ছবি ও গ্যালারি কন্ট্রোল' : 'Media & Gallery Assets Manager'}
             </h2>
-            <p className="text-xs text-slate-400 mt-1 max-w-2xl leading-relaxed">
+            <p className="text-xs text-slate-300 mt-1 max-w-2xl leading-relaxed">
               {lang === 'bn'
-                ? 'আপনার মোবাইল ফোনের গ্যালারি বা কম্পিউটার থেকে সরাসরি যেকোনো ছবি আপলোড করুন। আপলোডকৃত ছবি দিয়ে ব্যানার তৈরি করুন, লোগো বদলান কিংবা অ্যাপ আইকনে ব্যবহার করুন।'
-                : 'Upload photos directly from your phone gallery or PC. Use uploaded photos across banners, site logo, and app icons with 1-click.'}
+                ? 'আপনার মোবাইল ফোনের গ্যালারি, মেমোরি ফাইল বা কম্পিউটার থেকে সরাসরি যেকোনো ছবি আপলোড করুন। যেকোনো আপলোড করা ছবি ১-ক্লিকে ব্যানার, লোগো বা অ্যাপ আইকন হিসেবে ব্যবহার করতে পারবেন।'
+                : 'Upload photos directly from your phone gallery, files or PC. Use uploaded photos across banners, site logo, and app icons with 1-click.'}
             </p>
           </div>
 
-          {/* Hidden File Input for Multiple Images */}
+          {/* Hidden File Inputs:
+              1. Gallery/File input (NO capture attribute = opens photo gallery & files on Android/iPhone)
+              2. Camera input (WITH capture attribute = opens camera when explicitly wanted)
+          */}
           <input
             ref={fileInputRef}
             type="file"
-            accept="image/*"
+            accept="image/png,image/jpeg,image/jpg,image/webp,image/gif,image/*"
             multiple
+            onChange={handleUploadFromDevice}
+            className="hidden"
+          />
+          <input
+            ref={cameraInputRef}
+            type="file"
+            accept="image/*"
             capture="environment"
             onChange={handleUploadFromDevice}
             className="hidden"
           />
 
-          <button
-            type="button"
-            onClick={() => fileInputRef.current?.click()}
-            disabled={isUploading}
-            className="py-3 px-6 rounded-2xl bg-gradient-to-r from-cyan-500 via-teal-400 to-emerald-500 hover:from-cyan-400 hover:to-emerald-400 text-slate-950 font-black text-sm flex items-center justify-center gap-2.5 shadow-xl shadow-cyan-500/25 transition-all transform hover:scale-[1.02] cursor-pointer shrink-0 disabled:opacity-50"
-          >
-            {isUploading ? (
-              <>
-                <div className="w-5 h-5 border-2 border-slate-950 border-t-transparent rounded-full animate-spin" />
-                <span>{lang === 'bn' ? 'ছবি প্রসেস হচ্ছে...' : 'Uploading...'}</span>
-              </>
-            ) : (
-              <>
-                <Upload className="w-5 h-5 stroke-[2.5]" />
-                <span>{lang === 'bn' ? '📷 গ্যালারি থেকে ছবি আপলোড করুন' : '📷 Upload Pictures from Gallery'}</span>
-              </>
-            )}
-          </button>
+          <div className="flex flex-wrap items-center gap-2 shrink-0">
+            {/* Primary Button: Direct Gallery / Files */}
+            <button
+              type="button"
+              onClick={() => fileInputRef.current?.click()}
+              disabled={isUploading}
+              className="py-3 px-5 rounded-2xl bg-gradient-to-r from-cyan-500 via-teal-400 to-emerald-500 hover:from-cyan-400 hover:to-emerald-400 text-slate-950 font-black text-xs sm:text-sm flex items-center justify-center gap-2 shadow-xl shadow-cyan-500/25 transition-all transform hover:scale-[1.02] cursor-pointer disabled:opacity-50"
+            >
+              {isUploading ? (
+                <>
+                  <div className="w-4 h-4 border-2 border-slate-950 border-t-transparent rounded-full animate-spin" />
+                  <span>{lang === 'bn' ? 'ছবি আপলোড হচ্ছে...' : 'Uploading...'}</span>
+                </>
+              ) : (
+                <>
+                  <Upload className="w-4 h-4 stroke-[2.5]" />
+                  <span>{lang === 'bn' ? '📁 গ্যালারি / ফাইল থেকে ছবি বাছুন' : '📁 Choose from Gallery / Files'}</span>
+                </>
+              )}
+            </button>
+
+            {/* Secondary Button: Camera */}
+            <button
+              type="button"
+              onClick={() => cameraInputRef.current?.click()}
+              disabled={isUploading}
+              className="py-3 px-4 rounded-2xl bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-200 hover:text-white font-bold text-xs flex items-center justify-center gap-1.5 cursor-pointer disabled:opacity-50 transition-all"
+            >
+              <Camera className="w-4 h-4 text-cyan-400" />
+              <span>{lang === 'bn' ? 'ক্যামেরা' : 'Camera'}</span>
+            </button>
+          </div>
+        </div>
+
+        {/* Drag & Drop Prompt or Click to Upload */}
+        <div 
+          onClick={() => fileInputRef.current?.click()}
+          className="mt-2 py-3 px-4 rounded-2xl border-2 border-dashed border-slate-700 hover:border-cyan-400/60 bg-slate-950/60 flex flex-col sm:flex-row items-center justify-center gap-2 text-center text-xs text-slate-400 hover:text-slate-200 cursor-pointer transition-all"
+        >
+          <ImageIcon className="w-4 h-4 text-cyan-400 shrink-0" />
+          <span>
+            {lang === 'bn' 
+              ? '👆 এখানে ক্লিক করে অথবা ছবি টেনে এনে (Drag & Drop) মোবাইল গ্যালারি বা কম্পিউটার থেকে সরাসরি আপলোড করতে পারবেন' 
+              : 'Click here or drag & drop image files to upload directly from your gallery'}
+          </span>
         </div>
 
         {/* Info Pill */}
         <div className="flex flex-wrap items-center gap-3 pt-2 border-t border-slate-800 text-[11px] text-slate-400">
           <span className="flex items-center gap-1.5 text-cyan-400 font-bold">
             <CheckCircle2 className="w-3.5 h-3.5" />
-            {lang === 'bn' ? 'ইন-ব্রাউজার অটো-কম্প্রেশন সক্রিয়' : 'In-browser smart compression active'}
+            {lang === 'bn' ? 'ছবি স্বয়ংক্রিয়ভাবে সাইজ অপ্টিমাইজ হয়' : 'In-browser smart compression active'}
           </span>
           <span>•</span>
           <span>{lang === 'bn' ? 'সাপোর্ট: JPG, PNG, WebP, GIF' : 'Supports: JPG, PNG, WebP, GIF'}</span>
           <span>•</span>
-          <span className="font-mono text-emerald-400">{items.length} {lang === 'bn' ? 'টি ছবি সংরক্ষিত' : 'images in gallery'}</span>
+          <span className="font-mono text-emerald-400">{items.length} {lang === 'bn' ? 'টি ছবি গ্যালারিতে আছে' : 'images in gallery'}</span>
         </div>
       </div>
 
