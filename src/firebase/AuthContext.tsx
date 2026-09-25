@@ -125,7 +125,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 const LOCAL_SESSION_KEY = 'soverix_vip_local_session';
 const GOOGLE_SHEET_WEBHOOK_KEY = 'soverix_gsheet_webhook_url';
 const LOCAL_REF_STORAGE_KEY = 'soverix_referral_tracking_code';
-const OWNER_EMAIL = 'soverixnet@gmail.com';
+export const OWNER_EMAIL = 'soverixnet@gmail.com';
 
 // Helper to push user login/signup data to a user-configured Google Sheets Apps Script Webhook
 const pushToGoogleSheetWebhook = async (userRecord: {
@@ -194,16 +194,16 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     ? `${window.location.origin}/?ref=${userReferralCode}` 
     : `https://soverixnet-design.github.io/?ref=${userReferralCode}`;
 
-  // Compute RBAC Roles
+  // Compute RBAC Roles - Exclusively locked to owner email soverixnet@gmail.com
   const isSuperAdmin = Boolean(
     (user?.email && user.email.toLowerCase() === OWNER_EMAIL.toLowerCase()) ||
-    (userProfile?.email && userProfile.email.toLowerCase() === OWNER_EMAIL.toLowerCase()) ||
-    userProfile?.role === 'super_admin'
+    (userProfile?.email && userProfile.email.toLowerCase() === OWNER_EMAIL.toLowerCase())
   );
 
-  const isAdmin = Boolean(isSuperAdmin || userProfile?.role === 'admin');
-  const isReseller = Boolean(isAdmin || userProfile?.role === 'reseller');
-  const canAccessAdminPanel = Boolean(isSuperAdmin || isAdmin || isReseller);
+  const isAdmin = Boolean(isSuperAdmin);
+  const isReseller = Boolean(isSuperAdmin);
+  // STRICT SECURITY GATE: Only soverixnet@gmail.com can access the Admin Panel
+  const canAccessAdminPanel = Boolean(isSuperAdmin);
 
   // Monitor Firebase Auth State
   useEffect(() => {

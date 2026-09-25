@@ -50,7 +50,15 @@ import {
 import { ConnectionStatus, VPNServer, VPNProtocol, SecuritySettings, LiveTrafficData } from '../types';
 import { TRANSLATIONS } from '../data/translations';
 import { PROTOCOL_INFO, SERVERS_DATA } from '../data/servers';
-import { CONTACT_CONFIG } from '../data/contact';
+import { 
+  CONTACT_CONFIG, 
+  getSiteSettings, 
+  SiteSettingsData, 
+  DEFAULT_CUSTOM_BENEFITS, 
+  DEFAULT_CUSTOM_FAQS, 
+  DEFAULT_HERO_CONTENT, 
+  DEFAULT_WHATSAPP_CTA 
+} from '../data/contact';
 import { OfficialAppsGrid } from './OfficialAppsGrid';
 import { ProtocolTooltip, ProtocolComparisonModal } from './ProtocolTooltip';
 import { CommunityReviewsSection } from './CommunityReviewsSection';
@@ -141,9 +149,18 @@ export const MainConnectView: React.FC<MainConnectViewProps> = ({
   const { user, userProfile, isSuperAdmin, isAdmin } = useAuth();
 
   // Website interactive states
+  const [siteSettings, setSiteSettings] = useState<SiteSettingsData>(() => getSiteSettings());
   const [activeFaqIndex, setActiveFaqIndex] = useState<number | null>(0);
   const [copiedPayload, setCopiedPayload] = useState<string | null>(null);
   const [countryFilter, setCountryFilter] = useState<'all' | 'asia_me' | 'europe_us' | 'free'>('all');
+
+  useEffect(() => {
+    const handleSettingsChange = (e: any) => {
+      setSiteSettings(getSiteSettings());
+    };
+    window.addEventListener('soverix_settings_changed', handleSettingsChange);
+    return () => window.removeEventListener('soverix_settings_changed', handleSettingsChange);
+  }, []);
 
   const handleCopyPayload = (sni: string) => {
     navigator.clipboard.writeText(sni);
@@ -287,31 +304,43 @@ export const MainConnectView: React.FC<MainConnectViewProps> = ({
           {/* Eyebrow badge */}
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-cyan-500/15 border border-cyan-400/40 text-cyan-300 text-xs font-bold shadow-sm mb-4">
             <ShieldCheck className="w-4 h-4 text-cyan-400" />
-            <span>{lang === 'bn' ? '⚡ ১০০% নিরাপদ, নো-লগ ও আল্ট্রা হাই-স্পিড ভিপিএন নেটওয়ার্ক' : 'Ultra Fast & 100% No-Logs Premium VPN'}</span>
+            <span>
+              {lang === 'bn' 
+                ? (siteSettings.heroContent?.badgeBn || '⚡ ১০০% নিরাপদ, নো-লগ ও আল্ট্রা হাই-স্পিড ভিপিএন নেটওয়ার্ক') 
+                : (siteSettings.heroContent?.badgeEn || 'Ultra Fast & 100% No-Logs Premium VPN')}
+            </span>
           </div>
 
           <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black text-white tracking-tight leading-[1.15]">
             {lang === 'bn' ? (
-              <>
-                সীমাহীন গতি ও স্বাধীনতায় ইন্টারনেট চালান —{' '}
-                <span className="bg-gradient-to-r from-cyan-400 via-teal-300 to-indigo-400 bg-clip-text text-transparent">
-                  Soverixnet VPN
-                </span>
-              </>
+              siteSettings.heroContent?.headlineBn || siteSettings.designTheme?.heroHeadlineBn ? (
+                <span>{siteSettings.heroContent?.headlineBn || siteSettings.designTheme?.heroHeadlineBn}</span>
+              ) : (
+                <>
+                  সীমাহীন গতি ও স্বাধীনতায় ইন্টারনেট চালান —{' '}
+                  <span className="bg-gradient-to-r from-cyan-400 via-teal-300 to-indigo-400 bg-clip-text text-transparent">
+                    {siteSettings.designTheme?.siteTitle || 'Soverixnet VPN'}
+                  </span>
+                </>
+              )
             ) : (
-              <>
-                Unmetered Speed & True Privacy —{' '}
-                <span className="bg-gradient-to-r from-cyan-400 via-teal-300 to-indigo-400 bg-clip-text text-transparent">
-                  Soverixnet VPN
-                </span>
-              </>
+              siteSettings.heroContent?.headlineEn || siteSettings.designTheme?.heroHeadlineEn ? (
+                <span>{siteSettings.heroContent?.headlineEn || siteSettings.designTheme?.heroHeadlineEn}</span>
+              ) : (
+                <>
+                  Unmetered Speed & True Privacy —{' '}
+                  <span className="bg-gradient-to-r from-cyan-400 via-teal-300 to-indigo-400 bg-clip-text text-transparent">
+                    {siteSettings.designTheme?.siteTitle || 'Soverixnet VPN'}
+                  </span>
+                </>
+              )
             )}
           </h1>
 
           <p className="mt-4 text-sm sm:text-base lg:text-lg text-slate-300 max-w-3xl leading-relaxed">
             {lang === 'bn' 
-              ? 'সৌদি আরব ও মধ্যপ্রাচ্যের সকল সিম (STC, Mobily, Zain), বাংলাদেশ এবং বিশ্বজুড়ে বাফারিং ছাড়া ইউটিউব, টিকটক, সোশ্যাল মিডিয়া ব্রাউজিং ও লো-পিং অনলাইন গেমিংয়ের নির্ভরযোগ্য সমাধান।' 
-              : 'Ultra-fast servers for Gulf SIMs (STC, Mobily, Zain), seamless 4K streaming, buffer-free social media, and ultra-low ping gaming worldwide.'}
+              ? (siteSettings.heroContent?.subheadlineBn || siteSettings.designTheme?.heroSubheadlineBn || 'সৌদি আরব ও মধ্যপ্রাচ্যের সকল সিম (STC, Mobily, Zain), বাংলাদেশ এবং বিশ্বজুড়ে বাফারিং ছাড়া ইউটিউব, টিকটক, সোশ্যাল মিডিয়া ব্রাউজিং ও লো-পিং অনলাইন গেমিংয়ের নির্ভরযোগ্য সমাধান।') 
+              : (siteSettings.heroContent?.subheadlineEn || siteSettings.designTheme?.heroSubheadlineEn || 'Ultra-fast servers for Gulf SIMs (STC, Mobily, Zain), seamless 4K streaming, buffer-free social media, and ultra-low ping gaming worldwide.')}
           </p>
 
           {/* Quick Action Navigation CTAs (WhatsApp Order & Showcase) */}
@@ -426,6 +455,19 @@ export const MainConnectView: React.FC<MainConnectViewProps> = ({
                 ? 'কোনো জটিলতা ছাড়াই সরাসরি আমাদের হোয়াটসঅ্যাপে মেসেজ দিন — আমরা আপনার মোবাইল (Android / iPhone) বা কম্পিউটারের জন্য রেডি ভিপিএন অ্যাপ, ইউজার অ্যাকাউন্ট ও হাই-স্পিড কনফিগ ফাইল ২ মিনিটের মধ্যে বুঝিয়ে দেব।'
                 : 'Message us directly on WhatsApp for instant setup on Android, iPhone, or Windows PC. We provide verified apps, user accounts, and high-speed configs in under 2 minutes.'}
             </p>
+          </div>
+
+          {/* Interactive WhatsApp Support Banner (Clickable) */}
+          <div 
+            onClick={() => window.open(CONTACT_CONFIG.getWhatsAppUrl('আসসালামু আলাইকুম, আমি Soverixnet VPN এর ২৪/৭ হোয়াটসঅ্যাপ সাপোর্ট ও ভিআইপি আইডি নিতে চাই।'), '_blank', 'noopener,noreferrer')}
+            className="group relative rounded-3xl overflow-hidden border border-cyan-500/30 hover:border-cyan-400 mb-6 cursor-pointer shadow-xl shadow-cyan-950/40 transition-all duration-300"
+          >
+            <img 
+              src="/thumb-android-tips.png" 
+              alt="Soverixnet Online WhatsApp Support" 
+              referrerPolicy="no-referrer"
+              className="w-full h-36 sm:h-48 md:h-56 object-cover group-hover:scale-[1.01] transition-transform duration-500"
+            />
           </div>
 
           {/* Primary Call To Action Big Card */}
@@ -725,7 +767,7 @@ export const MainConnectView: React.FC<MainConnectViewProps> = ({
       </div>
 
       {/* SECTION 1: Arab SIM FreeNet & Gulf SNI Showcase */}
-      <section className="relative overflow-hidden rounded-3xl p-6 sm:p-8 border border-emerald-500/30 bg-gradient-to-br from-[#021814] via-[#030d11] to-[#041a1a] shadow-xl">
+      <section className="relative overflow-hidden rounded-3xl p-6 sm:p-8 border border-emerald-500/30 bg-gradient-to-br from-[#021814] via-[#030d11] to-[#041a1a] shadow-xl space-y-6">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-6 border-b border-emerald-500/20">
           <div>
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 text-xs font-bold border border-emerald-500/30 mb-2">
@@ -748,6 +790,22 @@ export const MainConnectView: React.FC<MainConnectViewProps> = ({
           >
             <span>{lang === 'bn' ? '🇸🇦 সকল পেলোড ও কনফিগ দেখুন ➔' : '🇸🇦 Open Arab SIM Customizer ➔'}</span>
           </button>
+        </div>
+
+        {/* Featured Saudi FreeNet Official Banner (Clickable directly to WhatsApp) */}
+        <div 
+          onClick={() => {
+            const url = CONTACT_CONFIG.getWhatsAppUrl('আসসালামু আলাইকুম, আমি সৌদি আরবে STC / Mobily / Zain 5G আনলিমিটেড ফ্রি-নেট প্যাকেজ ও কনফিগ নিতে চাই।');
+            window.open(url, '_blank', 'noopener,noreferrer');
+          }}
+          className="group relative rounded-2xl overflow-hidden border border-emerald-500/40 hover:border-emerald-400 shadow-2xl shadow-emerald-950/40 cursor-pointer transition-all duration-300"
+        >
+          <img 
+            src="/file_00000000fed471faa1f0ce09aa2e4615.png" 
+            alt="সৌদি আরবে সম্পূর্ণ আনলিমিটেড ফ্রি ইন্টারনেট ব্যবহার করুন - Soverixnet VPN"
+            referrerPolicy="no-referrer"
+            className="w-full h-auto object-cover group-hover:scale-[1.01] transition-transform duration-500"
+          />
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-6">
@@ -1018,125 +1076,41 @@ export const MainConnectView: React.FC<MainConnectViewProps> = ({
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          {/* Reason 1: Arab FreeNet */}
-          <div className="p-5 rounded-3xl bg-slate-950/80 border border-slate-800 hover:border-amber-500/40 transition-all group">
-            <div className="w-11 h-11 rounded-2xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400 mb-3 group-hover:scale-110 transition-transform">
-              <Zap className="w-5 h-5" />
-            </div>
-            <h3 className="text-sm font-bold text-white group-hover:text-amber-300 transition-colors">
-              {lang === 'bn' ? '১. সৌদি ও আরব সিমে ফ্রি নেট' : '1. Gulf Free Internet'}
-            </h3>
-            <p className="text-xs text-slate-400 mt-1.5 leading-relaxed">
-              {lang === 'bn' 
-                ? 'সৌদি STC, Mobily, Zain এবং UAE-তে ০ ব্যালেন্সে আনলিমিটেড ফ্রি ইন্টারনেট ব্রাউজিং।' 
-                : 'Zero-balance free internet payloads for KSA STC, Mobily, Zain & UAE Etisalat networks.'}
-            </p>
-          </div>
+          {(siteSettings.customBenefits || DEFAULT_CUSTOM_BENEFITS).filter((b) => b.isActive !== false).map((b) => {
+            const renderCardIcon = () => {
+              if (b.imageUrl) {
+                return <img src={b.imageUrl} alt={b.titleBn} className="w-full h-full object-cover rounded-xl" />;
+              }
+              switch (b.iconType) {
+                case 'activity': return <Activity className="w-5 h-5 text-emerald-400" />;
+                case 'globe': return <Globe className="w-5 h-5 text-cyan-400" />;
+                case 'harddrive': return <HardDrive className="w-5 h-5 text-purple-400" />;
+                case 'eyeoff': return <EyeOff className="w-5 h-5 text-emerald-400" />;
+                case 'shield': return <ShieldCheck className="w-5 h-5 text-amber-400" />;
+                case 'lock': return <Lock className="w-5 h-5 text-purple-400" />;
+                case 'crown': return <Crown className="w-5 h-5 text-amber-400" />;
+                case 'server': return <Server className="w-5 h-5 text-cyan-400" />;
+                case 'zap':
+                default: return <Zap className="w-5 h-5 text-amber-400" />;
+              }
+            };
 
-          {/* Reason 2: Low-Ping Gaming */}
-          <div className="p-5 rounded-3xl bg-slate-950/80 border border-slate-800 hover:border-emerald-500/40 transition-all group">
-            <div className="w-11 h-11 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 mb-3 group-hover:scale-110 transition-transform">
-              <Activity className="w-5 h-5" />
-            </div>
-            <h3 className="text-sm font-bold text-white group-hover:text-emerald-300 transition-colors">
-              {lang === 'bn' ? '২. ৮ms আল্ট্রা লো-পিং গেমিং' : '2. Ultra Low-Ping Gaming'}
-            </h3>
-            <p className="text-xs text-slate-400 mt-1.5 leading-relaxed">
-              {lang === 'bn' 
-                ? 'পাবজি (PUBG) ও ফ্রি ফায়ারে জিরো ল্যাগ। BDIX ও সিঙ্গাপুর সরাসরি অপটিক্যাল নোড।' 
-                : 'Dedicated BDIX and Singapore low-jitter nodes for Free Fire, PUBG & competitive esports.'}
-            </p>
-          </div>
-
-          {/* Reason 3: Unblock Calling Apps */}
-          <div className="p-5 rounded-3xl bg-slate-950/80 border border-slate-800 hover:border-cyan-500/40 transition-all group">
-            <div className="w-11 h-11 rounded-2xl bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-cyan-400 mb-3 group-hover:scale-110 transition-transform">
-              <Globe className="w-5 h-5" />
-            </div>
-            <h3 className="text-sm font-bold text-white group-hover:text-cyan-300 transition-colors">
-              {lang === 'bn' ? '৩. কলিং অ্যাপস আনব্লক' : '3. Unblock Calling Apps'}
-            </h3>
-            <p className="text-xs text-slate-400 mt-1.5 leading-relaxed">
-              {lang === 'bn' 
-                ? 'দুবাই ও মধ্যপ্রাচ্যে WhatsApp কল, IMO, BOTIM ও FaceTime ১০০% ক্লিয়ার কাজ করে।' 
-                : 'Unblock WhatsApp voice/video calls, BOTIM, IMO, and FaceTime in UAE & Gulf regions.'}
-            </p>
-          </div>
-
-          {/* Reason 4: Zero Logs */}
-          <div className="p-5 rounded-3xl bg-slate-950/80 border border-slate-800 hover:border-purple-500/40 transition-all group">
-            <div className="w-11 h-11 rounded-2xl bg-purple-500/10 border border-purple-500/30 flex items-center justify-center text-purple-400 mb-3 group-hover:scale-110 transition-transform">
-              <HardDrive className="w-5 h-5" />
-            </div>
-            <h3 className="text-sm font-bold text-white group-hover:text-purple-300 transition-colors">
-              {lang === 'bn' ? '৪. ১০০% র‍্যাম-অনলি নো-লগ' : '4. Diskless Zero Logs'}
-            </h3>
-            <p className="text-xs text-slate-400 mt-1.5 leading-relaxed">
-              {lang === 'bn' 
-                ? 'হার্ডড্রাইভে কোনো ডাটা লেখা হয় না। রিবুট করলেই মেমোরির সব তথ্য চিরতরে মুছে যায়।' 
-                : 'Server OS runs in volatile RAM; zero logs are ever saved, stored, or inspected.'}
-            </p>
-          </div>
-
-          {/* Reason 5: 10Gbps Speed */}
-          <div className="p-5 rounded-3xl bg-slate-950/80 border border-slate-800 hover:border-cyan-500/40 transition-all group">
-            <div className="w-11 h-11 rounded-2xl bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-cyan-400 mb-3 group-hover:scale-110 transition-transform">
-              <Zap className="w-5 h-5" />
-            </div>
-            <h3 className="text-sm font-bold text-white group-hover:text-cyan-300 transition-colors">
-              {lang === 'bn' ? '৫. ১০ Gbps আল্ট্রা স্পিড' : '5. 10 Gbps Unmetered'}
-            </h3>
-            <p className="text-xs text-slate-400 mt-1.5 leading-relaxed">
-              {lang === 'bn' 
-                ? 'আইএসপি থ্রটলিং পুরোপুরি বাইপাস করে 4K স্ট্রিমিং ও সুপারফাস্ট ডাউনলোড।' 
-                : 'Bypass throttling completely with high-speed fiber backbones and zero bandwidth limits.'}
-            </p>
-          </div>
-
-          {/* Reason 6: CleanNet AdBlock */}
-          <div className="p-5 rounded-3xl bg-slate-950/80 border border-slate-800 hover:border-emerald-500/40 transition-all group">
-            <div className="w-11 h-11 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 mb-3 group-hover:scale-110 transition-transform">
-              <EyeOff className="w-5 h-5" />
-            </div>
-            <h3 className="text-sm font-bold text-white group-hover:text-emerald-300 transition-colors">
-              {lang === 'bn' ? '৬. ক্লিন-নেট অ্যাড ব্লকার' : '6. CleanNet AdBlock'}
-            </h3>
-            <p className="text-xs text-slate-400 mt-1.5 leading-relaxed">
-              {lang === 'bn' 
-                ? 'বিজ্ঞাপন ও ক্ষতিকর ট্র্যাকার ব্লক করে পেজ স্পিড বাড়ায় ও ৪০% ডাটা সাশ্রয় করে।' 
-                : 'DNS filters strip ads, malicious domains, and battery-draining scripts.'}
-            </p>
-          </div>
-
-          {/* Reason 7: Local Easy Payment */}
-          <div className="p-5 rounded-3xl bg-slate-950/80 border border-slate-800 hover:border-amber-500/40 transition-all group">
-            <div className="w-11 h-11 rounded-2xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400 mb-3 group-hover:scale-110 transition-transform">
-              <ShieldCheck className="w-5 h-5" />
-            </div>
-            <h3 className="text-sm font-bold text-white group-hover:text-amber-300 transition-colors">
-              {lang === 'bn' ? '৭. বিকাশ, নগদ ও STC Pay' : '7. bKash, Nagad & STC Pay'}
-            </h3>
-            <p className="text-xs text-slate-400 mt-1.5 leading-relaxed">
-              {lang === 'bn' 
-                ? 'আন্তর্জাতিক কার্ড ছাড়াই দেশীয় টাকায় ও রিয়ালে মুহূর্তে প্যাকেজ অ্যাক্টিভেশন।' 
-                : 'Instant activation via bKash, Nagad, Rocket, Mada, STC Pay, and Crypto.'}
-            </p>
-          </div>
-
-          {/* Reason 8: Post-Quantum Kyber-1024 */}
-          <div className="p-5 rounded-3xl bg-slate-950/80 border border-slate-800 hover:border-purple-500/40 transition-all group">
-            <div className="w-11 h-11 rounded-2xl bg-purple-500/10 border border-purple-500/30 flex items-center justify-center text-purple-400 mb-3 group-hover:scale-110 transition-transform">
-              <Lock className="w-5 h-5" />
-            </div>
-            <h3 className="text-sm font-bold text-white group-hover:text-purple-300 transition-colors">
-              {lang === 'bn' ? '৮. কোয়ান্টাম Kyber-1024' : '8. Post-Quantum Kyber'}
-            </h3>
-            <p className="text-xs text-slate-400 mt-1.5 leading-relaxed">
-              {lang === 'bn' 
-                ? 'WireGuard, V2Ray VLESS Reality এবং কোয়ান্টাম সাইফার দিয়ে অভেদ্য নিরাপত্তা।' 
-                : 'Next-generation quantum-resistant encryption that protects all sensitive data.'}
-            </p>
-          </div>
+            return (
+              <div key={b.id} className="p-5 rounded-3xl bg-slate-950/80 border border-slate-800 hover:border-cyan-500/40 transition-all group flex flex-col justify-between">
+                <div>
+                  <div className="w-11 h-11 rounded-2xl bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform overflow-hidden">
+                    {renderCardIcon()}
+                  </div>
+                  <h3 className="text-sm font-bold text-white group-hover:text-cyan-300 transition-colors">
+                    {lang === 'bn' ? b.titleBn : b.titleEn}
+                  </h3>
+                  <p className="text-xs text-slate-400 mt-1.5 leading-relaxed">
+                    {lang === 'bn' ? b.descBn : b.descEn}
+                  </p>
+                </div>
+              </div>
+            );
+          })}
         </div>
 
         <div className="text-center pt-2">
@@ -1267,48 +1241,11 @@ export const MainConnectView: React.FC<MainConnectViewProps> = ({
         </div>
 
         <div className="max-w-3xl mx-auto space-y-3">
-          {[
-            {
-              qBn: 'সৌদি আরব বা মধ্যপ্রাচ্যে ফ্রি-নেট কীভাবে কাজ করে?',
-              qEn: 'How does Arab SIM Free-Net work in Saudi Arabia?',
-              aBn: 'সোভারিক্সনেট বিশেষ SNI ও হোস্ট পেলোড (যেমন freenet.stc.com.sa) ব্যবহার করে টেলিকম ফায়ারওয়াল বাইপাস করে শূন্য ব্যালেন্সে হাই-স্পিড ভিপিএন টানেল তৈরি করে।',
-              aEn: 'Soverixnet uses custom SNI spoofing and V2Ray Reality payloads over port 443 to tunnel traffic through zero-rated carrier CDN endpoints with zero account balance.'
-            },
-            {
-              qBn: 'সোভারিক্সনেট কি আসলেই কোনো লগ সংরক্ষণ করে না?',
-              qEn: 'Does Soverixnet VPN keep any logs?',
-              aBn: 'হ্যাঁ, আমাদের সার্ভারগুলো ১০০% র‍্যাম-অনলি (RAM-only diskless) সিস্টেমে পরিচালিত হয়। কোনো ব্যবহারকারীর আইপি বা ব্রাউজিং হিস্টোরি কোথাও সেভ হয় না।',
-              aEn: 'Yes! All server instances run purely in volatile RAM. No connection metadata, real IP addresses, or browsing activities are ever written to disk or database.'
-            },
-            {
-              qBn: 'গেম খেলার সময় পিং কেমন পাওয়া যাবে?',
-              qEn: 'What ping can I expect while playing online games?',
-              aBn: 'আমাদের ঢাকা BDIX নোডে পাবজি বা ফ্রি ফায়ারে মাত্র ৮ms থেকে ১৫ms পিং পাওয়া যায়। সিঙ্গাপুর নোডে পিং থাকে মাত্র ২৮ms থেকে ৩৫ms।',
-              aEn: 'Gamers connecting to our Dhaka BDIX or Singapore nodes achieve ultra-low 8ms to 28ms ping with optimal packet routing and zero jitter.'
-            },
-            {
-              qBn: 'ফ্রি এবং ভিআইপি প্ল্যানের মধ্যে পার্থক্য কী?',
-              qEn: 'What is the difference between Free and VIP plans?',
-              aBn: 'ফ্রি সার্ভারগুলো সবার জন্য উন্মুক্ত। ভিআইপি প্ল্যানে পাওয়া যায় ১০Gbps আল্ট্রা-হাই স্পিড নোড, মধ্যপ্রাচ্য ফ্রি-নেট পেলোড এবং একাধিক ডিভাইসে একসাথে ব্যবহারের সুবিধা।',
-              aEn: 'Free servers offer standard connectivity. VIP subscribers unlock dedicated 10Gbps high-capacity servers, Arab SIM FreeNet configurations, and priority routing.'
-            },
-            {
-              qBn: 'কোন অ্যাপস দিয়ে সবচেয়ে ভালো ভিপিএন চলবে?',
-              qEn: 'Which apps work best with Soverixnet VPN?',
-              aBn: 'আমরা অফিসিয়ালি দুটি অ্যাপস রিকমেন্ড করি: ১. AF V2Ray APK (বিশ্বের যেকোনো দেশে আল্ট্রা স্পিডে চলার জন্য) এবং ২. Jiyam Plus VPN (সৌদি আরব ও মধ্যপ্রাচ্যে ০ ব্যালেন্সে ফ্রি-নেট চালানোর জন্য)। এছাড়াও v2rayNG, Shadowrocket ও WireGuard-এ চমৎকার কাজ করে।',
-              aEn: 'We officially recommend: 1. AF V2Ray APK (works smoothly in all countries worldwide) and 2. Jiyam Plus VPN (tailored for Gulf SIM zero-balance FreeNet). You can also use v2rayNG, Shadowrocket, and WireGuard.'
-            },
-            {
-              qBn: 'কীভাবে পেমেন্ট করতে পারি এবং অ্যাক্টিভ হতে কতক্ষণ লাগে?',
-              qEn: 'How do I pay and how quickly is VIP activated?',
-              aBn: 'বিকাশ, নগদ, রকেট অথবা ক্রিপ্টোকারেন্সির মাধ্যমে সরাসরি পেমেন্ট করতে পারবেন। ট্রানজাকশন সাবমিট করার সাথে সাথেই ভিআইপি ইনস্ট্যান্ট চালু হয়ে যায়।',
-              aEn: 'You can pay instantly using bKash, Nagad, Rocket, Binance Pay, or credit cards. Your VIP account activates immediately upon confirmation.'
-            }
-          ].map((item, idx) => {
+          {(siteSettings.customFaqs || DEFAULT_CUSTOM_FAQS).filter((f) => f.isActive !== false).map((item, idx) => {
             const isOpen = activeFaqIndex === idx;
             return (
               <div
-                key={idx}
+                key={item.id || idx}
                 className="rounded-2xl border border-slate-800 bg-slate-950/70 overflow-hidden transition-all"
               >
                 <button
@@ -1341,23 +1278,29 @@ export const MainConnectView: React.FC<MainConnectViewProps> = ({
           </div>
           <div>
             <h3 className="text-base sm:text-lg font-black text-white">
-              {lang === 'bn' ? 'যুক্ত হোন অফিসিয়াল WhatsApp চ্যানেলে: Soverixnet Internet unlimited Vpn' : 'Join Our Official WhatsApp Channel: Soverixnet Internet unlimited Vpn'}
+              {lang === 'bn' 
+                ? (siteSettings.whatsappCtaContent?.titleBn || 'যুক্ত হোন অফিসিয়াল WhatsApp চ্যানেলে: Soverixnet Internet unlimited Vpn') 
+                : (siteSettings.whatsappCtaContent?.titleEn || 'Join Our Official WhatsApp Channel: Soverixnet Internet unlimited Vpn')}
             </h3>
             <p className="text-xs text-slate-400 mt-0.5">
               {lang === 'bn' 
-                ? 'প্রতিদিনের ফ্রি ইন্টারনেট ট্রিক্স, নতুন নোড আপডেট ও এক্সক্লুসিভ অফার পান সবার আগে।' 
-                : 'Get daily free internet configs, new server updates, and priority customer support.'}
+                ? (siteSettings.whatsappCtaContent?.subtitleBn || 'প্রতিদিনের ফ্রি ইন্টারনেট ট্রিক্স, নতুন নোড আপডেট ও এক্সক্লুসিভ অফার পান সবার আগে।') 
+                : (siteSettings.whatsappCtaContent?.subtitleEn || 'Get daily free internet configs, new server updates, and priority customer support.')}
             </p>
           </div>
         </div>
 
         <a
-          href={CONTACT_CONFIG.whatsappChannelUrl}
+          href={siteSettings.whatsappCtaContent?.channelUrl || CONTACT_CONFIG.whatsappChannelUrl}
           target="_blank"
           rel="noopener noreferrer"
           className="px-6 py-3 rounded-2xl bg-emerald-500 hover:bg-emerald-400 text-black font-black text-xs sm:text-sm flex items-center gap-2 shadow-lg shadow-emerald-500/25 transition-all shrink-0 cursor-pointer transform hover:scale-105"
         >
-          <span>{lang === 'bn' ? 'WhatsApp চ্যানেলে জয়েন করুন ➔' : 'Join WhatsApp Channel ➔'}</span>
+          <span>
+            {lang === 'bn' 
+              ? (siteSettings.whatsappCtaContent?.buttonTextBn || 'WhatsApp চ্যানেলে জয়েন করুন ➔') 
+              : (siteSettings.whatsappCtaContent?.buttonTextEn || 'Join WhatsApp Channel ➔')}
+          </span>
         </a>
       </section>
 

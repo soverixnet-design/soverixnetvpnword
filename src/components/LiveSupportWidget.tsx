@@ -138,6 +138,20 @@ export const LiveSupportWidget: React.FC<LiveSupportWidgetProps> = ({ lang }) =>
               ))}
             </div>
 
+            {/* Clickable WhatsApp Support Banner */}
+            <div 
+              onClick={() => window.open(WHATSAPP_DIRECT_CHAT, '_blank')}
+              className="relative rounded-2xl overflow-hidden border border-cyan-500/30 hover:border-cyan-400 cursor-pointer shadow-lg group transition-all"
+              title={lang === 'bn' ? 'হোয়াটসঅ্যাপে সরাসরি কথা বলুন' : 'Chat on WhatsApp'}
+            >
+              <img 
+                src="/whatsapp_support_banner.jpg" 
+                alt="Soverixnet WhatsApp Support Banner" 
+                referrerPolicy="no-referrer"
+                className="w-full h-auto max-h-[140px] object-cover group-hover:scale-102 transition-transform duration-300"
+              />
+            </div>
+
             {/* Tab 1: FAQs */}
             {activeTab === 'quick_faq' && (
               <div className="space-y-3 max-h-72 overflow-y-auto pr-1">

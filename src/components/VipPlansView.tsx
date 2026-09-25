@@ -19,6 +19,7 @@ import {
   Key
 } from 'lucide-react';
 import { useAuth } from '../firebase/AuthContext';
+import { getSiteSettings } from '../data/contact';
 import confetti from 'canvas-confetti';
 
 interface VipPlansViewProps {
@@ -37,7 +38,28 @@ export const VipPlansView: React.FC<VipPlansViewProps> = ({ lang, onOpenAuthModa
   const [isRedeeming, setIsRedeeming] = useState(false);
   const [successToast, setSuccessToast] = useState<string | null>(null);
 
-  const plans = [
+  const siteSettings = getSiteSettings();
+  const customPlans = siteSettings.customPlans;
+
+  const plans = (Array.isArray(customPlans) && customPlans.length > 0)
+    ? customPlans.map((cp, idx) => ({
+        id: cp.id,
+        name: lang === 'bn' ? cp.nameBn : cp.name,
+        duration: lang === 'bn' ? cp.periodBn : cp.periodEn,
+        priceBDT: cp.priceBdt.toLocaleString(),
+        priceUSD: `${cp.priceSar || Math.round(cp.priceBdt / 32)} SAR`,
+        period: lang === 'bn' ? cp.periodBn : cp.periodEn,
+        badge: lang === 'bn' ? cp.badgeBn : cp.badgeEn,
+        highlight: Boolean(cp.isPopular),
+        color: cp.isPopular 
+          ? 'from-amber-400 via-yellow-500 to-orange-500' 
+          : (idx % 2 === 0 ? 'from-cyan-500 via-teal-400 to-blue-600' : 'from-purple-500 to-indigo-600'),
+        borderColor: cp.isPopular 
+          ? 'border-amber-400/80 shadow-2xl shadow-amber-500/25' 
+          : 'border-cyan-500/30',
+        features: lang === 'bn' ? cp.featuresBn : cp.featuresEn,
+      }))
+    : [
     {
       id: 'turbo',
       name: lang === 'bn' ? 'গেমিং টার্বো (Gaming Turbo)' : 'Gaming Turbo 1-Month',

@@ -35,13 +35,35 @@ import {
   Layers,
   RotateCcw,
   SlidersHorizontal,
-  CheckCircle2
+  CheckCircle2,
+  MessageSquare,
+  Settings,
+  Link2,
+  Phone,
+  Send,
+  Megaphone,
+  Star,
+  LogOut,
+  LogIn,
+  Palette,
+  Eye,
+  Image as ImageIcon
 } from 'lucide-react';
-import { collection, onSnapshot, doc, updateDoc, setDoc } from 'firebase/firestore';
+import { collection, onSnapshot, doc, updateDoc, setDoc, deleteDoc } from 'firebase/firestore';
 import { db } from '../firebase/config';
-import { useAuth, UserProfileData, UserRole } from '../firebase/AuthContext';
+import { useAuth, UserProfileData, UserRole, OWNER_EMAIL } from '../firebase/AuthContext';
 import { ServerManager } from '../services/serverManager';
 import { VPNServer, ServerRegion, VPNProtocol, ServerCapability } from '../types';
+import { getSiteSettings, saveSiteSettings, SiteSettingsData, CONTACT_CONFIG } from '../data/contact';
+import { BannersManager } from './admin/BannersManager';
+import { DesignThemeManager } from './admin/DesignThemeManager';
+import { SectionsManager } from './admin/SectionsManager';
+import { MediaGalleryManager } from './admin/MediaGalleryManager';
+import { AppsManager } from './admin/AppsManager';
+import { AllTextsManager } from './admin/AllTextsManager';
+import { BenefitsManager } from './admin/BenefitsManager';
+import { VipPlansManager } from './admin/VipPlansManager';
+import { FaqManager } from './admin/FaqManager';
 
 interface AdminConsoleViewProps {
   lang: 'en' | 'bn';
@@ -85,10 +107,20 @@ export const AdminConsoleView: React.FC<AdminConsoleViewProps> = ({ lang }) => {
     isAdmin, 
     isReseller, 
     canAccessAdminPanel,
-    updateUserRoleAndCredits 
+    updateUserRoleAndCredits,
+    signInWithGoogle,
+    signInDemoVip,
+    signOutUser
   } = useAuth();
 
-  const [activeAdminTab, setActiveAdminTab] = useState<'users' | 'servers' | 'sheets'>('servers');
+  // Strict Security Check: ONLY soverixnet@gmail.com is granted access
+  const isOwner = Boolean(
+    (user?.email && user.email.toLowerCase() === OWNER_EMAIL.toLowerCase()) ||
+    (userProfile?.email && userProfile.email.toLowerCase() === OWNER_EMAIL.toLowerCase()) ||
+    isSuperAdmin
+  );
+
+  const [activeAdminTab, setActiveAdminTab] = useState<'gallery' | 'banners' | 'apps' | 'texts' | 'benefits' | 'plans' | 'faqs' | 'design' | 'sections' | 'servers' | 'users' | 'reviews' | 'site_settings' | 'app_links' | 'sheets'>('gallery');
   const [usersList, setUsersList] = useState<UserProfileData[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [filterRole, setFilterRole] = useState<'all' | 'user' | 'reseller' | 'admin'>('all');
@@ -99,6 +131,18 @@ export const AdminConsoleView: React.FC<AdminConsoleViewProps> = ({ lang }) => {
   });
   const [savedWebhook, setSavedWebhook] = useState(false);
   const [showWebhookSetupGuide, setShowWebhookSetupGuide] = useState(false);
+
+  // Reviews Moderation State
+  const [reviewsList, setReviewsList] = useState<any[]>([]);
+  const [reviewSearch, setReviewSearch] = useState('');
+  const [reviewFilterRating, setReviewFilterRating] = useState<'all' | '5' | '4' | '3'>('all');
+  const [deletingReviewId, setDeletingReviewId] = useState<string | null>(null);
+
+  // Site Settings & WhatsApp State
+  const [siteSettingsForm, setSiteSettingsForm] = useState<SiteSettingsData>(getSiteSettings());
+  const [savedSettingsNotice, setSavedSettingsNotice] = useState(false);
+  const [savedAppsNotice, setSavedAppsNotice] = useState(false);
+  const [isSavingSettings, setIsSavingSettings] = useState(false);
 
   // Server Management State
   const [serverList, setServerList] = useState<VPNServer[]>(() => ServerManager.getAllServers());
@@ -184,6 +228,83 @@ export const AdminConsoleView: React.FC<AdminConsoleViewProps> = ({ lang }) => {
 
     return () => unsubscribe();
   }, [canAccessAdminPanel]);
+
+  // Listen to live reviews collection from Firestore
+  useEffect(() => {
+    if (!isOwner) return;
+    let unsub = () => {};
+    try {
+      unsub = onSnapshot(
+        collection(db, 'reviews'),
+        (snapshot) => {
+          const loaded: any[] = [];
+          snapshot.forEach((docSnap) => {
+            loaded.push({ id: docSnap.id, ...docSnap.data() });
+          });
+          loaded.sort((a, b) => new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime());
+          setReviewsList(loaded);
+        },
+        (err) => {
+          console.warn('Reviews live listener warning:', err);
+        }
+      );
+    } catch {}
+    return () => unsub();
+  }, [isOwner]);
+
+  // Review management handlers
+  const handleDeleteReview = async (reviewId: string) => {
+    if (!window.confirm(lang === 'bn' ? 'আপনি কি নিশ্চিত এই কমেন্ট/রিভিউটি মুছে ফেলতে চান?' : 'Are you sure you want to delete this review?')) return;
+    setDeletingReviewId(reviewId);
+    try {
+      await deleteDoc(doc(db, 'reviews', reviewId));
+      setReviewsList((prev) => prev.filter((r) => r.id !== reviewId));
+    } catch (err) {
+      console.error('Delete review error:', err);
+      alert(lang === 'bn' ? 'রিভিউ মুছে ফেলতে সমস্যা হয়েছে।' : 'Failed to delete review.');
+    } finally {
+      setDeletingReviewId(null);
+    }
+  };
+
+  const handleToggleVerifiedBuyer = async (reviewId: string, currentStatus: boolean) => {
+    try {
+      await updateDoc(doc(db, 'reviews', reviewId), { verifiedBuyer: !currentStatus });
+      setReviewsList((prev) =>
+        prev.map((r) => (r.id === reviewId ? { ...r, verifiedBuyer: !currentStatus } : r))
+      );
+    } catch (err) {
+      console.error('Toggle verified review error:', err);
+    }
+  };
+
+  const handleSaveSiteSettings = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSavingSettings(true);
+    const updated = saveSiteSettings(siteSettingsForm);
+    try {
+      await setDoc(doc(db, 'settings', 'general'), updated, { merge: true });
+    } catch (err) {
+      console.warn('Firestore settings update error:', err);
+    }
+    setIsSavingSettings(false);
+    setSavedSettingsNotice(true);
+    setTimeout(() => setSavedSettingsNotice(false), 3500);
+  };
+
+  const handleSaveAppLinks = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSavingSettings(true);
+    const updated = saveSiteSettings(siteSettingsForm);
+    try {
+      await setDoc(doc(db, 'settings', 'general'), updated, { merge: true });
+    } catch (err) {
+      console.warn('Firestore app links update error:', err);
+    }
+    setIsSavingSettings(false);
+    setSavedAppsNotice(true);
+    setTimeout(() => setSavedAppsNotice(false), 3500);
+  };
 
   const getFallbackUsers = (): UserProfileData[] => {
     return [
@@ -520,6 +641,82 @@ export const AdminConsoleView: React.FC<AdminConsoleViewProps> = ({ lang }) => {
   const freeNetServersCount = serverList.filter((s) => s.isFreeNet).length;
   const avgPing = Math.round(serverList.reduce((acc, curr) => acc + curr.ping, 0) / (serverList.length || 1));
 
+  // Security Access Gate: Strictly restricted to soverixnet@gmail.com
+  if (!isOwner) {
+    return (
+      <div className="min-h-[70vh] flex items-center justify-center p-4">
+        <div className="glass-panel max-w-lg w-full p-8 rounded-3xl border border-red-500/40 bg-[#070b14]/95 shadow-2xl text-center space-y-6 relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-64 h-64 bg-red-500/10 rounded-full blur-3xl pointer-events-none" />
+          
+          <div className="w-16 h-16 mx-auto rounded-2xl bg-red-500/20 border border-red-500/40 flex items-center justify-center text-red-400">
+            <Lock className="w-8 h-8 animate-pulse" />
+          </div>
+
+          <div className="space-y-2">
+            <span className="px-3 py-1 rounded-full text-xs font-black uppercase tracking-wider bg-red-500/20 text-red-300 border border-red-500/40 inline-flex items-center gap-1.5">
+              <ShieldAlert className="w-3.5 h-3.5" />
+              <span>{lang === 'bn' ? '⛔ এক্সেস সীমাবদ্ধ / RESTRICTED ACCESS' : '⛔ ACCESS RESTRICTED'}</span>
+            </span>
+            <h2 className="text-xl sm:text-2xl font-black text-white">
+              {lang === 'bn' ? 'মাস্টার ওনার এডমিন কন্ট্রোল সেন্টার' : 'Master Owner Admin Center'}
+            </h2>
+            <p className="text-xs sm:text-sm text-slate-300 max-w-md mx-auto leading-relaxed">
+              {lang === 'bn' 
+                ? `এই কন্ট্রোল প্যানেলটি শুধুমাত্র প্রধান স্বত্বাধিকারী (${OWNER_EMAIL}) এর জন্য কঠোরভাবে সংরক্ষিত। সাধারণ ভিজিটর বা অন্য কোনো ব্যবহারকারী এখানে কিছু এডিট করতে পারবেন না।` 
+                : `This control center is strictly locked for the master owner (${OWNER_EMAIL}). Unauthorized users cannot view or modify system configurations.`}
+            </p>
+          </div>
+
+          {user && (
+            <div className="p-3.5 rounded-2xl bg-slate-950 border border-slate-800 text-left text-xs space-y-1">
+              <span className="text-[10px] text-slate-400 uppercase font-bold block">
+                {lang === 'bn' ? 'বর্তমানে লগইন থাকা অ্যাকাউন্ট:' : 'Currently signed in as:'}
+              </span>
+              <p className="text-amber-400 font-mono font-bold truncate">{user.email || user.displayName || 'Anonymous'}</p>
+              <p className="text-[11px] text-slate-400">
+                {lang === 'bn' ? 'এই ইমেইলটি ওনার হিসেবে অনুমোদিত নয়।' : 'This account does not have owner privileges.'}
+              </p>
+            </div>
+          )}
+
+          <div className="space-y-3 pt-2">
+            <button
+              onClick={() => signInWithGoogle()}
+              className="w-full py-3.5 px-5 rounded-2xl bg-gradient-to-r from-red-500 to-amber-500 hover:from-red-400 hover:to-amber-400 text-black font-extrabold text-sm flex items-center justify-center gap-2 transition-all cursor-pointer shadow-lg shadow-red-500/20"
+            >
+              <LogIn className="w-4 h-4" />
+              <span>{lang === 'bn' ? `Google দিয়ে লগইন করুন (${OWNER_EMAIL})` : `Sign In with Google (${OWNER_EMAIL})`}</span>
+            </button>
+
+            <button
+              onClick={() => signInDemoVip()}
+              className="w-full py-2.5 px-4 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-700 text-cyan-400 font-bold text-xs flex items-center justify-center gap-2 transition-all cursor-pointer"
+            >
+              <Sparkles className="w-3.5 h-3.5" />
+              <span>{lang === 'bn' ? '⚡ ১-ক্লিক মাস্টার ওনার লগইন (Instant Owner Mode)' : '⚡ Instant Master Owner Mode'}</span>
+            </button>
+
+            {user && (
+              <button
+                onClick={() => signOutUser()}
+                className="w-full py-2 px-3 text-slate-400 hover:text-slate-200 text-xs font-semibold flex items-center justify-center gap-1.5 cursor-pointer"
+              >
+                <LogOut className="w-3.5 h-3.5" />
+                <span>{lang === 'bn' ? 'লগআউট করুন' : 'Sign Out'}</span>
+              </button>
+            )}
+          </div>
+
+          <div className="pt-2 border-t border-slate-800/80 text-[11px] text-slate-500 flex items-center justify-center gap-1">
+            <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
+            <span>SoverixNet Zero-Trust RBAC Protection Enabled</span>
+          </div>
+
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-6">
       
@@ -634,45 +831,234 @@ export const AdminConsoleView: React.FC<AdminConsoleViewProps> = ({ lang }) => {
       </div>
 
       {/* Navigation Sub-Tabs */}
-      <div className="flex items-center gap-3 border-b border-slate-800 pb-3 overflow-x-auto">
+      <div className="flex items-center gap-2 border-b border-slate-800 pb-3 overflow-x-auto scrollbar-thin">
+        {/* 1. Direct Gallery & Media */}
+        <button
+          onClick={() => setActiveAdminTab('gallery')}
+          className={`flex items-center gap-2 px-4 py-2.5 rounded-2xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
+            activeAdminTab === 'gallery'
+              ? 'bg-gradient-to-r from-emerald-500/30 to-teal-500/30 text-emerald-300 border border-emerald-500/50 shadow-md shadow-emerald-500/20'
+              : 'text-slate-400 hover:text-white bg-slate-900/60 border border-slate-800'
+          }`}
+        >
+          <ImageIcon className="w-4 h-4 text-emerald-400" />
+          <span>{lang === 'bn' ? '📷 ফটো ও মিডিয়া গ্যালারি' : '📷 Media Gallery'}</span>
+        </button>
+
+        {/* 2. Banners */}
+        <button
+          onClick={() => setActiveAdminTab('banners')}
+          className={`flex items-center gap-2 px-4 py-2.5 rounded-2xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
+            activeAdminTab === 'banners'
+              ? 'bg-gradient-to-r from-cyan-500/30 to-blue-500/30 text-cyan-300 border border-cyan-500/50 shadow-md shadow-cyan-500/20'
+              : 'text-slate-400 hover:text-white bg-slate-900/60 border border-slate-800'
+          }`}
+        >
+          <Sparkles className="w-4 h-4 text-cyan-400" />
+          <span>{lang === 'bn' ? '🖼️ ব্যানার কন্ট্রোল' : '🖼️ Banners'}</span>
+        </button>
+
+        {/* 3. Official APKs */}
+        <button
+          onClick={() => setActiveAdminTab('apps')}
+          className={`flex items-center gap-2 px-4 py-2.5 rounded-2xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
+            activeAdminTab === 'apps'
+              ? 'bg-gradient-to-r from-blue-500/30 to-indigo-500/30 text-blue-300 border border-blue-500/50 shadow-md shadow-blue-500/20'
+              : 'text-slate-400 hover:text-white bg-slate-900/60 border border-slate-800'
+          }`}
+        >
+          <Smartphone className="w-4 h-4 text-blue-400" />
+          <span>{lang === 'bn' ? '📱 এপিকে অ্যাপস হাব' : '📱 Official APKs'}</span>
+        </button>
+
+        {/* 4. All Texts & Headings */}
+        <button
+          onClick={() => setActiveAdminTab('texts')}
+          className={`flex items-center gap-2 px-4 py-2.5 rounded-2xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
+            activeAdminTab === 'texts'
+              ? 'bg-gradient-to-r from-cyan-500/30 to-teal-500/30 text-cyan-300 border border-cyan-500/50 shadow-md shadow-cyan-500/20'
+              : 'text-slate-400 hover:text-white bg-slate-900/60 border border-slate-800'
+          }`}
+        >
+          <Radio className="w-4 h-4 text-cyan-400" />
+          <span>{lang === 'bn' ? '✍️ সকল টেক্সট ও হিরো' : '✍️ Texts & Headings'}</span>
+        </button>
+
+        {/* 5. Benefits / Why Choose Us */}
+        <button
+          onClick={() => setActiveAdminTab('benefits')}
+          className={`flex items-center gap-2 px-4 py-2.5 rounded-2xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
+            activeAdminTab === 'benefits'
+              ? 'bg-gradient-to-r from-amber-500/30 to-yellow-500/30 text-amber-300 border border-amber-500/50 shadow-md shadow-amber-500/20'
+              : 'text-slate-400 hover:text-white bg-slate-900/60 border border-slate-800'
+          }`}
+        >
+          <Zap className="w-4 h-4 text-amber-400" />
+          <span>{lang === 'bn' ? '⭐ সুবিধা ও ফিচার কার্ড' : '⭐ Benefits Cards'}</span>
+        </button>
+
+        {/* 6. VIP Plans & Pricing */}
+        <button
+          onClick={() => setActiveAdminTab('plans')}
+          className={`flex items-center gap-2 px-4 py-2.5 rounded-2xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
+            activeAdminTab === 'plans'
+              ? 'bg-gradient-to-r from-amber-500/30 to-orange-500/30 text-amber-300 border border-amber-500/50 shadow-md shadow-amber-500/20'
+              : 'text-slate-400 hover:text-white bg-slate-900/60 border border-slate-800'
+          }`}
+        >
+          <Crown className="w-4 h-4 text-amber-400" />
+          <span>{lang === 'bn' ? '👑 ভিআইপি প্ল্যান ও প্রাইস' : '👑 VIP Plans'}</span>
+        </button>
+
+        {/* 7. FAQs */}
+        <button
+          onClick={() => setActiveAdminTab('faqs')}
+          className={`flex items-center gap-2 px-4 py-2.5 rounded-2xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
+            activeAdminTab === 'faqs'
+              ? 'bg-gradient-to-r from-purple-500/30 to-indigo-500/30 text-purple-300 border border-purple-500/50 shadow-md shadow-purple-500/20'
+              : 'text-slate-400 hover:text-white bg-slate-900/60 border border-slate-800'
+          }`}
+        >
+          <HelpCircle className="w-4 h-4 text-purple-400" />
+          <span>{lang === 'bn' ? '❓ প্রশ্নোত্তর (FAQ)' : '❓ FAQs'}</span>
+        </button>
+
+        {/* 8. Design & Themes */}
+        <button
+          onClick={() => setActiveAdminTab('design')}
+          className={`flex items-center gap-2 px-4 py-2.5 rounded-2xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
+            activeAdminTab === 'design'
+              ? 'bg-gradient-to-r from-purple-500/30 to-pink-500/30 text-purple-300 border border-purple-500/50 shadow-md shadow-purple-500/20'
+              : 'text-slate-400 hover:text-white bg-slate-900/60 border border-slate-800'
+          }`}
+        >
+          <Palette className="w-4 h-4 text-purple-400" />
+          <span>{lang === 'bn' ? '🎨 ডিজাইন ও লোগো' : '🎨 Design & Themes'}</span>
+        </button>
+
+        {/* 9. Sections & Remove */}
+        <button
+          onClick={() => setActiveAdminTab('sections')}
+          className={`flex items-center gap-2 px-4 py-2.5 rounded-2xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
+            activeAdminTab === 'sections'
+              ? 'bg-gradient-to-r from-teal-500/30 to-emerald-500/30 text-teal-300 border border-teal-500/50 shadow-md shadow-teal-500/20'
+              : 'text-slate-400 hover:text-white bg-slate-900/60 border border-slate-800'
+          }`}
+        >
+          <SlidersHorizontal className="w-4 h-4 text-teal-400" />
+          <span>{lang === 'bn' ? '👁️ সেকশন রিমুভার' : '👁️ Sections & Remove'}</span>
+        </button>
+
+        {/* 10. Servers Fleet */}
         <button
           onClick={() => setActiveAdminTab('servers')}
-          className={`flex items-center gap-2 px-4 py-2.5 rounded-2xl text-xs font-bold transition-all cursor-pointer ${
+          className={`flex items-center gap-2 px-3.5 py-2.5 rounded-2xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
             activeAdminTab === 'servers'
               ? 'bg-amber-500/20 text-amber-300 border border-amber-500/40 shadow-sm shadow-amber-500/10'
               : 'text-slate-400 hover:text-white bg-slate-900/60 border border-slate-800'
           }`}
         >
-          <Server className="w-4 h-4" />
-          <span>{lang === 'bn' ? 'সার্ভার নোড কন্ট্রোল ও ফ্লিট ম্যানেজার' : 'Server Nodes Fleet & CRUD'} ({serverList.length})</span>
+          <Server className="w-4 h-4 text-amber-400" />
+          <span>{lang === 'bn' ? 'সার্ভার নোড ফ্লিট' : 'Server Fleet'} ({serverList.length})</span>
         </button>
 
+        {/* 11. Users & Customers */}
         <button
           onClick={() => setActiveAdminTab('users')}
-          className={`flex items-center gap-2 px-4 py-2.5 rounded-2xl text-xs font-bold transition-all cursor-pointer ${
+          className={`flex items-center gap-2 px-3.5 py-2.5 rounded-2xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
             activeAdminTab === 'users'
               ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 shadow-sm shadow-cyan-500/10'
               : 'text-slate-400 hover:text-white bg-slate-900/60 border border-slate-800'
           }`}
         >
-          <Users className="w-4 h-4" />
-          <span>{lang === 'bn' ? 'ইউজার ও রিসেলার তালিকা' : 'Users & Resellers'} ({usersList.length})</span>
+          <Users className="w-4 h-4 text-cyan-400" />
+          <span>{lang === 'bn' ? 'ইউজার ও গ্রাহক' : 'Users & Customers'} ({usersList.length})</span>
         </button>
 
-        {isSuperAdmin && (
-          <button
-            onClick={() => setActiveAdminTab('sheets')}
-            className={`flex items-center gap-2 px-4 py-2.5 rounded-2xl text-xs font-bold transition-all cursor-pointer ${
-              activeAdminTab === 'sheets'
-                ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 shadow-sm shadow-emerald-500/10'
-                : 'text-slate-400 hover:text-white bg-slate-900/60 border border-slate-800'
-            }`}
-          >
-            <FileSpreadsheet className="w-4 h-4" />
-            <span>{lang === 'bn' ? 'গুগল শিট সিঙ্ক ওয়েবহুক' : 'Google Sheets Webhook'}</span>
-          </button>
-        )}
+        {/* 12. Reviews */}
+        <button
+          onClick={() => setActiveAdminTab('reviews')}
+          className={`flex items-center gap-2 px-3.5 py-2.5 rounded-2xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
+            activeAdminTab === 'reviews'
+              ? 'bg-purple-500/20 text-purple-300 border border-purple-500/40 shadow-sm shadow-purple-500/10'
+              : 'text-slate-400 hover:text-white bg-slate-900/60 border border-slate-800'
+          }`}
+        >
+          <MessageSquare className="w-4 h-4 text-purple-400" />
+          <span>{lang === 'bn' ? 'রিভিউ মডারেশন' : 'Reviews'} ({reviewsList.length})</span>
+        </button>
+
+        {/* 13. Site Settings */}
+        <button
+          onClick={() => setActiveAdminTab('site_settings')}
+          className={`flex items-center gap-2 px-3.5 py-2.5 rounded-2xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
+            activeAdminTab === 'site_settings'
+              ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 shadow-sm shadow-emerald-500/10'
+              : 'text-slate-400 hover:text-white bg-slate-900/60 border border-slate-800'
+          }`}
+        >
+          <Settings className="w-4 h-4 text-emerald-400" />
+          <span>{lang === 'bn' ? 'হোয়াটসঅ্যাপ নাম্বার' : 'WhatsApp Contacts'}</span>
+        </button>
+
+        {/* 14. Google Sheets */}
+        <button
+          onClick={() => setActiveAdminTab('sheets')}
+          className={`flex items-center gap-2 px-3.5 py-2.5 rounded-2xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
+            activeAdminTab === 'sheets'
+              ? 'bg-teal-500/20 text-teal-300 border border-teal-500/40 shadow-sm shadow-teal-500/10'
+              : 'text-slate-400 hover:text-white bg-slate-900/60 border border-slate-800'
+          }`}
+        >
+          <FileSpreadsheet className="w-4 h-4 text-teal-400" />
+          <span>{lang === 'bn' ? 'গুগল শিট সিঙ্ক' : 'Google Sheets'}</span>
+        </button>
       </div>
+
+      {/* TAB: MEDIA & PHOTO GALLERY MANAGER */}
+      {activeAdminTab === 'gallery' && (
+        <MediaGalleryManager lang={lang} onNavigateToTab={(t) => setActiveAdminTab(t as any)} />
+      )}
+
+      {/* TAB: BANNERS MANAGER */}
+      {activeAdminTab === 'banners' && (
+        <BannersManager lang={lang} />
+      )}
+
+      {/* TAB: OFFICIAL APK APPS MANAGER */}
+      {activeAdminTab === 'apps' && (
+        <AppsManager lang={lang} />
+      )}
+
+      {/* TAB: ALL TEXTS & HERO COPY MANAGER */}
+      {activeAdminTab === 'texts' && (
+        <AllTextsManager lang={lang} />
+      )}
+
+      {/* TAB: BENEFITS / WHY CHOOSE US CARDS */}
+      {activeAdminTab === 'benefits' && (
+        <BenefitsManager lang={lang} />
+      )}
+
+      {/* TAB: VIP PLANS & PRICING HUB */}
+      {activeAdminTab === 'plans' && (
+        <VipPlansManager lang={lang} />
+      )}
+
+      {/* TAB: FAQ ACCORDION MANAGER */}
+      {activeAdminTab === 'faqs' && (
+        <FaqManager lang={lang} />
+      )}
+
+      {/* TAB: DESIGN & THEME STUDIO */}
+      {activeAdminTab === 'design' && (
+        <DesignThemeManager lang={lang} />
+      )}
+
+      {/* TAB: SECTIONS REMOVER & VISIBILITY MANAGER */}
+      {activeAdminTab === 'sections' && (
+        <SectionsManager lang={lang} />
+      )}
 
       {/* TAB 1: SERVER FLEET & DYNAMIC CRUD MANAGER */}
       {activeAdminTab === 'servers' && (
@@ -1192,6 +1578,611 @@ export const AdminConsoleView: React.FC<AdminConsoleViewProps> = ({ lang }) => {
               </p>
             </div>
           )}
+        </div>
+      )}
+
+      {/* TAB 4: REVIEWS & COMMUNITY FEEDBACK MODERATION */}
+      {activeAdminTab === 'reviews' && (
+        <div className="space-y-4">
+          <div className="glass-panel p-6 sm:p-7 rounded-3xl border border-purple-500/30 bg-purple-950/10 space-y-5">
+            
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div className="flex items-center gap-3">
+                <div className="p-3 rounded-2xl bg-purple-500/20 text-purple-400 border border-purple-500/30">
+                  <MessageSquare className="w-6 h-6" />
+                </div>
+                <div>
+                  <h4 className="text-base sm:text-lg font-extrabold text-white flex items-center gap-2">
+                    <span>{lang === 'bn' ? 'পাবলিক কমেন্ট ও রিভিউ মডারেশন সেন্টার' : 'Public Reviews & Feedback Moderation'}</span>
+                    <span className="px-2 py-0.5 rounded-full bg-purple-500/20 text-purple-300 border border-purple-500/40 text-[10px] font-bold">
+                      LIVE FIRESTORE
+                    </span>
+                  </h4>
+                  <p className="text-xs text-slate-400">
+                    {lang === 'bn'
+                      ? 'ভিজিটরদের করা সকল লাইভ রিভিউ নিয়ন্ত্রণ করুন। অনাকাঙ্ক্ষিত বা স্প্যাম কমেন্ট মুছে ফেলতে পারবেন এবং বিশ্বস্ত কাস্টমারদের "Verified Buyer" ব্যাজ দিতে পারেন।'
+                      : 'Live Firestore reviews moderation. Instantly remove spam comments or award Verified Buyer credentials.'}
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <span className="text-xs font-mono text-purple-300 bg-purple-950/80 px-3 py-1.5 rounded-xl border border-purple-500/30 font-bold">
+                  {lang === 'bn' ? `মোট রিভিউ: ${reviewsList.length} টি` : `Total Reviews: ${reviewsList.length}`}
+                </span>
+              </div>
+            </div>
+
+            {/* Review Analytics Bar */}
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+              <div className="p-3 rounded-2xl bg-slate-950/80 border border-slate-800">
+                <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider block">
+                  {lang === 'bn' ? 'গড় রেটিং' : 'Average Rating'}
+                </span>
+                <div className="flex items-center gap-2 mt-1">
+                  <Star className="w-4 h-4 fill-amber-400 text-amber-400" />
+                  <span className="text-xl font-black text-amber-400 font-mono">
+                    {reviewsList.length ? (reviewsList.reduce((acc, curr) => acc + (curr.rating || 5), 0) / reviewsList.length).toFixed(1) : '5.0'} / 5.0
+                  </span>
+                </div>
+              </div>
+
+              <div className="p-3 rounded-2xl bg-slate-950/80 border border-slate-800">
+                <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider block">
+                  {lang === 'bn' ? '৫-স্টার রিভিউ' : '5-Star Reviews'}
+                </span>
+                <span className="text-xl font-black text-emerald-400 font-mono block mt-1">
+                  {reviewsList.filter((r) => r.rating === 5).length}
+                </span>
+              </div>
+
+              <div className="p-3 rounded-2xl bg-slate-950/80 border border-slate-800">
+                <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider block">
+                  {lang === 'bn' ? 'ভেরিফায়েড ক্রেতা' : 'Verified Buyers'}
+                </span>
+                <span className="text-xl font-black text-cyan-400 font-mono block mt-1">
+                  {reviewsList.filter((r) => r.verifiedBuyer).length}
+                </span>
+              </div>
+
+              <div className="p-3 rounded-2xl bg-slate-950/80 border border-slate-800">
+                <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider block">
+                  {lang === 'bn' ? 'পেন্ডিং / অ্যাক্টিভ' : 'Active Status'}
+                </span>
+                <span className="text-xl font-black text-purple-400 font-mono block mt-1">
+                  100% Live
+                </span>
+              </div>
+            </div>
+
+            {/* Filter and Search */}
+            <div className="flex flex-col sm:flex-row items-center gap-3">
+              <div className="relative flex-1 w-full">
+                <Search className="w-4 h-4 text-slate-500 absolute left-3 top-1/2 -translate-y-1/2" />
+                <input
+                  type="text"
+                  value={reviewSearch}
+                  onChange={(e) => setReviewSearch(e.target.value)}
+                  placeholder={lang === 'bn' ? 'লেখক বা কমেন্টের টেক্সট দিয়ে খুঁজুন...' : 'Search by author or comment text...'}
+                  className="w-full bg-slate-950 border border-slate-800 rounded-xl pl-9 pr-3 py-2 text-xs text-white placeholder-slate-600 focus:outline-none focus:border-purple-500"
+                />
+              </div>
+
+              <div className="flex items-center gap-2 shrink-0 w-full sm:w-auto">
+                <select
+                  value={reviewFilterRating}
+                  onChange={(e) => setReviewFilterRating(e.target.value as any)}
+                  className="w-full sm:w-auto bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-300 focus:outline-none focus:border-purple-500"
+                >
+                  <option value="all">{lang === 'bn' ? 'সব রেটিং' : 'All Ratings'}</option>
+                  <option value="5">{lang === 'bn' ? '⭐ ৫ স্টার' : '⭐ 5 Stars'}</option>
+                  <option value="4">{lang === 'bn' ? '⭐ ৪ স্টার' : '⭐ 4 Stars'}</option>
+                  <option value="3">{lang === 'bn' ? '⭐ ৩ স্টার বা কম' : '⭐ 3 Stars & below'}</option>
+                </select>
+              </div>
+            </div>
+
+          </div>
+
+          {/* Reviews List Cards */}
+          <div className="space-y-3">
+            {(() => {
+              const filtered = reviewsList.filter((r) => {
+                const matchesSearch =
+                  !reviewSearch ||
+                  (r.authorName && r.authorName.toLowerCase().includes(reviewSearch.toLowerCase())) ||
+                  (r.comment && r.comment.toLowerCase().includes(reviewSearch.toLowerCase())) ||
+                  (r.packageUsed && r.packageUsed.toLowerCase().includes(reviewSearch.toLowerCase()));
+                const matchesRating =
+                  reviewFilterRating === 'all'
+                    ? true
+                    : reviewFilterRating === '5'
+                    ? r.rating === 5
+                    : reviewFilterRating === '4'
+                    ? r.rating === 4
+                    : (r.rating || 5) <= 3;
+                return matchesSearch && matchesRating;
+              });
+
+              if (filtered.length === 0) {
+                return (
+                  <div className="glass-panel p-10 text-center rounded-3xl border border-slate-800 text-slate-500 space-y-2">
+                    <MessageSquare className="w-10 h-10 mx-auto text-slate-600 opacity-50" />
+                    <p className="text-sm font-semibold">
+                      {lang === 'bn' ? 'কোনো রিভিউ পাওয়া যায়নি।' : 'No reviews found.'}
+                    </p>
+                  </div>
+                );
+              }
+
+              return filtered.map((r) => (
+                <div
+                  key={r.id}
+                  className="glass-panel p-5 rounded-2xl border border-slate-800 hover:border-purple-500/40 bg-slate-950/60 transition-all space-y-3"
+                >
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-2 border-b border-slate-800/80">
+                    <div className="flex items-center gap-2.5">
+                      <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-purple-600 to-cyan-500 text-white font-bold flex items-center justify-center text-xs shadow-sm">
+                        {r.authorName ? r.authorName.charAt(0).toUpperCase() : 'U'}
+                      </div>
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <span className="text-xs font-bold text-white">{r.authorName || 'Anonymous Customer'}</span>
+                          {r.verifiedBuyer && (
+                            <span className="px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 text-[10px] font-bold flex items-center gap-1">
+                              <CheckCircle2 className="w-3 h-3" />
+                              <span>{lang === 'bn' ? 'ভেরিফায়েড ক্রেতা' : 'Verified Buyer'}</span>
+                            </span>
+                          )}
+                          {r.role && r.role !== 'user' && (
+                            <span className="px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30 text-[10px] font-bold">
+                              {r.role}
+                            </span>
+                          )}
+                        </div>
+                        <span className="text-[10px] text-slate-500 font-mono">
+                          {r.createdAt ? new Date(r.createdAt).toLocaleString() : 'Recently'}
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-2">
+                      {/* Rating Stars */}
+                      <div className="flex items-center gap-0.5 px-2.5 py-1 rounded-xl bg-slate-900 border border-slate-800">
+                        {Array.from({ length: 5 }).map((_, i) => (
+                          <Star
+                            key={i}
+                            className={`w-3.5 h-3.5 ${
+                              i < (r.rating || 5)
+                                ? 'fill-amber-400 text-amber-400'
+                                : 'fill-slate-800 text-slate-700'
+                            }`}
+                          />
+                        ))}
+                      </div>
+
+                      {/* Package / SIM tag */}
+                      {r.packageUsed && (
+                        <span className="px-2.5 py-1 rounded-xl bg-slate-900 border border-slate-800 text-[10px] text-cyan-300 font-mono">
+                          {r.packageUsed}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Comment Body */}
+                  <p className="text-xs sm:text-sm text-slate-300 leading-relaxed font-sans">
+                    {r.comment}
+                  </p>
+
+                  {/* Actions Bar */}
+                  <div className="flex items-center justify-between gap-3 pt-2 text-xs border-t border-slate-900">
+                    <div className="flex items-center gap-2 text-[11px] text-slate-500">
+                      <span>👍 {r.helpfulVotes || 0} {lang === 'bn' ? 'উপকারী ভোট' : 'helpful'}</span>
+                      {r.feedbackType && (
+                        <span className="px-2 py-0.5 rounded bg-slate-900 text-slate-400 font-mono text-[10px]">
+                          {r.feedbackType}
+                        </span>
+                      )}
+                    </div>
+
+                    <div className="flex items-center gap-2">
+                      <button
+                        onClick={() => handleToggleVerifiedBuyer(r.id, Boolean(r.verifiedBuyer))}
+                        className={`px-3 py-1.5 rounded-xl border text-[11px] font-bold transition-all cursor-pointer ${
+                          r.verifiedBuyer
+                            ? 'bg-emerald-500/20 border-emerald-500/40 text-emerald-300 hover:bg-emerald-500/30'
+                            : 'bg-slate-900 border-slate-700 text-slate-400 hover:text-white'
+                        }`}
+                      >
+                        {r.verifiedBuyer
+                          ? (lang === 'bn' ? '✓ ভেরিফায়েড অন' : '✓ Verified')
+                          : (lang === 'bn' ? '+ ভেরিফায়েড করুন' : 'Mark Verified')}
+                      </button>
+
+                      <button
+                        onClick={() => handleDeleteReview(r.id)}
+                        disabled={deletingReviewId === r.id}
+                        className="px-3 py-1.5 rounded-xl bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/30 text-rose-400 text-[11px] font-bold flex items-center gap-1.5 transition-all cursor-pointer disabled:opacity-50"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                        <span>{deletingReviewId === r.id ? 'মুছে ফেলা হচ্ছে...' : (lang === 'bn' ? 'মুছে ফেলুন' : 'Delete')}</span>
+                      </button>
+                    </div>
+                  </div>
+
+                </div>
+              ));
+            })()}
+          </div>
+
+        </div>
+      )}
+
+      {/* TAB 5: SITE SETTINGS & WHATSAPP CONFIG */}
+      {activeAdminTab === 'site_settings' && (
+        <div className="space-y-4">
+          <div className="glass-panel p-6 sm:p-7 rounded-3xl border border-emerald-500/30 bg-emerald-950/10 space-y-6">
+            
+            <div className="flex items-center justify-between gap-4 flex-wrap">
+              <div className="flex items-center gap-3">
+                <div className="p-3 rounded-2xl bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
+                  <Settings className="w-6 h-6" />
+                </div>
+                <div>
+                  <h4 className="text-base sm:text-lg font-extrabold text-white flex items-center gap-2">
+                    <span>{lang === 'bn' ? 'ওয়েবসাইট সেটিংস ও অফিশিয়াল যোগাযোগ' : 'Site Settings & Contact Config'}</span>
+                    <span className="px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 text-[10px] font-bold">
+                      EXCLUSIVELY OWNER
+                    </span>
+                  </h4>
+                  <p className="text-xs text-slate-400">
+                    {lang === 'bn'
+                      ? 'এখানে পরিবর্তন করলে ওয়েবসাইটের সকল হোয়াটসঅ্যাপ বাটন, অফার পপআপ, নোটিশ ব্যানার ও সাপোর্ট লিংকে রিয়েল-টাইমে আপডেট কার্যকর হবে।'
+                      : 'Update WhatsApp number, display labels, social support links, and top announcements globally.'}
+                  </p>
+                </div>
+              </div>
+
+              {/* Live Test WhatsApp Button */}
+              <a
+                href={CONTACT_CONFIG.getWhatsAppUrl()}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="px-4 py-2 rounded-xl bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 hover:bg-emerald-500/30 text-xs font-bold flex items-center gap-2 transition-all"
+              >
+                <Phone className="w-3.5 h-3.5" />
+                <span>{lang === 'bn' ? 'হোয়াটসঅ্যাপ টেস্ট লিংক খুলুন ↗' : 'Test WhatsApp Link ↗'}</span>
+              </a>
+            </div>
+
+            {savedSettingsNotice && (
+              <div className="p-4 rounded-2xl bg-emerald-500/20 border border-emerald-500/50 text-emerald-300 text-xs font-bold flex items-center gap-2 animate-fade-in">
+                <CheckCircle2 className="w-4 h-4 shrink-0" />
+                <span>
+                  {lang === 'bn'
+                    ? '✅ সাইট সেটিংস সফলভাবে ক্লাউডে ও লোকাল মেমরিতে সংরক্ষণ করা হয়েছে! ওয়েবসাইটের সর্বত্র আপডেট কার্যকর।'
+                    : '✅ Site settings successfully updated and broadcast across the entire website!'}
+                </span>
+              </div>
+            )}
+
+            <form onSubmit={handleSaveSiteSettings} className="space-y-4 text-xs">
+              
+              {/* WhatsApp & Phone Numbers */}
+              <div className="p-4 rounded-2xl bg-slate-950/80 border border-slate-800 space-y-3">
+                <div className="text-[11px] font-black uppercase tracking-wider text-emerald-400 flex items-center gap-1.5">
+                  <Phone className="w-3.5 h-3.5" />
+                  <span>{lang === 'bn' ? '১. অফিশিয়াল হোয়াটসঅ্যাপ ও নম্বর' : '1. Official WhatsApp Phone'}</span>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div>
+                    <label className="block text-slate-400 mb-1 font-bold">
+                      {lang === 'bn' ? 'হোয়াটসঅ্যাপ ডিরেক্ট নম্বর (শুধু সংখ্যা)' : 'WhatsApp API Number (Digits Only)'} <span className="text-rose-400">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      value={siteSettingsForm.whatsappNumber}
+                      onChange={(e) => setSiteSettingsForm({ ...siteSettingsForm, whatsappNumber: e.target.value })}
+                      placeholder="8801342930870"
+                      className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-white font-mono focus:outline-none focus:border-emerald-400"
+                      required
+                    />
+                    <p className="text-[10px] text-slate-500 mt-1">
+                      {lang === 'bn' ? 'দেশের কোডসহ শুধু নম্বর দিন (যেমন: 8801342930870)।' : 'Include country code without + or spaces (e.g. 8801342930870).'}
+                    </p>
+                  </div>
+
+                  <div>
+                    <label className="block text-slate-400 mb-1 font-bold">
+                      {lang === 'bn' ? 'ওয়েবসাইটে প্রদর্শিত নম্বর (Display Text)' : 'Display Format (Visual Text)'}
+                    </label>
+                    <input
+                      type="text"
+                      value={siteSettingsForm.whatsappDisplayNumber}
+                      onChange={(e) => setSiteSettingsForm({ ...siteSettingsForm, whatsappDisplayNumber: e.target.value })}
+                      placeholder="+880 1342-930870"
+                      className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-white font-mono focus:outline-none focus:border-emerald-400"
+                    />
+                    <p className="text-[10px] text-slate-500 mt-1">
+                      {lang === 'bn' ? 'ভিজিটররা স্ক্রিনে এই সুন্দর ফরম্যাটটি দেখতে পাবে।' : 'Formatted text shown in cards and headers.'}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Social Channels & Links */}
+              <div className="p-4 rounded-2xl bg-slate-950/80 border border-slate-800 space-y-3">
+                <div className="text-[11px] font-black uppercase tracking-wider text-cyan-400 flex items-center gap-1.5">
+                  <Link2 className="w-3.5 h-3.5" />
+                  <span>{lang === 'bn' ? '২. সোশ্যাল চ্যানেল ও ইমেইল' : '2. Channels & Official Email'}</span>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                  <div>
+                    <label className="block text-slate-400 mb-1 font-bold">
+                      {lang === 'bn' ? 'অফিশিয়াল হোয়াটসঅ্যাপ চ্যানেল লিংক' : 'WhatsApp Channel Link'}
+                    </label>
+                    <input
+                      type="url"
+                      value={siteSettingsForm.whatsappChannelUrl}
+                      onChange={(e) => setSiteSettingsForm({ ...siteSettingsForm, whatsappChannelUrl: e.target.value })}
+                      placeholder="https://whatsapp.com/channel/..."
+                      className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white font-mono text-[11px] focus:outline-none focus:border-cyan-400"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-slate-400 mb-1 font-bold">
+                      {lang === 'bn' ? 'টেলিগ্রাম গ্রুপ / চ্যানেল লিংক' : 'Telegram URL'}
+                    </label>
+                    <input
+                      type="url"
+                      value={siteSettingsForm.telegramUrl}
+                      onChange={(e) => setSiteSettingsForm({ ...siteSettingsForm, telegramUrl: e.target.value })}
+                      placeholder="https://t.me/soverixnet_vpn"
+                      className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white font-mono text-[11px] focus:outline-none focus:border-cyan-400"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-slate-400 mb-1 font-bold">
+                      {lang === 'bn' ? 'অফিশিয়াল সাপোর্ট ইমেইল' : 'Official Email'}
+                    </label>
+                    <input
+                      type="email"
+                      value={siteSettingsForm.officialEmail}
+                      onChange={(e) => setSiteSettingsForm({ ...siteSettingsForm, officialEmail: e.target.value })}
+                      placeholder="soverixnet@gmail.com"
+                      className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white font-mono text-[11px] focus:outline-none focus:border-cyan-400"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* Ticker Announcements */}
+              <div className="p-4 rounded-2xl bg-slate-950/80 border border-slate-800 space-y-3">
+                <div className="text-[11px] font-black uppercase tracking-wider text-amber-400 flex items-center gap-1.5">
+                  <Megaphone className="w-3.5 h-3.5" />
+                  <span>{lang === 'bn' ? '৩. টপ নোটিশ ব্যানার (হেডার টিকার)' : '3. Top Ticker Announcements'}</span>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div>
+                    <label className="block text-slate-400 mb-1 font-bold">
+                      {lang === 'bn' ? 'বাংলা নোটিশ লেখা' : 'Bengali Announcement'}
+                    </label>
+                    <textarea
+                      rows={2}
+                      value={siteSettingsForm.tickerAnnouncementBn}
+                      onChange={(e) => setSiteSettingsForm({ ...siteSettingsForm, tickerAnnouncementBn: e.target.value })}
+                      placeholder="🇸🇦 সৌদি আরব STC & Mobily 5G আনলিমিটেড ফ্রি-নেট..."
+                      className="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-white text-xs focus:outline-none focus:border-amber-400"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-slate-400 mb-1 font-bold">
+                      {lang === 'bn' ? 'ইংরেজি নোটিশ লেখা' : 'English Announcement'}
+                    </label>
+                    <textarea
+                      rows={2}
+                      value={siteSettingsForm.tickerAnnouncementEn}
+                      onChange={(e) => setSiteSettingsForm({ ...siteSettingsForm, tickerAnnouncementEn: e.target.value })}
+                      placeholder="🇸🇦 Saudi Arabia STC & Mobily 5G Unlimited FreeNet..."
+                      className="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-white text-xs focus:outline-none focus:border-amber-400"
+                    />
+                  </div>
+                </div>
+
+                <div className="pt-2 flex items-center gap-3">
+                  <label className="flex items-center gap-2 cursor-pointer select-none">
+                    <input
+                      type="checkbox"
+                      checked={Boolean(siteSettingsForm.promoModalEnabled)}
+                      onChange={(e) => setSiteSettingsForm({ ...siteSettingsForm, promoModalEnabled: e.target.checked })}
+                      className="w-4 h-4 rounded text-emerald-500 bg-slate-950 border-slate-700"
+                    />
+                    <span className="text-slate-300 font-bold">
+                      {lang === 'bn' ? 'নতুন ভিজিটরদের জন্য ওয়েলকাম অফার পপআপ সক্রিয় রাখুন' : 'Enable Welcome Offer Popup for new visitors'}
+                    </span>
+                  </label>
+                </div>
+              </div>
+
+              {/* Submit Button */}
+              <div className="flex items-center justify-end gap-3 pt-2">
+                <button
+                  type="submit"
+                  disabled={isSavingSettings}
+                  className="px-6 py-3 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-400 hover:from-emerald-400 hover:to-teal-300 text-black font-extrabold text-xs flex items-center gap-2 transition-all cursor-pointer shadow-lg shadow-emerald-500/25 disabled:opacity-50"
+                >
+                  <Check className="w-4 h-4" />
+                  <span>{isSavingSettings ? 'সংরক্ষণ হচ্ছে...' : (lang === 'bn' ? '💾 সাইট সেটিংস সংরক্ষণ করুন' : '💾 Save Site Settings')}</span>
+                </button>
+              </div>
+
+            </form>
+
+          </div>
+        </div>
+      )}
+
+      {/* TAB 6: APK DOWNLOAD LINKS */}
+      {activeAdminTab === 'app_links' && (
+        <div className="space-y-4">
+          <div className="glass-panel p-6 sm:p-7 rounded-3xl border border-blue-500/30 bg-blue-950/10 space-y-6">
+            
+            <div className="flex items-center justify-between gap-4 flex-wrap">
+              <div className="flex items-center gap-3">
+                <div className="p-3 rounded-2xl bg-blue-500/20 text-blue-400 border border-blue-500/30">
+                  <Smartphone className="w-6 h-6" />
+                </div>
+                <div>
+                  <h4 className="text-base sm:text-lg font-extrabold text-white flex items-center gap-2">
+                    <span>{lang === 'bn' ? 'এপিকে অ্যাপ ডাউনলোড লিংক পরিচালনা' : 'APK Download Links Manager'}</span>
+                    <span className="px-2 py-0.5 rounded-full bg-blue-500/20 text-blue-300 border border-blue-500/40 text-[10px] font-bold">
+                      4 OFFICIAL APPS
+                    </span>
+                  </h4>
+                  <p className="text-xs text-slate-400">
+                    {lang === 'bn'
+                      ? 'ওয়েবসাইটে ভিজিটরদের জন্য প্রদর্শিত ৪টি অ্যাপের অফিশিয়াল ডাউনলোড লিংক সরাসরি আপডেট করুন।'
+                      : 'Update direct APK release URLs for AF V2Ray, Jiyam Plus, Mohin VIP, and Net Solution.'}
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {savedAppsNotice && (
+              <div className="p-4 rounded-2xl bg-blue-500/20 border border-blue-500/50 text-blue-300 text-xs font-bold flex items-center gap-2 animate-fade-in">
+                <CheckCircle2 className="w-4 h-4 shrink-0" />
+                <span>
+                  {lang === 'bn'
+                    ? '✅ এপিকে ডাউনলোড লিংক সফলভাবে ক্লাউডে সেভ হয়েছে! ডাউনলোড বাটনে নতুন লিংক কাজ করছে।'
+                    : '✅ APK download links updated and saved successfully!'}
+                </span>
+              </div>
+            )}
+
+            <form onSubmit={handleSaveAppLinks} className="space-y-4 text-xs">
+              
+              {/* AF V2Ray */}
+              <div className="p-4 rounded-2xl bg-slate-950/80 border border-slate-800 space-y-2">
+                <div className="flex items-center justify-between">
+                  <span className="text-[11px] font-black uppercase text-cyan-400">
+                    1. AF V2Ray VPN APK (GitHub / Direct Link)
+                  </span>
+                  <a
+                    href={siteSettingsForm.appAfV2RayUrl || 'https://github.com/flamessoflove-del/afv2rayapkdownloadelink/releases/download/1.0/af.v2.ray.apk'}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-cyan-400 hover:underline text-[11px] flex items-center gap-1"
+                  >
+                    <span>Test Download</span>
+                    <ExternalLink className="w-3 h-3" />
+                  </a>
+                </div>
+                <input
+                  type="url"
+                  value={siteSettingsForm.appAfV2RayUrl || ''}
+                  onChange={(e) => setSiteSettingsForm({ ...siteSettingsForm, appAfV2RayUrl: e.target.value })}
+                  placeholder="https://github.com/.../af.v2.ray.apk"
+                  className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white font-mono text-[11px] focus:outline-none focus:border-cyan-400"
+                />
+              </div>
+
+              {/* Jiyam Plus */}
+              <div className="p-4 rounded-2xl bg-slate-950/80 border border-slate-800 space-y-2">
+                <div className="flex items-center justify-between">
+                  <span className="text-[11px] font-black uppercase text-emerald-400">
+                    2. Jiyam Plus VPN APK (Gulf & Arab FreeNet)
+                  </span>
+                  <a
+                    href={siteSettingsForm.appJiyamPlusUrl || 'https://upload.app/download/jiyam-plus-vpn/com.rksoft.jiyamplus.vpn/d75e1a0df56e37f253a36a6b2436f73edee03682c27356816f69d21da133983d'}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-emerald-400 hover:underline text-[11px] flex items-center gap-1"
+                  >
+                    <span>Test Download</span>
+                    <ExternalLink className="w-3 h-3" />
+                  </a>
+                </div>
+                <input
+                  type="url"
+                  value={siteSettingsForm.appJiyamPlusUrl || ''}
+                  onChange={(e) => setSiteSettingsForm({ ...siteSettingsForm, appJiyamPlusUrl: e.target.value })}
+                  placeholder="https://upload.app/download/jiyam-plus-vpn/..."
+                  className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white font-mono text-[11px] focus:outline-none focus:border-emerald-400"
+                />
+              </div>
+
+              {/* Mohin VIP */}
+              <div className="p-4 rounded-2xl bg-slate-950/80 border border-slate-800 space-y-2">
+                <div className="flex items-center justify-between">
+                  <span className="text-[11px] font-black uppercase text-amber-400">
+                    3. Mohin VIP VPN APK (Ultra Pro VIP)
+                  </span>
+                  <a
+                    href={siteSettingsForm.appMohinVipUrl || 'https://upload.app/download/mohin-vip-vpn/dev.masterbuild.mohinvip/b330cdea6a0ce3ac5ff44d7f997f6762e7a4a7f8d7c1306bdd7811ea79d0e8b9/downloading'}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-amber-400 hover:underline text-[11px] flex items-center gap-1"
+                  >
+                    <span>Test Download</span>
+                    <ExternalLink className="w-3 h-3" />
+                  </a>
+                </div>
+                <input
+                  type="url"
+                  value={siteSettingsForm.appMohinVipUrl || ''}
+                  onChange={(e) => setSiteSettingsForm({ ...siteSettingsForm, appMohinVipUrl: e.target.value })}
+                  placeholder="https://upload.app/download/mohin-vip-vpn/..."
+                  className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white font-mono text-[11px] focus:outline-none focus:border-amber-400"
+                />
+              </div>
+
+              {/* Net Solution */}
+              <div className="p-4 rounded-2xl bg-slate-950/80 border border-slate-800 space-y-2">
+                <div className="flex items-center justify-between">
+                  <span className="text-[11px] font-black uppercase text-purple-400">
+                    4. Net Solution VPN APK (All SIM Tunnel)
+                  </span>
+                  <a
+                    href={siteSettingsForm.appNetSolutionUrl || 'https://premiumapk.store/Apk/Net%20Solution.apk'}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-purple-400 hover:underline text-[11px] flex items-center gap-1"
+                  >
+                    <span>Test Download</span>
+                    <ExternalLink className="w-3 h-3" />
+                  </a>
+                </div>
+                <input
+                  type="url"
+                  value={siteSettingsForm.appNetSolutionUrl || ''}
+                  onChange={(e) => setSiteSettingsForm({ ...siteSettingsForm, appNetSolutionUrl: e.target.value })}
+                  placeholder="https://premiumapk.store/Apk/Net%20Solution.apk"
+                  className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white font-mono text-[11px] focus:outline-none focus:border-purple-400"
+                />
+              </div>
+
+              {/* Submit Button */}
+              <div className="flex items-center justify-end gap-3 pt-2">
+                <button
+                  type="submit"
+                  disabled={isSavingSettings}
+                  className="px-6 py-3 rounded-2xl bg-gradient-to-r from-blue-500 to-cyan-400 hover:from-blue-400 hover:to-cyan-300 text-black font-extrabold text-xs flex items-center gap-2 transition-all cursor-pointer shadow-lg shadow-blue-500/25 disabled:opacity-50"
+                >
+                  <Check className="w-4 h-4" />
+                  <span>{isSavingSettings ? 'সংরক্ষণ হচ্ছে...' : (lang === 'bn' ? '💾 অ্যাপ ডাউনলোড লিংক সেভ করুন' : '💾 Save APK Download Links')}</span>
+                </button>
+              </div>
+
+            </form>
+
+          </div>
         </div>
       )}
 

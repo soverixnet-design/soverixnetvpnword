@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Download, MessageCircle, Radio, Sparkles, ChevronUp, ChevronDown } from 'lucide-react';
-import { CONTACT_CONFIG } from '../data/contact';
+import { CONTACT_CONFIG, getSiteSettings } from '../data/contact';
 
 interface FloatingDownloadBarProps {
   lang: 'en' | 'bn';
@@ -8,6 +8,13 @@ interface FloatingDownloadBarProps {
 
 export const FloatingDownloadBar: React.FC<FloatingDownloadBarProps> = ({ lang }) => {
   const [isMinimized, setIsMinimized] = useState(false);
+  const [settings, setSettings] = useState(() => getSiteSettings());
+
+  useEffect(() => {
+    const handleUpdate = () => setSettings(getSiteSettings());
+    window.addEventListener('soverix_settings_changed', handleUpdate);
+    return () => window.removeEventListener('soverix_settings_changed', handleUpdate);
+  }, []);
 
   // Directly trigger WhatsApp with reliable fallback
   const handleOpenWhatsApp = (e: React.MouseEvent) => {
@@ -21,7 +28,7 @@ export const FloatingDownloadBar: React.FC<FloatingDownloadBarProps> = ({ lang }
       id: 'mohin-vip',
       shortName: 'Mohin VIP',
       badge: 'VIP Pro',
-      downloadUrl: CONTACT_CONFIG.apps.mohinVip.downloadUrl,
+      downloadUrl: settings.appMohinVipUrl,
       btnClass: 'from-amber-400 via-amber-500 to-amber-600 hover:from-amber-300 hover:to-amber-500 border-amber-800 text-slate-950 shadow-amber-500/25',
       icon: '👑',
     },
@@ -29,7 +36,7 @@ export const FloatingDownloadBar: React.FC<FloatingDownloadBarProps> = ({ lang }
       id: 'net-solution',
       shortName: 'Net Solution',
       badge: 'All SIM',
-      downloadUrl: CONTACT_CONFIG.apps.netSolution.downloadUrl,
+      downloadUrl: settings.appNetSolutionUrl,
       btnClass: 'from-purple-400 via-purple-500 to-purple-600 hover:from-purple-300 hover:to-purple-500 border-purple-800 text-white shadow-purple-500/25',
       icon: '⚡',
     },
@@ -37,7 +44,7 @@ export const FloatingDownloadBar: React.FC<FloatingDownloadBarProps> = ({ lang }
       id: 'af-v2ray',
       shortName: 'AF V2Ray',
       badge: 'Global',
-      downloadUrl: CONTACT_CONFIG.apps.afV2Ray.downloadUrl,
+      downloadUrl: settings.appAfV2RayUrl,
       btnClass: 'from-cyan-400 via-cyan-500 to-cyan-600 hover:from-cyan-300 hover:to-cyan-500 border-cyan-800 text-slate-950 shadow-cyan-500/25',
       icon: '🛡️',
     },
@@ -45,7 +52,7 @@ export const FloatingDownloadBar: React.FC<FloatingDownloadBarProps> = ({ lang }
       id: 'jiyam-plus',
       shortName: 'Jiyam Plus',
       badge: 'Gulf SIM',
-      downloadUrl: CONTACT_CONFIG.apps.jiyamPlus.downloadUrl,
+      downloadUrl: settings.appJiyamPlusUrl,
       btnClass: 'from-emerald-400 via-emerald-500 to-emerald-600 hover:from-emerald-300 hover:to-emerald-500 border-emerald-800 text-slate-950 shadow-emerald-500/25',
       icon: '🚀',
     },

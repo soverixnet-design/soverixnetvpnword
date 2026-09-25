@@ -8,7 +8,9 @@ import {
 import { SERVERS_DATA } from './data/servers';
 import { ServerManager } from './services/serverManager';
 import { TRANSLATIONS } from './data/translations';
-import { CONTACT_CONFIG } from './data/contact';
+import { CONTACT_CONFIG, saveSiteSettings, getSiteSettings, SiteSettingsData } from './data/contact';
+import { doc, onSnapshot } from 'firebase/firestore';
+import { db } from './firebase/config';
 import { Navbar } from './components/Navbar';
 import { MainConnectView } from './components/MainConnectView';
 import { BenefitsView } from './components/BenefitsView';
@@ -17,8 +19,10 @@ import { ServerListModal } from './components/ServerListModal';
 import { ConfigGeneratorModal } from './components/ConfigGeneratorModal';
 import { ArabSimPayloadCustomizer } from './components/ArabSimPayloadCustomizer';
 import { PwaInstallAndPushBanner } from './components/PwaInstallAndPushBanner';
+import { DynamicHeroBanners } from './components/DynamicHeroBanners';
 import { LiveSupportWidget } from './components/LiveSupportWidget';
 import { FloatingDownloadBar } from './components/FloatingDownloadBar';
+import { WelcomePromoModal } from './components/WelcomePromoModal';
 import { AccountView } from './components/AccountView';
 import { AdminConsoleView } from './components/AdminConsoleView';
 import { AuthModal } from './components/AuthModal';
@@ -54,6 +58,7 @@ function AppContent() {
   const [authModalTab, setAuthModalTab] = useState<'signin' | 'signup'>('signin');
   const [sessionStartTime, setSessionStartTime] = useState<number | null>(null);
   const [toastFeedback, setToastFeedback] = useState<ToastFeedbackData | null>(null);
+  const [isWelcomePromoOpen, setIsWelcomePromoOpen] = useState<boolean>(false);
 
   const { user, userProfile, isSuperAdmin, isAdmin, updateUserPreferences, saveConnectionSession } = useAuth();
 
@@ -85,6 +90,8 @@ function AppContent() {
     quantumSafeKyber: true,
   });
 
+  const [siteSettings, setSiteSettings] = useState<SiteSettingsData>(getSiteSettings());
+
   const t = TRANSLATIONS[lang];
 
   // Sync theme changes with localStorage and HTML root element
@@ -112,6 +119,30 @@ function AppContent() {
       }
     });
     return () => unsub();
+  }, []);
+
+  // Synchronize global site settings dynamically from Firestore & local events
+  useEffect(() => {
+    const handleSettingsChanged = () => {
+      setSiteSettings(getSiteSettings());
+    };
+    window.addEventListener('soverix_settings_changed', handleSettingsChanged);
+
+    let unsub = () => {};
+    try {
+      unsub = onSnapshot(doc(db, 'settings', 'general'), (snap) => {
+        if (snap.exists()) {
+          const updated = saveSiteSettings(snap.data() as Partial<SiteSettingsData>);
+          setSiteSettings(updated);
+        }
+      }, (err) => {
+        console.warn('Firestore settings listener warning:', err);
+      });
+    } catch {}
+    return () => {
+      window.removeEventListener('soverix_settings_changed', handleSettingsChanged);
+      unsub();
+    };
   }, []);
 
   const handleOpenAuthModal = (initialTab: 'signin' | 'signup' = 'signin') => {
@@ -353,8 +384,12 @@ function AppContent() {
       
       {/* Background Ambient Glow & Grid */}
       <div className="fixed inset-0 bg-cyber-grid opacity-25 pointer-events-none z-0" />
-      <div className={`fixed top-0 left-1/4 w-96 h-96 ${theme === 'cyber-light' ? 'bg-cyan-500/10' : 'bg-cyan-600/10'} rounded-full blur-[140px] pointer-events-none z-0`} />
-      <div className={`fixed bottom-0 right-1/4 w-96 h-96 ${theme === 'cyber-light' ? 'bg-indigo-400/10' : 'bg-indigo-600/10'} rounded-full blur-[140px] pointer-events-none z-0`} />
+      {siteSettings.designTheme?.showBackgroundGlow !== false && (
+        <>
+          <div className={`fixed top-0 left-1/4 w-96 h-96 ${theme === 'cyber-light' ? 'bg-cyan-500/10' : 'bg-cyan-600/10'} rounded-full blur-[140px] pointer-events-none z-0`} />
+          <div className={`fixed bottom-0 right-1/4 w-96 h-96 ${theme === 'cyber-light' ? 'bg-indigo-400/10' : 'bg-indigo-600/10'} rounded-full blur-[140px] pointer-events-none z-0`} />
+        </>
+      )}
 
       {/* Main Top Navbar with Theme Toggle */}
       <Navbar
@@ -369,11 +404,21 @@ function AppContent() {
         setSoundEnabled={handleToggleSound}
         killSwitchActive={settings.killSwitch}
         onOpenAuthModal={handleOpenAuthModal}
+        onOpenPromoModal={() => setIsWelcomePromoOpen(true)}
       />
 
       {/* Main App Content View Container */}
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 z-10 space-y-6">
         
+        {/* Dynamic Promotional Banners Carousel (Managed from Admin Console) */}
+        {siteSettings.sectionVisibility?.bannersSlider !== false && (
+          <DynamicHeroBanners 
+            banners={siteSettings.banners || []} 
+            lang={lang} 
+            onNavigateTab={setActiveTab} 
+          />
+        )}
+
         {/* PWA & Mobile Install Strip Banner */}
         <PwaInstallAndPushBanner lang={lang} />
         
@@ -597,17 +642,30 @@ function AppContent() {
           </div>
 
           <div className="pt-4 border-t border-slate-900 text-center text-[10px] text-slate-600 leading-relaxed max-w-4xl mx-auto">
-            © 2026 <strong>Soverixnet VPN</strong>. All Rights Reserved. Official Portal for Soverixnet, Soverix net, WireGuard VPN, V2Ray VLESS Reality, Low Ping Gaming VPN Bangladesh, 4K Streaming Accelerator & Military-Grade Online Privacy Gateway.
+            © 2026 <strong>{siteSettings.designTheme?.siteTitle || 'Soverixnet VPN'}</strong>. All Rights Reserved. Official Portal for Soverixnet, Soverix net, WireGuard VPN, V2Ray VLESS Reality, Low Ping Gaming VPN Bangladesh, 4K Streaming Accelerator & Military-Grade Online Privacy Gateway.
           </div>
 
         </div>
       </footer>
 
       {/* Global Floating Quick Download & WhatsApp Dock */}
-      <FloatingDownloadBar lang={lang} />
+      {siteSettings.sectionVisibility?.floatingDock !== false && (
+        <FloatingDownloadBar lang={lang} />
+      )}
 
       {/* Global Live Support & Helpdesk Floating Widget */}
-      <LiveSupportWidget lang={lang} />
+      {siteSettings.sectionVisibility?.liveSupport !== false && (
+        <LiveSupportWidget lang={lang} />
+      )}
+
+      {/* Auto Welcome & Special Promo Modal (Saudi 5G & WhatsApp Support) */}
+      {siteSettings.sectionVisibility?.promoModal !== false && siteSettings.promoModalEnabled !== false && (
+        <WelcomePromoModal 
+          lang={lang} 
+          forceOpen={isWelcomePromoOpen} 
+          onClose={() => setIsWelcomePromoOpen(false)} 
+        />
+      )}
 
     </div>
   );

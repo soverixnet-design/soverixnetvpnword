@@ -388,9 +388,75 @@
         }
       },
       "required": ["reviewId", "authorName", "rating", "comment", "createdAt"]
+    },
+    "SiteSettings": {
+      "title": "SiteSettings",
+      "description": "Global website runtime settings managed by master super admin soverixnet@gmail.com",
+      "type": "object",
+      "properties": {
+        "settingId": {
+          "type": "string",
+          "description": "Unique key for settings document (e.g. 'general')",
+          "maxLength": 64
+        },
+        "whatsappNumber": {
+          "type": "string",
+          "description": "Primary WhatsApp number with country code",
+          "maxLength": 32
+        },
+        "whatsappDisplayNumber": {
+          "type": "string",
+          "description": "Formatted WhatsApp number for display",
+          "maxLength": 32
+        },
+        "whatsappChannelUrl": {
+          "type": "string",
+          "description": "Official WhatsApp Channel link",
+          "maxLength": 256
+        },
+        "telegramUrl": {
+          "type": "string",
+          "description": "Telegram group/channel link",
+          "maxLength": 256
+        },
+        "officialEmail": {
+          "type": "string",
+          "description": "Contact support email",
+          "maxLength": 128
+        },
+        "tickerAnnouncementBn": {
+          "type": "string",
+          "description": "Top notice ticker text in Bengali",
+          "maxLength": 500
+        },
+        "tickerAnnouncementEn": {
+          "type": "string",
+          "description": "Top notice ticker text in English",
+          "maxLength": 500
+        },
+        "promoModalEnabled": {
+          "type": "boolean",
+          "description": "Whether welcome promo modal auto-pops up on first visit"
+        },
+        "updatedBy": {
+          "type": "string",
+          "description": "Email of admin who saved settings",
+          "maxLength": 128
+        },
+        "updatedAt": {
+          "type": "string",
+          "description": "ISO timestamp of update",
+          "maxLength": 64
+        }
+      },
+      "required": ["settingId", "whatsappNumber"]
     }
   },
   "firestore": {
+    "/settings/{settingId}": {
+      "schema": "SiteSettings",
+      "description": "Global website configuration, WhatsApp contact numbers, and top announcement tickers managed exclusively by soverixnet@gmail.com"
+    },
     "/reviews/{reviewId}": {
       "schema": "Review",
       "description": "Public community comments, user ratings, package reviews and feedback feed visible to all visitors"

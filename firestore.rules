@@ -134,6 +134,12 @@ service cloud.firestore {
       allow write: if false;
     }
 
+    // Global Site Settings (Only soverixnet@gmail.com can write/modify)
+    match /settings/{settingId} {
+      allow read: if true;
+      allow create, update, delete: if isSuperAdmin() && isValidId(settingId);
+    }
+
     // Public Community Reviews & Comments collection
     match /reviews/{reviewId} {
       allow read: if true; // Everyone can see all reviews and comments

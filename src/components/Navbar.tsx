@@ -31,7 +31,7 @@ import {
 import { ConnectionStatus } from '../types';
 import { TRANSLATIONS } from '../data/translations';
 import { useAuth } from '../firebase/AuthContext';
-import { CONTACT_CONFIG } from '../data/contact';
+import { CONTACT_CONFIG, getSiteSettings } from '../data/contact';
 
 interface NavbarProps {
   activeTab: string;
@@ -46,6 +46,7 @@ interface NavbarProps {
   killSwitchActive?: boolean;
   onOpenQuickSettings?: () => void;
   onOpenAuthModal: (tab?: 'signin' | 'signup') => void;
+  onOpenPromoModal?: () => void;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
@@ -61,32 +62,41 @@ export const Navbar: React.FC<NavbarProps> = ({
   killSwitchActive,
   onOpenQuickSettings,
   onOpenAuthModal,
+  onOpenPromoModal,
 }) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [siteSettings, setSiteSettings] = useState(getSiteSettings());
   const t = TRANSLATIONS[lang];
   const isConnected = status === 'connected';
   const { user, isSuperAdmin, isAdmin, isReseller, canAccessAdminPanel, userProfile } = useAuth();
 
-  const navLinks = [
-    { id: 'dashboard', label: lang === 'bn' ? 'হোম' : 'Home', icon: Radio },
-    { id: 'vipPlans', label: lang === 'bn' ? 'প্যাকেজ ও মূল্য' : 'Packages & Pricing', icon: Crown, vipHighlight: true },
-    { id: 'arabSim', label: lang === 'bn' ? '🇸🇦 আরব ফ্রি-নেট' : '🇸🇦 Arab FreeNet', icon: Zap, highlight: true },
-    { id: 'configs', label: lang === 'bn' ? 'ডাউনলোড ও কনফিগ' : 'Downloads', icon: FileCode2 },
-    { id: 'servers', label: lang === 'bn' ? 'সার্ভারসমূহ' : 'Servers', icon: Globe },
-    { id: 'reviews', label: lang === 'bn' ? 'রিভিউ ও মন্তব্য' : 'Reviews', icon: Star },
-    { id: 'benefits', label: lang === 'bn' ? 'সুবিধাসমূহ' : 'Why Us?', icon: Sparkles },
-    { id: 'account', label: lang === 'bn' ? 'অ্যাকাউন্ট' : 'Account', icon: User },
+  React.useEffect(() => {
+    const handleUpdate = () => {
+      setSiteSettings(getSiteSettings());
+    };
+    window.addEventListener('soverix_settings_changed', handleUpdate);
+    return () => window.removeEventListener('soverix_settings_changed', handleUpdate);
+  }, []);
+
+  const rawNavLinks = [
+    { id: 'dashboard', label: lang === 'bn' ? 'হোম' : 'Home', icon: Radio, show: siteSettings.sectionVisibility?.heroConnect !== false },
+    { id: 'vipPlans', label: lang === 'bn' ? 'প্যাকেজ ও মূল্য' : 'Packages & Pricing', icon: Crown, vipHighlight: true, show: siteSettings.sectionVisibility?.vipPlans !== false },
+    { id: 'arabSim', label: lang === 'bn' ? '🇸🇦 আরব ফ্রি-নেট' : '🇸🇦 Arab FreeNet', icon: Zap, highlight: true, show: siteSettings.sectionVisibility?.arabSimPayload !== false },
+    { id: 'configs', label: lang === 'bn' ? 'ডাউনলোড ও কনফিগ' : 'Downloads', icon: FileCode2, show: true },
+    { id: 'servers', label: lang === 'bn' ? 'সার্ভারসমূহ' : 'Servers', icon: Globe, show: siteSettings.sectionVisibility?.serverNodes !== false },
+    { id: 'reviews', label: lang === 'bn' ? 'রিভিউ ও মন্তব্য' : 'Reviews', icon: Star, show: siteSettings.sectionVisibility?.communityReviews !== false },
+    { id: 'benefits', label: lang === 'bn' ? 'সুবিধাসমূহ' : 'Why Us?', icon: Sparkles, show: siteSettings.sectionVisibility?.benefitsFeatures !== false },
+    { id: 'account', label: lang === 'bn' ? 'অ্যাকাউন্ট' : 'Account', icon: User, show: true },
     ...(canAccessAdminPanel ? [{
       id: 'admin',
-      label: isSuperAdmin 
-        ? (lang === 'bn' ? 'এডমিন' : 'Admin') 
-        : isReseller 
-        ? (lang === 'bn' ? 'রিসেলার' : 'Reseller') 
-        : (lang === 'bn' ? 'এডমিন' : 'Admin'),
-      icon: isReseller && !isSuperAdmin ? Briefcase : ShieldAlert,
-      adminOnly: true
+      label: lang === 'bn' ? '👑 ওনার এডমিন' : '👑 Owner Admin',
+      icon: ShieldAlert,
+      adminOnly: true,
+      show: true
     }] : []),
   ];
+
+  const navLinks = rawNavLinks.filter((item) => item.show !== false);
 
   const toggleTheme = () => {
     setTheme(theme === 'dark' ? 'cyber-light' : 'dark');
@@ -109,51 +119,68 @@ export const Navbar: React.FC<NavbarProps> = ({
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  const currentSiteTitle = siteSettings.designTheme?.siteTitle || 'Soverixnet VPN';
+  const currentLogoUrl = siteSettings.designTheme?.logoUrl || '/soverix_shield_logo.jpg';
+
   return (
     <header className="sticky top-0 z-40 w-full border-b border-cyan-500/20 bg-[#030712]/95 backdrop-blur-xl shadow-2xl shadow-cyan-950/25 transition-colors duration-300">
       
       {/* Top Ticker / Notification Bar */}
-      <div className="w-full bg-gradient-to-r from-emerald-950/90 via-slate-950 to-cyan-950/90 border-b border-emerald-500/20 py-1.5 px-4 text-[11px] text-slate-300">
-        <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
-          <div className="flex items-center gap-2 truncate">
-            <span className="px-1.5 py-0.2 rounded bg-emerald-500/20 text-emerald-400 font-extrabold border border-emerald-500/30 text-[10px] shrink-0">
-              NEW UPDATE
-            </span>
-            <span className="truncate">
-              {lang === 'bn' 
-                ? '🇸🇦 সৌদি আরব (STC, Mobily, Zain) ও মধ্যপ্রাচ্যে আনলিমিটেড FreeNet SNI পেলোড সক্রিয়!' 
-                : '🇸🇦 High-speed Arab SIM FreeNet Payloads active for STC, Mobily & Zain!'}
-            </span>
-          </div>
+      {siteSettings.sectionVisibility?.topNoticeMarquee !== false && (
+        <div className="w-full bg-gradient-to-r from-emerald-950/90 via-slate-950 to-cyan-950/90 border-b border-emerald-500/20 py-1.5 px-4 text-[11px] text-slate-300">
+          <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
+            <div className="flex items-center gap-2 truncate">
+              <span className="px-1.5 py-0.2 rounded bg-emerald-500/20 text-emerald-400 font-extrabold border border-emerald-500/30 text-[10px] shrink-0">
+                NEW UPDATE
+              </span>
+              <span className="truncate">
+                {lang === 'bn' 
+                  ? (siteSettings.tickerAnnouncementBn || '🇸🇦 সৌদি আরব (STC, Mobily, Zain) ও মধ্যপ্রাচ্যে আনলিমিটেড FreeNet SNI পেলোড সক্রিয়!') 
+                  : (siteSettings.tickerAnnouncementEn || '🇸🇦 High-speed Arab SIM FreeNet Payloads active for STC, Mobily & Zain!')}
+              </span>
+            </div>
 
-          <div className="flex items-center gap-3 shrink-0 text-[11px]">
-            <a
-              href={CONTACT_CONFIG.whatsappChannelUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-emerald-400 hover:text-emerald-300 font-bold flex items-center gap-1 transition-colors"
-            >
-              <span>WhatsApp Channel</span>
-              <span>➔</span>
-            </a>
-            <span className="text-slate-700 hidden sm:inline">|</span>
-            <span className="text-cyan-400 font-mono hidden sm:inline">Zero-Logs Verified</span>
+            <div className="flex items-center gap-3 shrink-0 text-[11px]">
+              {onOpenPromoModal && siteSettings.sectionVisibility?.promoModal !== false && (
+                <button
+                  onClick={onOpenPromoModal}
+                  className="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-gradient-to-r from-amber-500/20 via-emerald-500/20 to-cyan-500/20 text-amber-300 hover:text-amber-200 border border-amber-500/40 text-[10px] font-black hover:scale-105 transition-all cursor-pointer shadow-sm"
+                >
+                  <span>🔥</span>
+                  <span>{lang === 'bn' ? 'অফার ব্যানার ও পপআপ' : 'Special Offer Banner'}</span>
+                </button>
+              )}
+              <a
+                href={CONTACT_CONFIG.whatsappChannelUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-emerald-400 hover:text-emerald-300 font-bold flex items-center gap-1 transition-colors"
+              >
+                <span>WhatsApp Channel</span>
+                <span>➔</span>
+              </a>
+              <span className="text-slate-700 hidden sm:inline">|</span>
+              <span className="text-cyan-400 font-mono hidden sm:inline">Zero-Logs Verified</span>
+            </div>
           </div>
         </div>
-      </div>
+      )}
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16 sm:h-20">
           
-          {/* Brand Logo & Website Title */}
+          {/* Brand Logo & Website Title (Official 3D Shield Badge) */}
           <div 
             onClick={() => handleNavClick('dashboard')}
             className="flex items-center gap-3 cursor-pointer group select-none"
           >
             <div className="relative">
-              <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-2xl bg-gradient-to-br from-cyan-500 via-blue-600 to-indigo-700 flex items-center justify-center shadow-lg shadow-cyan-500/30 group-hover:shadow-cyan-400/50 transition-all duration-300 transform group-hover:scale-105 border border-cyan-300/30">
-                <ShieldCheck className="w-6 h-6 text-white" />
-              </div>
+              <img
+                src={currentLogoUrl}
+                alt={currentSiteTitle}
+                referrerPolicy="no-referrer"
+                className="w-10 h-10 sm:w-11 sm:h-11 rounded-2xl object-cover border border-cyan-400/40 shadow-lg shadow-cyan-500/30 group-hover:shadow-cyan-400/50 transition-all duration-300 transform group-hover:scale-105"
+              />
               {isConnected && (
                 <span className="absolute -top-1 -right-1 flex h-3.5 w-3.5">
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
@@ -171,14 +198,11 @@ export const Navbar: React.FC<NavbarProps> = ({
             <div>
               <div className="flex items-center gap-2">
                 <span className="text-xl sm:text-2xl font-extrabold tracking-wider bg-gradient-to-r from-cyan-400 via-teal-300 to-indigo-400 bg-clip-text text-transparent">
-                  Soverixnet
-                </span>
-                <span className="px-1.5 py-0.5 text-[10px] font-extrabold uppercase tracking-widest bg-cyan-500/10 text-cyan-400 border border-cyan-500/30 rounded-md">
-                  VPN
+                  {currentSiteTitle}
                 </span>
               </div>
               <p className="text-[11px] text-slate-400 font-medium hidden sm:block">
-                {lang === 'bn' ? 'অফিসিয়াল সাইবার শিল্ড ও ফ্রি-নেট পোর্টাল' : 'Official Cyber Shield & Free-Net Web Portal'}
+                {lang === 'bn' ? (siteSettings.designTheme?.siteTaglineBn || 'অফিসিয়াল সাইবার শিল্ড ও ফ্রি-নেট পোর্টাল') : (siteSettings.designTheme?.siteTaglineEn || 'Official Cyber Shield & Free-Net Web Portal')}
               </p>
             </div>
           </div>

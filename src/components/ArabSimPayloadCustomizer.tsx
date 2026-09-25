@@ -279,6 +279,22 @@ vless://8b392835-972b-47cc-b1c1-770dc30af179@${selectedServer.ip}:${customPort}?
   return (
     <div className="space-y-6 max-w-7xl mx-auto animate-fade-in">
       
+      {/* Featured Saudi 5G Promotional Banner (Clickable to WhatsApp) */}
+      <div 
+        onClick={() => {
+          const url = CONTACT_CONFIG.getWhatsAppUrl('আসসালামু আলাইকুম, আমি সৌদি আরবে STC / Mobily / Zain 5G আনলিমিটেড ফ্রি-নেট কনফিগ ও ভিআইপি একাউন্ট নিতে চাই।');
+          window.open(url, '_blank', 'noopener,noreferrer');
+        }}
+        className="group relative rounded-3xl overflow-hidden border border-emerald-500/40 hover:border-emerald-400 cursor-pointer shadow-2xl transition-all"
+      >
+        <img 
+          src="/saudi_5g_banner.jpg" 
+          alt="সৌদি আরবে আনলিমিটেড 5G ইন্টারনেট"
+          referrerPolicy="no-referrer"
+          className="w-full h-44 sm:h-64 object-cover group-hover:scale-[1.01] transition-transform duration-500"
+        />
+      </div>
+
       {/* Header Banner */}
       <div className="glass-panel p-6 sm:p-8 rounded-3xl border border-amber-500/30 bg-gradient-to-br from-amber-950/30 via-slate-900/90 to-cyan-950/30 shadow-2xl relative overflow-hidden">
         <div className="absolute -top-24 -right-24 w-72 h-72 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />

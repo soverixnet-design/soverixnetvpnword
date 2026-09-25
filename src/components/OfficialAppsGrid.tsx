@@ -148,8 +148,12 @@ export const OfficialAppsGrid: React.FC<OfficialAppsGridProps> = ({
               {/* App Identity */}
               <div className="space-y-2">
                 <div className="flex items-center gap-3">
-                  <div className={`w-11 h-11 rounded-2xl p-0.5 flex items-center justify-center text-white shadow-lg ${styles.iconBg} group-hover:rotate-3 transition-transform`}>
-                    <Smartphone className="w-6 h-6 stroke-[2.2]" />
+                  <div className={`w-11 h-11 rounded-2xl p-0.5 flex items-center justify-center text-white shadow-lg ${styles.iconBg} group-hover:rotate-3 transition-transform overflow-hidden`}>
+                    {(app as any).iconUrl ? (
+                      <img src={(app as any).iconUrl} alt={app.name} className="w-full h-full object-cover rounded-xl" />
+                    ) : (
+                      <Smartphone className="w-6 h-6 stroke-[2.2]" />
+                    )}
                   </div>
                   <div className="min-w-0">
                     <h3 className="text-base font-black text-white truncate group-hover:text-cyan-200 transition-colors">
