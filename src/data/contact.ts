@@ -35,6 +35,8 @@ export interface SiteBanner {
 
 export interface DesignThemeConfig {
   accentColor: 'cyan' | 'emerald' | 'amber' | 'purple' | 'rose';
+  primaryHex?: string;
+  secondaryHex?: string;
   siteTitle: string;
   siteTaglineBn: string;
   siteTaglineEn: string;
@@ -43,6 +45,7 @@ export interface DesignThemeConfig {
   heroSubheadlineBn: string;
   heroSubheadlineEn: string;
   logoUrl?: string;
+  faviconUrl?: string;
   showBackgroundGlow: boolean;
 }
 

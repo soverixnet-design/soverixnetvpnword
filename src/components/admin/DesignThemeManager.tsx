@@ -71,6 +71,8 @@ export const DesignThemeManager: React.FC<DesignThemeManagerProps> = ({ lang, on
   const currentTheme = settings.designTheme || DEFAULT_DESIGN_THEME;
 
   const [accentColor, setAccentColor] = useState<'cyan' | 'emerald' | 'amber' | 'purple' | 'rose'>(currentTheme.accentColor || 'cyan');
+  const [primaryHex, setPrimaryHex] = useState(currentTheme.primaryHex || '#06b6d4');
+  const [secondaryHex, setSecondaryHex] = useState(currentTheme.secondaryHex || '#10b981');
   const [siteTitle, setSiteTitle] = useState(currentTheme.siteTitle || 'Soverixnet VPN');
   const [siteTaglineBn, setSiteTaglineBn] = useState(currentTheme.siteTaglineBn || '');
   const [siteTaglineEn, setSiteTaglineEn] = useState(currentTheme.siteTaglineEn || '');
@@ -79,6 +81,7 @@ export const DesignThemeManager: React.FC<DesignThemeManagerProps> = ({ lang, on
   const [heroSubheadlineBn, setHeroSubheadlineBn] = useState(currentTheme.heroSubheadlineBn || '');
   const [heroSubheadlineEn, setHeroSubheadlineEn] = useState(currentTheme.heroSubheadlineEn || '');
   const [logoUrl, setLogoUrl] = useState(currentTheme.logoUrl || '/soverix_shield_logo.jpg');
+  const [faviconUrl, setFaviconUrl] = useState(currentTheme.faviconUrl || '/soverix_shield_logo.jpg');
   const [showGlow, setShowGlow] = useState(currentTheme.showBackgroundGlow !== false);
 
   const [tickerBn, setTickerBn] = useState(settings.tickerAnnouncementBn || '');
@@ -93,6 +96,8 @@ export const DesignThemeManager: React.FC<DesignThemeManagerProps> = ({ lang, on
 
     const updatedTheme: DesignThemeConfig = {
       accentColor,
+      primaryHex: primaryHex.trim() || undefined,
+      secondaryHex: secondaryHex.trim() || undefined,
       siteTitle: siteTitle.trim() || 'Soverixnet VPN',
       siteTaglineBn: siteTaglineBn.trim(),
       siteTaglineEn: siteTaglineEn.trim(),
@@ -101,6 +106,7 @@ export const DesignThemeManager: React.FC<DesignThemeManagerProps> = ({ lang, on
       heroSubheadlineBn: heroSubheadlineBn.trim(),
       heroSubheadlineEn: heroSubheadlineEn.trim(),
       logoUrl: logoUrl.trim() || '/soverix_shield_logo.jpg',
+      faviconUrl: faviconUrl.trim() || '/soverix_shield_logo.jpg',
       showBackgroundGlow: showGlow,
     };
 
@@ -115,7 +121,7 @@ export const DesignThemeManager: React.FC<DesignThemeManagerProps> = ({ lang, on
       saveSiteSettings(updatedSettings);
       setSettings(updatedSettings);
       await setDoc(doc(db, 'settings', 'general'), updatedSettings, { merge: true });
-      setSaveSuccessNotice(lang === 'bn' ? '✅ সাইটের ডিজাইন ও কালার থিম সফলভাবে পরিবর্তিত হয়েছে!' : '✅ Site design & theme updated live across the network!');
+      setSaveSuccessNotice(lang === 'bn' ? '✅ সাইটের আইডেন্টিটি, লোগো ও ব্র্যান্ডিং সফলভাবে ফায়ারবেসে সেভ হয়েছে!' : '✅ Site Identity, Logo & Brand Colors saved to Firestore!');
       if (onUpdated) onUpdated();
     } catch (err) {
       console.warn('Firestore theme update error:', err);
@@ -129,6 +135,8 @@ export const DesignThemeManager: React.FC<DesignThemeManagerProps> = ({ lang, on
   const handleResetToDefaults = () => {
     if (!window.confirm(lang === 'bn' ? 'ডিজাইন থিম ফ্যাক্টরি ডিফল্ট এ ফিরিয়ে নিতে চান?' : 'Reset design theme to defaults?')) return;
     setAccentColor(DEFAULT_DESIGN_THEME.accentColor);
+    setPrimaryHex('#06b6d4');
+    setSecondaryHex('#10b981');
     setSiteTitle(DEFAULT_DESIGN_THEME.siteTitle);
     setSiteTaglineBn(DEFAULT_DESIGN_THEME.siteTaglineBn);
     setSiteTaglineEn(DEFAULT_DESIGN_THEME.siteTaglineEn);
@@ -137,6 +145,7 @@ export const DesignThemeManager: React.FC<DesignThemeManagerProps> = ({ lang, on
     setHeroSubheadlineBn(DEFAULT_DESIGN_THEME.heroSubheadlineBn);
     setHeroSubheadlineEn(DEFAULT_DESIGN_THEME.heroSubheadlineEn);
     setLogoUrl(DEFAULT_DESIGN_THEME.logoUrl || '/soverix_shield_logo.jpg');
+    setFaviconUrl('/soverix_shield_logo.jpg');
     setShowGlow(true);
   };
 
@@ -226,6 +235,59 @@ export const DesignThemeManager: React.FC<DesignThemeManagerProps> = ({ lang, on
               );
             })}
           </div>
+
+          {/* Custom Branding Hex Color Overrides */}
+          <div className="pt-3 border-t border-slate-800/80 grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
+            <div className="p-3.5 rounded-2xl bg-slate-950/80 border border-slate-800 flex items-center justify-between gap-3">
+              <div>
+                <span className="font-bold text-white block">
+                  {lang === 'bn' ? 'কাস্টম প্রাইমারি ব্র্যান্ড কালার (Hex)' : 'Custom Primary Brand Color (Hex)'}
+                </span>
+                <span className="text-[11px] text-slate-400">
+                  {lang === 'bn' ? 'বাটন, হাইলাইট ও গ্লো এফেক্টে ব্যবহৃত হয়' : 'Used across buttons and primary glows'}
+                </span>
+              </div>
+              <div className="flex items-center gap-2 shrink-0">
+                <input
+                  type="color"
+                  value={primaryHex}
+                  onChange={(e) => setPrimaryHex(e.target.value)}
+                  className="w-9 h-9 rounded-xl bg-transparent border border-slate-700 cursor-pointer"
+                />
+                <input
+                  type="text"
+                  value={primaryHex}
+                  onChange={(e) => setPrimaryHex(e.target.value)}
+                  className="w-20 px-2 py-1.5 rounded-lg bg-slate-900 border border-slate-700 font-mono text-xs text-white uppercase text-center"
+                />
+              </div>
+            </div>
+
+            <div className="p-3.5 rounded-2xl bg-slate-950/80 border border-slate-800 flex items-center justify-between gap-3">
+              <div>
+                <span className="font-bold text-white block">
+                  {lang === 'bn' ? 'কাস্টম সেকেন্ডারি এক্সেন্ট কালার (Hex)' : 'Custom Secondary Accent (Hex)'}
+                </span>
+                <span className="text-[11px] text-slate-400">
+                  {lang === 'bn' ? 'সাকসেস স্ট্যাটাস, ব্যাজ ও বর্ডারে ব্যবহৃত হয়' : 'Used for status tags and gradient blends'}
+                </span>
+              </div>
+              <div className="flex items-center gap-2 shrink-0">
+                <input
+                  type="color"
+                  value={secondaryHex}
+                  onChange={(e) => setSecondaryHex(e.target.value)}
+                  className="w-9 h-9 rounded-xl bg-transparent border border-slate-700 cursor-pointer"
+                />
+                <input
+                  type="text"
+                  value={secondaryHex}
+                  onChange={(e) => setSecondaryHex(e.target.value)}
+                  className="w-20 px-2 py-1.5 rounded-lg bg-slate-900 border border-slate-700 font-mono text-xs text-white uppercase text-center"
+                />
+              </div>
+            </div>
+          </div>
         </div>
 
         {/* Section 2: Branding & Website Title */}
@@ -233,7 +295,7 @@ export const DesignThemeManager: React.FC<DesignThemeManagerProps> = ({ lang, on
           <div className="flex items-center gap-2">
             <Type className="w-4 h-4 text-cyan-400" />
             <h4 className="text-sm font-black text-white uppercase tracking-wider">
-              {lang === 'bn' ? '২. সাইটের ব্র্যান্ডিং ও টাইটেল' : '2. Site Identity & Branding'}
+              {lang === 'bn' ? '২. সাইট আইডেন্টিটি ও গ্লোবাল অ্যাপ লোগো (Site Identity & App Logo)' : '2. Site Identity & Global App Logo'}
             </h4>
           </div>
 
@@ -254,13 +316,25 @@ export const DesignThemeManager: React.FC<DesignThemeManagerProps> = ({ lang, on
 
             <div className="sm:col-span-2">
               <ImageUploadField
-                label={lang === 'bn' ? 'ওয়েবসাইট লোগো (গ্যালারি থেকে সরাসরি আপলোড)' : 'Website Logo (Upload from Gallery)'}
+                label={lang === 'bn' ? 'গ্লোবাল অ্যাপ লোগো (Upload Global App Logo from Gallery)' : 'Global App Logo (Upload from Gallery)'}
                 value={logoUrl}
                 onChange={(url) => setLogoUrl(url)}
                 placeholder="/soverix_shield_logo.jpg অথবা গ্যালারি থেকে সিলেক্ট করুন"
                 category="logo"
                 lang={lang}
-                helpText={lang === 'bn' ? 'আপনার ফোন বা পিসির গ্যালারি থেকে নিজস্ব ব্র্যান্ড লোগো আপলোড করতে পারেন।' : 'Upload custom brand logo from phone gallery or PC.'}
+                helpText={lang === 'bn' ? 'হেডার, ফুটার এবং মোবাইল মেনুর সর্বত্র এই লোগোটি রিয়েল-টাইমে প্রদর্শিত হবে।' : 'This logo appears globally across navbar, header and mobile views.'}
+              />
+            </div>
+
+            <div className="sm:col-span-2">
+              <ImageUploadField
+                label={lang === 'bn' ? 'অ্যাপ ফেভিকন / ব্রাউজার আইকন (Favicon Icon)' : 'App Favicon / Browser Tab Icon'}
+                value={faviconUrl}
+                onChange={(url) => setFaviconUrl(url)}
+                placeholder="/soverix_shield_logo.jpg"
+                category="logo"
+                lang={lang}
+                helpText={lang === 'bn' ? 'ব্রাউজার ট্যাব ও বুকমার্কে এই আইকনটি প্রদর্শিত হবে।' : 'Shown in browser tabs and home screen bookmarks.'}
               />
             </div>
 

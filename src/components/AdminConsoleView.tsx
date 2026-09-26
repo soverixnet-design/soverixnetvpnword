@@ -840,18 +840,18 @@ export const AdminConsoleView: React.FC<AdminConsoleViewProps> = ({ lang }) => {
         const categoryGroups = [
           {
             id: 'media',
-            nameBn: 'ছবি, ভিডিও ও ব্যানার',
-            nameEn: 'Photos, Videos & Banners',
-            descBn: 'ভিডিও পাবলিশ, গ্যালারি থেকে ছবি ও ব্যানার কন্ট্রোল',
-            descEn: 'Publish videos, manage photo gallery and banners',
+            nameBn: 'ছবি, ভিডিও ও ব্যানার ফাইল',
+            nameEn: 'Photos, Videos & Banner Files',
+            descBn: 'ব্যানার ফাইল ম্যানেজার, গ্যালারি ও সাইট আইডেন্টিটি লোগো',
+            descEn: 'Banner file manager, gallery, and site identity logo',
             icon: Film,
             color: 'emerald',
-            activeTabDefault: 'videos',
+            activeTabDefault: 'banners',
             tabs: [
-              { id: 'videos', labelBn: '🎬 ভিডিও পাবলিশার ও গাইড', labelEn: '🎬 Video Publisher', icon: Film },
+              { id: 'banners', labelBn: '🚀 ব্যানার ফাইল ম্যানেজার', labelEn: '🚀 Banner File Manager', icon: Sparkles },
+              { id: 'design', labelBn: '🎨 সাইট আইডেন্টিটি ও লোগো', labelEn: '🎨 Site Identity & Logo', icon: Palette },
               { id: 'gallery', labelBn: '📷 ফটো গ্যালারি ও আপলোড', labelEn: '📷 Photo Gallery', icon: ImageIcon },
-              { id: 'banners', labelBn: '🚀 ব্যানার কন্ট্রোল', labelEn: '🚀 Promotional Banners', icon: Sparkles },
-              { id: 'design', labelBn: '🎨 সাইট লোগো ও থিম', labelEn: '🎨 Logo & Theme Colors', icon: Palette },
+              { id: 'videos', labelBn: '🎬 ভিডিও পাবলিশার ও গাইড', labelEn: '🎬 Video Publisher', icon: Film },
             ]
           },
           {

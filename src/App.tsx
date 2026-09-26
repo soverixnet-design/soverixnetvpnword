@@ -123,10 +123,37 @@ function AppContent() {
 
   // Synchronize global site settings dynamically from Firestore & local events
   useEffect(() => {
+    const applySiteBranding = (settingsData: SiteSettingsData) => {
+      // Dynamic page title
+      if (settingsData.designTheme?.siteTitle) {
+        document.title = `${settingsData.designTheme.siteTitle} | Official Cyber Shield & FreeNet`;
+      }
+      // Dynamic favicon
+      const targetFavicon = settingsData.designTheme?.faviconUrl || settingsData.designTheme?.logoUrl;
+      if (targetFavicon) {
+        let link: HTMLLinkElement | null = document.querySelector("link[rel*='icon']");
+        if (!link) {
+          link = document.createElement('link');
+          link.rel = 'shortcut icon';
+          document.getElementsByTagName('head')[0].appendChild(link);
+        }
+        link.href = targetFavicon;
+      }
+      // Dynamic branding css variable if custom hex is set
+      if (settingsData.designTheme?.primaryHex) {
+        document.documentElement.style.setProperty('--brand-primary', settingsData.designTheme.primaryHex);
+      }
+    };
+
     const handleSettingsChanged = () => {
-      setSiteSettings(getSiteSettings());
+      const current = getSiteSettings();
+      setSiteSettings(current);
+      applySiteBranding(current);
     };
     window.addEventListener('soverix_settings_changed', handleSettingsChanged);
+
+    // Initial branding apply
+    applySiteBranding(getSiteSettings());
 
     let unsub = () => {};
     try {
@@ -134,6 +161,7 @@ function AppContent() {
         if (snap.exists()) {
           const updated = saveSiteSettings(snap.data() as Partial<SiteSettingsData>);
           setSiteSettings(updated);
+          applySiteBranding(updated);
         }
       }, (err) => {
         console.warn('Firestore settings listener warning:', err);
