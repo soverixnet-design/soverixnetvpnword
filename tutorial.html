@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>VPN App Downloads & Setup Tutorials | Soverix Net</title>
+  <meta name="description" content="Download official APKs for AF V2Ray, Jiyam Plus, Mohin VIP & Net Solution. Step-by-step connection tutorials for Saudi Arabia, Oman, UAE & Bangladesh." />
+  
+  <link rel="icon" type="image/jpeg" href="/soverix_shield_logo.jpg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="/src/site.css" />
+</head>
+<body class="bg-white text-slate-900 antialiased selection:bg-emerald-500 selection:text-white flex flex-col min-h-screen">
+
+  <!-- Top Bar -->
+  <div class="bg-slate-900 text-slate-200 text-xs py-2 px-4 text-center border-b border-slate-800">
+    <div class="max-w-7xl mx-auto flex items-center justify-between flex-wrap gap-2">
+      <div class="flex items-center gap-2 mx-auto sm:mx-0">
+        <span class="inline-block w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+        <span class="font-semibold text-white">App Support:</span>
+        <span class="text-slate-300">Official Direct APK Downloads • 100% Virus-Free & Safe</span>
+      </div>
+      <div class="hidden sm:flex items-center gap-4 text-slate-300">
+        <a href="https://whatsapp.com/channel/0029Va8iGsyIyPtWmND2jm0A" target="_blank" rel="noopener" class="hover:text-emerald-400 transition-colors font-medium">📢 WhatsApp Channel</a>
+        <a href="mailto:soverixnet@gmail.com" class="hover:text-white transition-colors">soverixnet@gmail.com</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Header -->
+  <header class="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-200 shadow-xs">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+      <a href="index.html" class="flex items-center gap-3 group">
+        <img src="/soverix_shield_logo.jpg" alt="Soverix Net Logo" class="w-11 h-11 rounded-xl shadow-md border border-slate-200 object-cover group-hover:scale-105 transition-transform" />
+        <div>
+          <span class="text-xl sm:text-2xl font-extrabold tracking-tight text-slate-900 flex items-center gap-1.5">
+            Soverix <span class="text-emerald-600">Net</span>
+          </span>
+          <span class="block text-[11px] font-semibold tracking-wider uppercase text-slate-500">
+            Wholesale & Retail VPN Pin
+          </span>
+        </div>
+      </a>
+
+      <nav class="hidden lg:flex items-center gap-7 text-sm font-semibold text-slate-700">
+        <a href="index.html" class="hover:text-emerald-600 transition-colors">Home</a>
+        <a href="saudi.html" class="hover:text-emerald-600 transition-colors">Saudi Arabia</a>
+        <a href="oman.html" class="hover:text-emerald-600 transition-colors">Oman</a>
+        <a href="kuwait.html" class="hover:text-emerald-600 transition-colors">Kuwait</a>
+        <a href="uae.html" class="hover:text-emerald-600 transition-colors">UAE</a>
+        <a href="qatar-bahrain.html" class="hover:text-emerald-600 transition-colors">Qatar / Bahrain</a>
+        <a href="bangladesh.html" class="hover:text-emerald-600 transition-colors">Bangladesh</a>
+        <a href="reseller.html" class="px-3 py-1.5 rounded-lg bg-emerald-50 text-emerald-700 border border-emerald-200 hover:bg-emerald-100 transition-all font-bold">
+          💼 Reseller (Wholesale)
+        </a>
+        <a href="tutorial.html" class="text-emerald-600 font-bold border-b-2 border-emerald-600 pb-1">Tutorials</a>
+      </nav>
+
+      <div class="hidden sm:flex items-center gap-3">
+        <a href="https://wa.me/8801342930870?text=Hi,%20I%20need%20help%20setting%20up%20VPN" target="_blank" rel="noopener" class="px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm shadow-md transition-all flex items-center gap-2">
+          <span>Get Help on WhatsApp</span>
+        </a>
+      </div>
+
+      <button id="mobile-menu-btn" class="lg:hidden p-2.5 rounded-xl border border-slate-300 text-slate-700 hover:bg-slate-100 transition-colors">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+      </button>
+    </div>
+
+    <!-- Mobile Drawer -->
+    <div id="mobile-menu" class="hidden lg:hidden border-t border-slate-200 bg-white px-4 pt-4 pb-6 space-y-2 shadow-xl">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+        <span class="text-xs font-bold uppercase tracking-wider text-slate-500">Navigation Menu</span>
+        <button id="close-mobile-menu" class="text-slate-400 hover:text-slate-600 text-xs font-bold px-2 py-1 bg-slate-100 rounded-md">Close ✕</button>
+      </div>
+      <a href="index.html" class="block py-2.5 px-3 rounded-xl font-semibold text-slate-700 hover:bg-slate-50">Home</a>
+      <a href="saudi.html" class="block py-2.5 px-3 rounded-xl font-semibold text-slate-700 hover:bg-slate-50">🇸🇦 Saudi Arabia</a>
+      <a href="oman.html" class="block py-2.5 px-3 rounded-xl font-semibold text-slate-700 hover:bg-slate-50">🇴🇲 Oman</a>
+      <a href="kuwait.html" class="block py-2.5 px-3 rounded-xl font-semibold text-slate-700 hover:bg-slate-50">🇰🇼 Kuwait</a>
+      <a href="uae.html" class="block py-2.5 px-3 rounded-xl font-semibold text-slate-700 hover:bg-slate-50">🇦🇪 UAE (Dubai)</a>
+      <a href="qatar-bahrain.html" class="block py-2.5 px-3 rounded-xl font-semibold text-slate-700 hover:bg-slate-50">🇶🇦 🇧🇭 Qatar & Bahrain</a>
+      <a href="bangladesh.html" class="block py-2.5 px-3 rounded-xl font-semibold text-slate-700 hover:bg-slate-50">🇧🇩 Bangladesh</a>
+      <a href="reseller.html" class="block py-2.5 px-3 rounded-xl font-bold text-amber-900 bg-amber-50">💼 Reseller Wholesale Panel</a>
+      <a href="tutorial.html" class="block py-2.5 px-3 rounded-xl font-bold text-emerald-600 bg-emerald-50">📱 Tutorials & Apps</a>
+    </div>
+  </header>
+
+  <!-- Hero Header -->
+  <section class="bg-gradient-to-b from-slate-50 to-white py-12 sm:py-16 border-b border-slate-200">
+    <div class="max-w-4xl mx-auto px-4 text-center">
+      <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-100 text-slate-800 text-xs font-bold mb-4">
+        <span>📱 Official Android APK Downloads & Setup Guides</span>
+      </div>
+      <h1 class="text-3xl sm:text-5xl font-extrabold text-slate-900 tracking-tight mb-4">
+        VPN App Downloads & Tutorials
+      </h1>
+      <p class="text-slate-600 text-base sm:text-lg max-w-2xl mx-auto leading-relaxed">
+        Download the official apps and follow our easy 4-step setup guide to connect your Soverix PIN in seconds.
+      </p>
+    </div>
+  </section>
+
+  <!-- App Download Cards Grid -->
+  <section class="py-16 bg-white border-b border-slate-200">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      <div class="text-center max-w-2xl mx-auto mb-12">
+        <h2 class="text-xs font-bold uppercase tracking-wider text-emerald-600 mb-2">Direct APKs</h2>
+        <p class="text-3xl font-extrabold text-slate-900">Choose Your VPN Client</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        
+        <!-- App 1: AF V2Ray -->
+        <div class="p-6 rounded-3xl bg-slate-50 border-2 border-slate-200 flex flex-col justify-between hover:border-cyan-500 transition-all">
+          <div>
+            <div class="w-12 h-12 rounded-2xl bg-cyan-600 text-white flex items-center justify-center font-black text-xl mb-4 shadow-sm">
+              AF
+            </div>
+            <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-cyan-100 text-cyan-800">Global Master</span>
+            <h3 class="text-lg font-bold text-slate-900 mt-2">AF V2Ray VPN</h3>
+            <p class="text-xs text-slate-500 mt-1 mb-4">
+              Works across all GCC countries. Supports VLESS Reality, Trojan, and dynamic port hopping.
+            </p>
+            <div class="text-[11px] font-mono text-slate-500 space-y-1 mb-4">
+              <p>• Size: 18.4 MB</p>
+              <p>• Android 6.0+</p>
+            </div>
+          </div>
+          <a href="https://github.com/flamessoflove-del/afv2rayapkdownloadelink/releases/download/1.0/af.v2.ray.apk" target="_blank" rel="noopener" class="w-full py-2.5 rounded-xl bg-cyan-600 hover:bg-cyan-700 text-white font-bold text-xs uppercase text-center block transition-all">
+            Download APK ⇩
+          </a>
+        </div>
+
+        <!-- App 2: Jiyam Plus -->
+        <div class="p-6 rounded-3xl bg-slate-50 border-2 border-slate-200 flex flex-col justify-between hover:border-emerald-500 transition-all">
+          <div>
+            <div class="w-12 h-12 rounded-2xl bg-emerald-600 text-white flex items-center justify-center font-black text-xl mb-4 shadow-sm">
+              JP
+            </div>
+            <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-100 text-emerald-800">Gulf Special</span>
+            <h3 class="text-lg font-bold text-slate-900 mt-2">Jiyam Plus VPN</h3>
+            <p class="text-xs text-slate-500 mt-1 mb-4">
+              Optimized for Saudi STC, Mobily 60, Zain Shabab & Oman Hayyak zero-balance SIM payloads.
+            </p>
+            <div class="text-[11px] font-mono text-slate-500 space-y-1 mb-4">
+              <p>• Size: 22.1 MB</p>
+              <p>• Auto Reconnect</p>
+            </div>
+          </div>
+          <a href="https://upload.app/download/jiyam-plus-vpn/com.rksoft.jiyamplus.vpn/d75e1a0df56e37f253a36a6b2436f73edee03682c27356816f69d21da133983d" target="_blank" rel="noopener" class="w-full py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs uppercase text-center block transition-all">
+            Download APK ⇩
+          </a>
+        </div>
+
+        <!-- App 3: Mohin VIP -->
+        <div class="p-6 rounded-3xl bg-slate-50 border-2 border-slate-200 flex flex-col justify-between hover:border-amber-500 transition-all">
+          <div>
+            <div class="w-12 h-12 rounded-2xl bg-amber-600 text-white flex items-center justify-center font-black text-xl mb-4 shadow-sm">
+              VIP
+            </div>
+            <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-100 text-amber-800">Low Ping</span>
+            <h3 class="text-lg font-bold text-slate-900 mt-2">Mohin VIP VPN</h3>
+            <p class="text-xs text-slate-500 mt-1 mb-4">
+              Dedicated low-ping server routing for HD audio calling, YouTube 4K, and uninterrupted gaming.
+            </p>
+            <div class="text-[11px] font-mono text-slate-500 space-y-1 mb-4">
+              <p>• Size: 19.8 MB</p>
+              <p>• Zero Lag Engine</p>
+            </div>
+          </div>
+          <a href="https://upload.app/download/mohin-vip-vpn/dev.masterbuild.mohinvip/b330cdea6a0ce3ac5ff44d7f997f6762e7a4a7f8d7c1306bdd7811ea79d0e8b9/downloading" target="_blank" rel="noopener" class="w-full py-2.5 rounded-xl bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs uppercase text-center block transition-all">
+            Download APK ⇩
+          </a>
+        </div>
+
+        <!-- App 4: Net Solution -->
+        <div class="p-6 rounded-3xl bg-slate-50 border-2 border-slate-200 flex flex-col justify-between hover:border-purple-500 transition-all">
+          <div>
+            <div class="w-12 h-12 rounded-2xl bg-purple-600 text-white flex items-center justify-center font-black text-xl mb-4 shadow-sm">
+              NS
+            </div>
+            <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-purple-100 text-purple-800">All SIM</span>
+            <h3 class="text-lg font-bold text-slate-900 mt-2">Net Solution VPN</h3>
+            <p class="text-xs text-slate-500 mt-1 mb-4">
+              Universal payload injector with instant automatic SNI updates and unlimited bandwidth.
+            </p>
+            <div class="text-[11px] font-mono text-slate-500 space-y-1 mb-4">
+              <p>• Size: 16.5 MB</p>
+              <p>• Custom SNI Bypass</p>
+            </div>
+          </div>
+          <a href="https://premiumapk.store/Apk/Net%20Solution.apk" target="_blank" rel="noopener" class="w-full py-2.5 rounded-xl bg-purple-600 hover:bg-purple-700 text-white font-bold text-xs uppercase text-center block transition-all">
+            Download APK ⇩
+          </a>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Step-by-Step Connection Tutorial -->
+  <section class="py-16 bg-slate-50 border-b border-slate-200">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      <div class="text-center max-w-2xl mx-auto mb-12">
+        <h2 class="text-xs font-bold uppercase tracking-wider text-emerald-600 mb-2">Easy Setup</h2>
+        <p class="text-3xl font-extrabold text-slate-900">How To Connect In 4 Steps</p>
+        <p class="text-slate-600 text-sm mt-1">Follow these simple steps to activate your VIP PIN and connect instantly.</p>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+        
+        <!-- Left: 4 Steps -->
+        <div class="lg:col-span-7 space-y-4">
+          <!-- Step 1 -->
+          <div class="p-5 rounded-2xl bg-white border border-slate-200 flex items-start gap-4 shadow-xs">
+            <div class="w-9 h-9 rounded-xl bg-slate-900 text-white flex items-center justify-center font-extrabold text-sm shrink-0">
+              1
+            </div>
+            <div>
+              <h3 class="text-sm sm:text-base font-bold text-slate-900">Download and Install the APK</h3>
+              <p class="text-xs text-slate-600 mt-0.5 leading-relaxed">
+                Click any of the download buttons above (we recommend <strong>AF V2Ray</strong> or <strong>Jiyam Plus</strong>).
+              </p>
+            </div>
+          </div>
+
+          <!-- Step 2 -->
+          <div class="p-5 rounded-2xl bg-white border border-slate-200 flex items-start gap-4 shadow-xs">
+            <div class="w-9 h-9 rounded-xl bg-emerald-600 text-white flex items-center justify-center font-extrabold text-sm shrink-0">
+              2
+            </div>
+            <div>
+              <h3 class="text-sm sm:text-base font-bold text-slate-900">Enter Your Soverix PIN Code</h3>
+              <p class="text-xs text-slate-600 mt-0.5 leading-relaxed">
+                Open the app and paste the secret PIN you received on WhatsApp into the Username/PIN field.
+              </p>
+            </div>
+          </div>
+
+          <!-- Step 3 -->
+          <div class="p-5 rounded-2xl bg-white border border-slate-200 flex items-start gap-4 shadow-xs">
+            <div class="w-9 h-9 rounded-xl bg-blue-600 text-white flex items-center justify-center font-extrabold text-sm shrink-0">
+              3
+            </div>
+            <div>
+              <h3 class="text-sm sm:text-base font-bold text-slate-900">Select Your Country & SIM Payload</h3>
+              <p class="text-xs text-slate-600 mt-0.5 leading-relaxed">
+                Pick your operator (e.g. STC Sawa 89, Mobily 60, Zain Free, Omantel Hayyak, or Etisalat Wasel).
+              </p>
+            </div>
+          </div>
+
+          <!-- Step 4 -->
+          <div class="p-5 rounded-2xl bg-white border border-slate-200 flex items-start gap-4 shadow-xs">
+            <div class="w-9 h-9 rounded-xl bg-purple-600 text-white flex items-center justify-center font-extrabold text-sm shrink-0">
+              4
+            </div>
+            <div>
+              <h3 class="text-sm sm:text-base font-bold text-slate-900">Tap CONNECT and Enjoy Unrestricted Internet</h3>
+              <p class="text-xs text-slate-600 mt-0.5 leading-relaxed">
+                Tap the round CONNECT button. Status icon will turn green ("Connected") with 5G unblocked calling.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: Official Connection Proof Poster Mockup -->
+        <div class="lg:col-span-5 flex justify-center">
+          <div class="relative max-w-sm rounded-3xl overflow-hidden border-2 border-slate-300 shadow-xl group bg-white p-2">
+            <img src="/soverix_android_tips.jpg" alt="Soverix Net Android Setup Tips" class="w-full h-auto rounded-2xl object-cover group-hover:scale-102 transition-transform duration-500" />
+            <div class="p-3 text-center">
+              <span class="inline-flex items-center gap-1.5 text-xs font-bold text-emerald-700">
+                <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                <span>অ্যান্ড্রয়েড ভিপিএন সেটআপ ও লাইভ কানেকশন গাইড</span>
+              </span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Reseller Pin Creation Video Tutorial -->
+  <section id="reseller-video" class="py-16 bg-white border-b border-slate-200">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      <div class="text-center max-w-2xl mx-auto mb-12">
+        <div class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-red-100 text-red-700 text-xs font-bold border border-red-200 mb-3">
+          <svg class="w-4 h-4 fill-current text-red-600" viewBox="0 0 24 24"><path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"/></svg>
+          <span>RESELLER VIDEO TUTORIAL</span>
+        </div>
+        <h2 class="text-3xl font-extrabold text-slate-900 tracking-tight">
+          রেসেলার প্যানেল থেকে পিন তৈরি করার ভিডিও
+        </h2>
+        <p class="text-slate-600 text-sm mt-2">
+          কীভাবে রেসেলার প্যানেল থেকে মাত্র ৩০ সেকেন্ডে কাস্টমারের জন্য নতুন ভিপিএন পিন জেনারেট করবেন তার সহজ ভিডিও গাইড।
+        </p>
+      </div>
+
+      <div class="p-6 sm:p-8 rounded-3xl bg-slate-950 text-white shadow-2xl border border-slate-800">
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
+          
+          <!-- Smartphone Shorts Video Player (9:16) -->
+          <div class="md:col-span-5 flex justify-center">
+            <div class="relative w-full max-w-[280px] rounded-[30px] overflow-hidden shadow-2xl border-4 border-slate-700 bg-black aspect-[9/16]">
+              <iframe 
+                src="https://www.youtube.com/embed/ApIKnCDeFNU?rel=0&modestbranding=1" 
+                title="রেসেলার পিন তৈরি করার টিউটোরিয়াল ভিডিও" 
+                class="w-full h-full"
+                frameborder="0" 
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                referrerpolicy="strict-origin-when-cross-origin" 
+                allowfullscreen>
+              </iframe>
+            </div>
+          </div>
+
+          <!-- Description and actions -->
+          <div class="md:col-span-7 space-y-4 text-left">
+            <span class="px-3 py-1 rounded-full text-xs font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30 inline-block">
+              💼 সম্পূর্ণ অটোমেটেড প্যানেল
+            </span>
+            <h3 class="text-xl sm:text-2xl font-bold text-white">
+              ফোন দিয়ে সহজে পিন তৈরি করুন ও কাস্টমারকে দিন
+            </h3>
+            <p class="text-xs sm:text-sm text-slate-300 leading-relaxed">
+              এই ভিডিওতে দেখানো নিয়ম অনুযায়ী আপনি যেকোনো সময় আপনার ফোন দিয়ে রেসেলার প্যানেলে লগইন করে ১-ক্লিকে পিন কোড তৈরি করে নিতে পারবেন। কোনো কম্পিউটার প্রয়োজন নেই।
+            </p>
+
+            <ul class="space-y-2 text-xs text-slate-300">
+              <li class="flex items-center gap-2"><span class="text-emerald-400 font-bold">✓</span> প্যানেল লগইন ও ১-ক্লিক পিন জেনারেটর</li>
+              <li class="flex items-center gap-2"><span class="text-emerald-400 font-bold">✓</span> সৌদি, ওমান, কুয়েত, ইউএই, কাতার ও বাংলাদেশ সব সিমে কাজ করে</li>
+              <li class="flex items-center gap-2"><span class="text-emerald-400 font-bold">✓</span> ৪০% থেকে ৬০% পর্যন্ত নিশ্চিত লাভ</li>
+            </ul>
+
+            <div class="pt-2 flex flex-wrap gap-3">
+              <a href="https://wa.me/8801342930870?text=Hi,%20I%20want%20to%20get%20reseller%20panel" target="_blank" rel="noopener" class="px-6 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs shadow-lg transition-all">
+                <span>প্যানেল নিতে WhatsApp এ মেসেজ দিন</span>
+              </a>
+              <a href="https://youtube.com/shorts/ApIKnCDeFNU?si=QPdn8iCoe7Mm3B-c" target="_blank" rel="noopener" class="px-5 py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 font-bold text-xs transition-all flex items-center gap-2">
+                <svg class="w-4 h-4 fill-current text-red-500" viewBox="0 0 24 24"><path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"/></svg>
+                <span>YouTube এ দেখুন</span>
+              </a>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- 24/7 Live Support Banner -->
+  <section class="py-12 bg-slate-900 border-b border-slate-800 text-white">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
+        <div class="md:col-span-6 space-y-4">
+          <span class="px-3 py-1 rounded-full text-xs font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 inline-block">
+            24/7 LIVE WHATSAPP SUPPORT
+          </span>
+          <h2 class="text-2xl sm:text-3xl font-extrabold text-white leading-tight">
+            যেকোনো সমস্যায় সরাসরি হোয়াটসঅ্যাপে যোগাযোগ করুন
+          </h2>
+          <p class="text-xs sm:text-sm text-slate-300 leading-relaxed">
+            কোনো অ্যাপ ডাউনলোড করতে না পারলে বা পিন কানেক্ট হতে সমস্যা হলে আমাদের সাপোর্ট এক্সপার্ট আপনাকে ১-অন-১ স্ক্রিনশট ও মেসেজে ইনস্ট্যান্ট সাহায্য করবে।
+          </p>
+          <div class="pt-2">
+            <a href="https://wa.me/8801342930870?text=Hi,%20I%20need%20help%20with%20VPN%20setup" target="_blank" rel="noopener" class="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs shadow-lg transition-all">
+              <span>হোয়াটসঅ্যাপে হেল্প নিন</span>
+            </a>
+          </div>
+        </div>
+        <div class="md:col-span-6 flex justify-center">
+          <div class="rounded-2xl overflow-hidden border border-slate-700 shadow-2xl max-w-sm">
+            <img src="/whatsapp_support_banner.jpg" alt="WhatsApp Support Official Banner" class="w-full h-auto object-cover" />
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Troubleshooting Tips -->
+  <section class="py-16 bg-white border-b border-slate-200">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <h2 class="text-2xl font-bold text-slate-900 mb-6 text-center">Troubleshooting Tips</h2>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs text-slate-600">
+        <div class="p-4 rounded-xl bg-slate-50 border border-slate-200">
+          <strong class="text-slate-900 block mb-1">Airplane Mode Toggle:</strong>
+          If connection takes longer than 10 seconds, turn Airplane Mode ON for 5 seconds and turn it OFF. This assigns a fresh local IP from your operator.
+        </div>
+        <div class="p-4 rounded-xl bg-slate-50 border border-slate-200">
+          <strong class="text-slate-900 block mb-1">Check Server Tweaks:</strong>
+          Make sure you selected the exact payload matching your active package (e.g. Mobily 60 for 60 SAR pack).
+        </div>
+        <div class="p-4 rounded-xl bg-slate-50 border border-slate-200">
+          <strong class="text-slate-900 block mb-1">Update Online Config:</strong>
+          Tap the "Update" or "Sync Configs" button inside the app over Wi-Fi or data to load the latest daily server IP list.
+        </div>
+        <div class="p-4 rounded-xl bg-slate-50 border border-slate-200">
+          <strong class="text-slate-900 block mb-1">24/7 WhatsApp Assistance:</strong>
+          If you encounter any difficulty, message our customer support team directly on WhatsApp for live 1-on-1 video/screenshot guidance.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="mt-auto bg-white border-t border-slate-200 py-10 text-sm text-slate-600">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex flex-col sm:flex-row items-center justify-between gap-4 text-xs">
+        <div>
+          <span class="font-bold text-slate-900">Soverix Net</span> - Tutorials & Official App Repository
+        </div>
+        <div class="flex items-center gap-4 font-semibold">
+          <a href="https://whatsapp.com/channel/0029Va8iGsyIyPtWmND2jm0A" target="_blank" rel="noopener" class="text-emerald-700 hover:underline">WhatsApp Channel</a>
+          <a href="mailto:soverixnet@gmail.com" class="hover:underline">soverixnet@gmail.com</a>
+        </div>
+      </div>
+      <div class="mt-4 pt-4 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-slate-400">
+        <p>© Soverix Net - All GCC & Bangladesh VPN Pin Supplier</p>
+        <p>No login form required. Direct WhatsApp customer care 24/7.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Floating WhatsApp -->
+  <a href="https://wa.me/8801342930870?text=Hi,%20I%20need%20help%20setting%20up%20VPN" target="_blank" rel="noopener" class="fixed bottom-6 right-6 z-50 flex items-center gap-2.5 px-4 py-3 rounded-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm shadow-2xl transition-all wa-float-btn hover:scale-105">
+    <svg class="w-6 h-6 fill-current" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
+    <span class="hidden sm:inline">Get Help on WhatsApp</span>
+  </a>
+
+  <script src="/src/site.js"></script>
+</body>
+</html>
