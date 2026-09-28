@@ -1,0 +1,20 @@
+# Robots.txt for Soverix Net VPN
+User-agent: *
+Allow: /
+Allow: /saudi.html
+Allow: /malaysia.html
+Allow: /qatar-bahrain.html
+Allow: /qatar.html
+Allow: /bahrain.html
+Allow: /uae.html
+Allow: /oman.html
+Allow: /kuwait.html
+Allow: /bangladesh.html
+Allow: /reseller.html
+Allow: /tutorial.html
+Disallow: /admin.html
+Disallow: /api/
+
+# Official Sitemaps
+Sitemap: https://soverixnet-design.github.io/sitemap.xml
+Sitemap: https://soverixnet.com/sitemap.xml

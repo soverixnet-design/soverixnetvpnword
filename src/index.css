@@ -1,8 +1,10 @@
 @import "tailwindcss";
+@import "./site.css";
 
 @layer base {
   body {
-    font-family: 'Plus Jakarta Sans', 'Hind Siliguri', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    font-family: 'Hind Siliguri', 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    color: #f1f5f9;
   }
   code, pre, .font-mono {
     font-family: 'JetBrains Mono', monospace;

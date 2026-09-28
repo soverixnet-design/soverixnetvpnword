@@ -168,6 +168,37 @@ const TELCO_PRESETS: TelcoPreset[] = [
     note: 'Vodafone Egypt Flex social bypass bug.',
     payloadTemplate: 'GET / HTTP/1.1[crlf]Host: vodafone.com.eg[crlf]Connection: Upgrade[crlf]Upgrade: websocket[crlf][crlf]',
   },
+  // Malaysia
+  {
+    country: 'Malaysia',
+    countryFlag: '🇲🇾',
+    name: 'CelcomDigi 5G Ultra Bug',
+    sni: 'speedtest.celcom.com.my',
+    port: 443,
+    protocol: 'WebSocket',
+    note: 'CelcomDigi 5G zero-rated speedtest & social pass bypass SNI.',
+    payloadTemplate: 'GET / HTTP/1.1[crlf]Host: speedtest.celcom.com.my[crlf]Connection: Upgrade[crlf]Upgrade: websocket[crlf][crlf]',
+  },
+  {
+    country: 'Malaysia',
+    countryFlag: '🇲🇾',
+    name: 'Maxis Hotlink Unlimited Pass',
+    sni: 'm.hotlink.com.my',
+    port: 443,
+    protocol: 'SSL/TLS',
+    note: 'Maxis Hotlink unlimited WhatsApp and social package payload.',
+    payloadTemplate: 'CONNECT [host_port] HTTP/1.1[crlf]Host: m.hotlink.com.my[crlf][crlf]',
+  },
+  {
+    country: 'Malaysia',
+    countryFlag: '🇲🇾',
+    name: 'U Mobile GX FastNet',
+    sni: 'm.u.com.my',
+    port: 443,
+    protocol: 'WebSocket',
+    note: 'U Mobile GX30/GX38 uncapped high-speed SNI tunnel.',
+    payloadTemplate: 'GET / HTTP/1.1[crlf]Host: m.u.com.my[crlf]Connection: Upgrade[crlf]Upgrade: websocket[crlf][crlf]',
+  },
   // Bangladesh
   {
     country: 'Bangladesh',
@@ -315,8 +346,8 @@ vless://8b392835-972b-47cc-b1c1-770dc30af179@${selectedServer.ip}:${customPort}?
               </div>
               <p className="text-xs text-slate-300 mt-1 max-w-2xl leading-relaxed">
                 {lang === 'bn'
-                  ? 'সৌদি আরব (STC, Mobily, Zain), ইউএই (Etisalat, Du), কাতার (Ooredoo), কুয়েত ও ওমানের সিমের জন্য কাস্টম বাগ হোস্ট ও পেলোড তৈরি এবং সরাসরি টেস্ট করুন।'
-                  : 'Customize Bug Hosts, SNI and HTTP Injection Payloads for Saudi, UAE, Qatar, Kuwait, and Oman telecom SIM packages with instant handshake validation.'}
+                  ? 'সৌদি আরব (STC, Mobily, Zain), ইউএই (Etisalat, Du), কাতার (Ooredoo), কুয়েত, ওমান ও মালয়েশিয়ার (Celcom, Digi, Maxis) সিমের জন্য কাস্টম বাগ হোস্ট ও পেলোড তৈরি এবং সরাসরি টেস্ট করুন।'
+                  : 'Customize Bug Hosts, SNI and HTTP Injection Payloads for Saudi, UAE, Qatar, Kuwait, Oman, and Malaysia telecom SIM packages with instant handshake validation.'}
               </p>
             </div>
           </div>

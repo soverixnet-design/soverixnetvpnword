@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+  <url>
+    <loc>https://soverixnet-design.github.io/</loc>
+    <lastmod>2026-09-28</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://soverixnet-design.github.io/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://soverixnet-design.github.io/?lang=en" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://soverixnet-design.github.io/?lang=bn" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://soverixnet-design.github.io/#product-saudi" />
+    <xhtml:link rel="alternate" hreflang="ms-MY" href="https://soverixnet-design.github.io/malaysia.html" />
+    <image:image>
+      <image:loc>https://soverixnet-design.github.io/hero_vpn_shield_3d.jpg</image:loc>
+      <image:title><![CDATA[Soverixnet 3D Quantum Shield Official Banner]]></image:title>
+      <image:caption><![CDATA[The Ultimate Quantum-Safe Encrypted VPN for Saudi, Malaysia, Qatar, UAE & Bangladesh]]></image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://soverixnet-design.github.io/saudi.html</loc>
+    <lastmod>2026-09-28</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.95</priority>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://soverixnet-design.github.io/saudi.html" />
+    <xhtml:link rel="alternate" hreflang="ar-SA" href="https://soverixnet-design.github.io/saudi.html" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://soverixnet-design.github.io/saudi.html?lang=bn" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://soverixnet-design.github.io/saudi.html?lang=en" />
+    <image:image>
+      <image:loc>https://soverixnet-design.github.io/saudi_5g_banner.jpg</image:loc>
+      <image:title><![CDATA[Saudi Arabia 5G VPN Package Banner]]></image:title>
+      <image:caption><![CDATA[Unlimited Free Net SIM Bypass for STC, Mobily and Zain in Saudi Arabia]]></image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://soverixnet-design.github.io/malaysia.html</loc>
+    <lastmod>2026-09-28</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.95</priority>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://soverixnet-design.github.io/malaysia.html" />
+    <xhtml:link rel="alternate" hreflang="ms-MY" href="https://soverixnet-design.github.io/malaysia.html" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://soverixnet-design.github.io/malaysia.html?lang=bn" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://soverixnet-design.github.io/malaysia.html?lang=en" />
+    <image:image>
+      <image:loc>https://soverixnet-design.github.io/hero_vpn_shield_3d.jpg</image:loc>
+      <image:title><![CDATA[Malaysia CelcomDigi & Hotlink 5G VPN Hub]]></image:title>
+      <image:caption><![CDATA[12ms Low Ping Mobile Legends Gaming & Touch n Go DuitNow in Malaysia]]></image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://soverixnet-design.github.io/qatar-bahrain.html</loc>
+    <lastmod>2026-09-28</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.95</priority>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://soverixnet-design.github.io/qatar-bahrain.html" />
+    <xhtml:link rel="alternate" hreflang="ar-QA" href="https://soverixnet-design.github.io/qatar.html" />
+    <xhtml:link rel="alternate" hreflang="ar-BH" href="https://soverixnet-design.github.io/bahrain.html" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://soverixnet-design.github.io/qatar-bahrain.html?lang=bn" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://soverixnet-design.github.io/qatar-bahrain.html?lang=en" />
+    <image:image>
+      <image:loc>https://soverixnet-design.github.io/qatar_bahrain_banner.jpg</image:loc>
+      <image:title><![CDATA[Qatar and Bahrain VoIP & 5G VPN Banner]]></image:title>
+      <image:caption><![CDATA[Unblocked WhatsApp & IMO Calling for Ooredoo Qatar, Vodafone, and Batelco Bahrain]]></image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://soverixnet-design.github.io/qatar.html</loc>
+    <lastmod>2026-09-28</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.90</priority>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://soverixnet-design.github.io/qatar.html" />
+    <xhtml:link rel="alternate" hreflang="ar-QA" href="https://soverixnet-design.github.io/qatar.html" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://soverixnet-design.github.io/qatar.html?lang=bn" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://soverixnet-design.github.io/qatar.html?lang=en" />
+    <image:image>
+      <image:loc>https://soverixnet-design.github.io/qatar_bahrain_banner.jpg</image:loc>
+      <image:title><![CDATA[Qatar Ooredoo 5G Calling Hub]]></image:title>
+      <image:caption><![CDATA[Dedicated Qatar WhatsApp Video Calling & Low Ping Tunnel]]></image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://soverixnet-design.github.io/bahrain.html</loc>
+    <lastmod>2026-09-28</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.90</priority>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://soverixnet-design.github.io/bahrain.html" />
+    <xhtml:link rel="alternate" hreflang="ar-BH" href="https://soverixnet-design.github.io/bahrain.html" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://soverixnet-design.github.io/bahrain.html?lang=bn" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://soverixnet-design.github.io/bahrain.html?lang=en" />
+    <image:image>
+      <image:loc>https://soverixnet-design.github.io/qatar_bahrain_banner.jpg</image:loc>
+      <image:title><![CDATA[Bahrain Batelco & STC VPN Hub]]></image:title>
+      <image:caption><![CDATA[Crystal Clear VoIP Calling in Bahrain]]></image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://soverixnet-design.github.io/uae.html</loc>
+    <lastmod>2026-09-28</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.95</priority>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://soverixnet-design.github.io/uae.html" />
+    <xhtml:link rel="alternate" hreflang="ar-AE" href="https://soverixnet-design.github.io/uae.html" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://soverixnet-design.github.io/uae.html?lang=bn" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://soverixnet-design.github.io/uae.html?lang=en" />
+    <image:image>
+      <image:loc>https://soverixnet-design.github.io/uae_banner.jpg</image:loc>
+      <image:title><![CDATA[UAE Dubai 5G Calling & VPN Banner]]></image:title>
+      <image:caption><![CDATA[High-speed WhatsApp and FaceTime calling in Dubai & Abu Dhabi for du & Etisalat]]></image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://soverixnet-design.github.io/oman.html</loc>
+    <lastmod>2026-09-28</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.90</priority>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://soverixnet-design.github.io/oman.html" />
+    <xhtml:link rel="alternate" hreflang="ar-OM" href="https://soverixnet-design.github.io/oman.html" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://soverixnet-design.github.io/oman.html?lang=bn" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://soverixnet-design.github.io/oman.html?lang=en" />
+    <image:image>
+      <image:loc>https://soverixnet-design.github.io/oman_banner.jpg</image:loc>
+      <image:title><![CDATA[Oman Omantel & Ooredoo VPN Banner]]></image:title>
+      <image:caption><![CDATA[High speed calling and unlimited browsing in Oman]]></image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://soverixnet-design.github.io/kuwait.html</loc>
+    <lastmod>2026-09-28</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.90</priority>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://soverixnet-design.github.io/kuwait.html" />
+    <xhtml:link rel="alternate" hreflang="ar-KW" href="https://soverixnet-design.github.io/kuwait.html" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://soverixnet-design.github.io/kuwait.html?lang=bn" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://soverixnet-design.github.io/kuwait.html?lang=en" />
+    <image:image>
+      <image:loc>https://soverixnet-design.github.io/bd_kuwait_banner.jpg</image:loc>
+      <image:title><![CDATA[Kuwait 5G VIP VPN Banner]]></image:title>
+      <image:caption><![CDATA[Uncapped fast tunnel for Zain, Ooredoo and STC Kuwait]]></image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://soverixnet-design.github.io/bangladesh.html</loc>
+    <lastmod>2026-09-28</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.90</priority>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://soverixnet-design.github.io/bangladesh.html" />
+    <xhtml:link rel="alternate" hreflang="bn-BD" href="https://soverixnet-design.github.io/bangladesh.html" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://soverixnet-design.github.io/bangladesh.html?lang=en" />
+    <image:image>
+      <image:loc>https://soverixnet-design.github.io/bd_kuwait_banner.jpg</image:loc>
+      <image:title><![CDATA[Bangladesh All-SIM VIP VPN Banner]]></image:title>
+      <image:caption><![CDATA[Low Ping Gaming & Safe Banking for GP, Robi, Banglalink in Bangladesh]]></image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://soverixnet-design.github.io/reseller.html</loc>
+    <lastmod>2026-09-28</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://soverixnet-design.github.io/reseller.html" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://soverixnet-design.github.io/reseller.html?lang=bn" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://soverixnet-design.github.io/reseller.html?lang=en" />
+    <image:image>
+      <image:loc>https://soverixnet-design.github.io/reseller_banner.jpg</image:loc>
+      <image:title><![CDATA[Reseller Wholesale Portal Banner]]></image:title>
+      <image:caption><![CDATA[Wholesale VPN PIN packages with 60% profit margin and custom brand naming]]></image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://soverixnet-design.github.io/tutorial.html</loc>
+    <lastmod>2026-09-28</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.80</priority>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://soverixnet-design.github.io/tutorial.html" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://soverixnet-design.github.io/tutorial.html?lang=bn" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://soverixnet-design.github.io/tutorial.html?lang=en" />
+    <image:image>
+      <image:loc>https://soverixnet-design.github.io/soverix_android_tips.jpg</image:loc>
+      <image:title><![CDATA[Android & Mobile VPN Setup Guide]]></image:title>
+      <image:caption><![CDATA[Step-by-step video and pictorial guide for connecting Soverix Net VPN]]></image:caption>
+    </image:image>
+  </url>
+</urlset>

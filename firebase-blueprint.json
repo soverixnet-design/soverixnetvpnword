@@ -450,9 +450,104 @@
         }
       },
       "required": ["settingId", "whatsappNumber"]
+    },
+    "RetailOrder": {
+      "title": "RetailOrder",
+      "description": "Customer retail orders for VPN VIP PINs and packages with instant delivery",
+      "type": "object",
+      "properties": {
+        "orderId": {
+          "type": "string",
+          "description": "Unique order identifier",
+          "maxLength": 128
+        },
+        "countryId": {
+          "type": "string",
+          "description": "Country identifier code",
+          "maxLength": 64
+        },
+        "countryName": {
+          "type": "string",
+          "description": "Country name in Bengali or English",
+          "maxLength": 128
+        },
+        "packageId": {
+          "type": "string",
+          "description": "Package identifier (e.g. 1m, 3m, 6m, 1y)",
+          "maxLength": 64
+        },
+        "packageName": {
+          "type": "string",
+          "description": "Selected package name",
+          "maxLength": 128
+        },
+        "quantity": {
+          "type": "number",
+          "description": "Quantity of PINs requested"
+        },
+        "totalSar": {
+          "type": "number",
+          "description": "Total price in SAR"
+        },
+        "totalBdt": {
+          "type": "number",
+          "description": "Total price in BDT"
+        },
+        "name": {
+          "type": "string",
+          "description": "Customer contact name",
+          "maxLength": 128
+        },
+        "phone": {
+          "type": "string",
+          "description": "Customer WhatsApp or mobile contact number",
+          "maxLength": 64
+        },
+        "payment": {
+          "type": "string",
+          "description": "Selected payment method identifier",
+          "maxLength": 64
+        },
+        "notes": {
+          "type": "string",
+          "description": "Optional notes or transaction reference from customer",
+          "maxLength": 1000
+        },
+        "status": {
+          "type": "string",
+          "description": "Order processing status",
+          "enum": ["pending", "processing", "completed", "cancelled"],
+          "maxLength": 32
+        },
+        "assignedPin": {
+          "type": "string",
+          "description": "Assigned VPN PIN or credential code",
+          "maxLength": 256
+        },
+        "completedAt": {
+          "type": "string",
+          "description": "ISO timestamp when order was marked completed",
+          "maxLength": 64
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "ISO timestamp of order creation",
+          "maxLength": 64
+        },
+        "updatedAt": {
+          "type": "string",
+          "description": "ISO timestamp of last order update",
+          "maxLength": 64
+        }
+      },
+      "required": ["orderId", "name", "phone", "packageId", "status", "createdAt"]
     }
   },
   "firestore": {
+    "/retailOrders/{orderId}": {
+      "schema": "RetailOrder",
+      "description": "Incoming customer orders for VIP PINs and packages"
+    },
     "/settings/{settingId}": {
       "schema": "SiteSettings",
       "description": "Global website configuration, WhatsApp contact numbers, and top announcement tickers managed exclusively by soverixnet@gmail.com"

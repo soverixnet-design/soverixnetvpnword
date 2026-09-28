@@ -1,30 +1,206 @@
-@import "tailwindcss";
+/* Soverix Net Global Mesh and Gradient Styles */
 
 @layer base {
   html {
     scroll-behavior: smooth;
-    font-family: 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    font-family: 'Hind Siliguri', 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   }
   body {
-    background-color: #ffffff;
-    color: #0f172a;
+    background-color: #090d16;
+    color: #f1f5f9;
   }
 }
 
-/* Custom scrollbars */
+/* Custom modern scrollbars */
 ::-webkit-scrollbar {
-  width: 7px;
-  height: 7px;
+  width: 6px;
+  height: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: #f1f5f9;
+  background: #090d16;
 }
 ::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
+  background: #1e293b;
   border-radius: 4px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #94a3b8;
+  background: #10b981;
+}
+
+/* Stripe-Grade Gradient Mesh System */
+.mesh-gradient-dark {
+  background-color: #090d16;
+  background-image: 
+    radial-gradient(at 15% 15%, rgba(16, 185, 129, 0.18) 0px, transparent 55%),
+    radial-gradient(at 85% 10%, rgba(6, 182, 212, 0.16) 0px, transparent 50%),
+    radial-gradient(at 50% 50%, rgba(99, 102, 241, 0.12) 0px, transparent 65%),
+    radial-gradient(at 80% 85%, rgba(16, 185, 129, 0.14) 0px, transparent 60%),
+    radial-gradient(at 10% 80%, rgba(139, 92, 246, 0.15) 0px, transparent 50%);
+}
+
+.mesh-glow-emerald {
+  background: radial-gradient(circle, rgba(16, 185, 129, 0.25) 0%, rgba(16, 185, 129, 0) 70%);
+}
+
+.mesh-glow-cyan {
+  background: radial-gradient(circle, rgba(6, 182, 212, 0.25) 0%, rgba(6, 182, 212, 0) 70%);
+}
+
+.mesh-glow-purple {
+  background: radial-gradient(circle, rgba(147, 51, 234, 0.22) 0%, rgba(147, 51, 234, 0) 70%);
+}
+
+/* Subtle Tech Grid overlay with radial mask */
+.stripe-grid {
+  background-image: linear-gradient(to right, rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+                    linear-gradient(to bottom, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+  background-size: 40px 40px;
+  mask-image: radial-gradient(ellipse at center, rgba(0, 0, 0, 1) 30%, transparent 80%);
+  -webkit-mask-image: radial-gradient(ellipse at center, rgba(0, 0, 0, 1) 30%, transparent 80%);
+}
+
+/* Premium Glassmorphism Cards with Soft Blur */
+.glass-card {
+  background: rgba(15, 23, 42, 0.65);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.glass-card:hover {
+  background: rgba(15, 23, 42, 0.85);
+  border-color: rgba(16, 185, 129, 0.35);
+  box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.6), 0 0 30px -5px rgba(16, 185, 129, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+  transform: translateY(-3px);
+}
+
+.glass-pill {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+/* 3D Transform Capabilities */
+.perspective-container {
+  perspective: 1200px;
+}
+
+.preserve-3d {
+  transform-style: preserve-3d;
+}
+
+.transform-gpu {
+  transform: translateZ(0);
+}
+
+/* 3D Floating Animations */
+@keyframes float-3d-slow {
+  0% {
+    transform: translateY(0px) rotateY(0deg) rotateX(0deg);
+  }
+  50% {
+    transform: translateY(-12px) rotateY(4deg) rotateX(-2deg);
+  }
+  100% {
+    transform: translateY(0px) rotateY(0deg) rotateX(0deg);
+  }
+}
+
+@keyframes float-3d-alt {
+  0% {
+    transform: translateY(0px) rotateY(0deg);
+  }
+  50% {
+    transform: translateY(10px) rotateY(-5deg);
+  }
+  100% {
+    transform: translateY(0px) rotateY(0deg);
+  }
+}
+
+@keyframes orbit-rotate {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes orbit-rotate-reverse {
+  0% {
+    transform: rotate(360deg);
+  }
+  100% {
+    transform: rotate(0deg);
+  }
+}
+
+@keyframes pulse-ring {
+  0% {
+    transform: scale(0.95);
+    opacity: 0.8;
+  }
+  50% {
+    transform: scale(1.05);
+    opacity: 0.3;
+  }
+  100% {
+    transform: scale(0.95);
+    opacity: 0.8;
+  }
+}
+
+.animate-float-3d {
+  animation: float-3d-slow 6s ease-in-out infinite;
+}
+
+.animate-float-alt {
+  animation: float-3d-alt 5s ease-in-out infinite;
+}
+
+.animate-orbit {
+  animation: orbit-rotate 28s linear infinite;
+}
+
+.animate-orbit-reverse {
+  animation: orbit-rotate-reverse 34s linear infinite;
+}
+
+.animate-pulse-ring {
+  animation: pulse-ring 4s ease-in-out infinite;
+}
+
+/* Specular Button Finish */
+.btn-stripe-primary {
+  background: linear-gradient(180deg, #10b981 0%, #059669 100%);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1), 0 8px 20px -4px rgba(16, 185, 129, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.btn-stripe-primary:hover {
+  background: linear-gradient(180deg, #34d399 0%, #10b981 100%);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1), 0 12px 28px -4px rgba(16, 185, 129, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.4);
+  transform: translateY(-1px);
+}
+
+.btn-stripe-secondary {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.btn-stripe-secondary:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.25);
+  transform: translateY(-1px);
 }
 
 /* WhatsApp floating pulse */
@@ -72,6 +248,48 @@
 }
 .modal-pop {
   animation: modal-scale-in 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* 3D Depth Utilities */
+.translate-z-10 {
+  transform: translateZ(10px);
+}
+.translate-z-20 {
+  transform: translateZ(20px);
+}
+.translate-z-30 {
+  transform: translateZ(30px);
+}
+.translate-z-40 {
+  transform: translateZ(40px);
+}
+.translate-z-50 {
+  transform: translateZ(50px);
+}
+
+/* Network Line Glow & Particle Stream */
+@keyframes network-pulse {
+  0% {
+    stroke-dashoffset: 200;
+    opacity: 0.2;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    stroke-dashoffset: 0;
+    opacity: 0.2;
+  }
+}
+
+.network-line {
+  stroke-dasharray: 8 12;
+  animation: network-pulse 4s linear infinite;
+}
+
+.network-line-fast {
+  stroke-dasharray: 6 8;
+  animation: network-pulse 2.5s linear infinite;
 }
 
 /* Badge styles */

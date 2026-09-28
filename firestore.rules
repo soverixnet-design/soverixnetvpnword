@@ -140,6 +140,20 @@ service cloud.firestore {
       allow create, update, delete: if isSuperAdmin() && isValidId(settingId);
     }
 
+    // Retail PIN Orders (Customers submit, only owner manages)
+    match /retailOrders/{orderId} {
+      allow read: if isSuperAdmin();
+      allow create: if isValidId(orderId);
+      allow update, delete: if isSuperAdmin() && isValidId(orderId);
+    }
+
+    // Reseller Wholesale Applications (Resellers submit, only owner manages)
+    match /resellerApplications/{appId} {
+      allow read: if isSuperAdmin();
+      allow create: if isValidId(appId);
+      allow update, delete: if isSuperAdmin() && isValidId(appId);
+    }
+
     // Public Community Reviews & Comments collection
     match /reviews/{reviewId} {
       allow read: if true; // Everyone can see all reviews and comments

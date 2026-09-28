@@ -1,13 +1,26 @@
 import { initializeApp } from 'firebase/app';
 import { getAuth, GoogleAuthProvider } from 'firebase/auth';
-import { getFirestore, doc, getDocFromServer } from 'firebase/firestore';
+import { initializeFirestore, getFirestore, doc, getDocFromServer } from 'firebase/firestore';
 import firebaseConfig from '../../firebase-applet-config.json';
 
 // Initialize Firebase App
 export const app = initializeApp(firebaseConfig);
 
-// Initialize Firestore with exact database ID from config
-export const db = getFirestore(app, firebaseConfig.firestoreDatabaseId);
+// Initialize Firestore with long polling to ensure reliable connectivity in iframe and Cloud Run environments
+try {
+  initializeFirestore(
+    app,
+    {
+      experimentalAutoDetectLongPolling: true,
+      experimentalForceLongPolling: true,
+    },
+    firebaseConfig.firestoreDatabaseId
+  );
+} catch (e) {
+  // Instance already initialized
+}
+
+export const db = getFirestore(app, firebaseConfig.firestoreDatabaseId); /* CRITICAL: The app will break without this line */
 
 // Initialize Firebase Auth
 export const auth = getAuth(app);
@@ -19,18 +32,14 @@ googleProvider.setCustomParameters({
 });
 
 // Test initial connection to Firestore as mandated by skill
-async function testFirestoreConnection() {
+async function testConnection() {
   try {
     await getDocFromServer(doc(db, 'test', 'connection'));
-  } catch (error: any) {
-    // Firestore operates automatically in offline mode when network or server is unavailable
-    if (
-      error?.code === 'unavailable' ||
-      (error instanceof Error && (error.message.includes('the client is offline') || error.message.includes('unavailable') || error.message.includes('backend')))
-    ) {
-      // Graceful offline operation
-      return;
+  } catch (error) {
+    if (error instanceof Error && error.message.includes('the client is offline')) {
+      console.error('Please check your Firebase configuration.');
     }
   }
 }
-testFirestoreConnection();
+testConnection();
+

@@ -150,3 +150,25 @@ export interface CommunityReview {
   createdAt: string;
   replyFromAdmin?: string;
 }
+
+export type OrderStatus = 'pending' | 'processing' | 'completed' | 'cancelled';
+
+export interface RetailOrder {
+  orderId: string;
+  countryId?: string;
+  countryName?: string;
+  packageId?: string;
+  packageName?: string;
+  quantity: number;
+  totalSar?: number;
+  totalBdt?: number;
+  name: string;
+  phone: string;
+  payment: string;
+  notes?: string;
+  status: OrderStatus;
+  createdAt: string;
+  updatedAt?: string;
+  completedAt?: string;
+  assignedPin?: string;
+}

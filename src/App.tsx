@@ -25,6 +25,12 @@ import { FloatingDownloadBar } from './components/FloatingDownloadBar';
 import { WelcomePromoModal } from './components/WelcomePromoModal';
 import { AccountView } from './components/AccountView';
 import { AdminConsoleView } from './components/AdminConsoleView';
+import { RetailBuyView } from './components/RetailBuyView';
+import { ResellerPageView } from './components/ResellerPageView';
+import { CountrySeoShowcase } from './components/CountrySeoShowcase';
+import { CountryGuideView } from './components/CountryGuideView';
+import { PackagesAndOrderView } from './components/PackagesAndOrderView';
+import { AppsAndTutorialsView } from './components/AppsAndTutorialsView';
 import { AuthModal } from './components/AuthModal';
 import { ActionFeedbackToast, ToastFeedbackData } from './components/ActionFeedbackToast';
 import { soundEffects } from './services/soundEffects';
@@ -48,7 +54,15 @@ function AppContent() {
       return 'dark';
     }
   });
-  const [activeTab, setActiveTab] = useState<string>('dashboard');
+  const isAdminPage = typeof window !== 'undefined' && (
+    window.location.pathname.toLowerCase().includes('admin') ||
+    window.location.hash.toLowerCase().includes('admin') ||
+    window.location.search.toLowerCase().includes('admin')
+  );
+
+  const [activeTab, setActiveTab] = useState<string>(() => {
+    return isAdminPage ? 'admin' : 'dashboard';
+  });
   const [status, setStatus] = useState<ConnectionStatus>('disconnected');
   const [selectedServer, setSelectedServer] = useState<VPNServer>(SERVERS_DATA[0]);
   const [activeProtocol, setActiveProtocol] = useState<VPNProtocol>('wireguard');
@@ -58,7 +72,8 @@ function AppContent() {
   const [authModalTab, setAuthModalTab] = useState<'signin' | 'signup'>('signin');
   const [sessionStartTime, setSessionStartTime] = useState<number | null>(null);
   const [toastFeedback, setToastFeedback] = useState<ToastFeedbackData | null>(null);
-  const [isWelcomePromoOpen, setIsWelcomePromoOpen] = useState<boolean>(false);
+  const [isWelcomePromoOpen, setIsWelcomePromoOpen] = useState<boolean>(true);
+  const [selectedOrderCountry, setSelectedOrderCountry] = useState<string>('saudi');
 
   const { user, userProfile, isSuperAdmin, isAdmin, updateUserPreferences, saveConnectionSession } = useAuth();
 
@@ -164,7 +179,9 @@ function AppContent() {
           applySiteBranding(updated);
         }
       }, (err) => {
-        console.warn('Firestore settings listener warning:', err);
+        if (err && (err as any).code !== 'unavailable') {
+          console.warn('Firestore settings listener notice:', err?.message || err);
+        }
       });
     } catch {}
     return () => {
@@ -172,6 +189,43 @@ function AppContent() {
       unsub();
     };
   }, []);
+
+  // Synchronize dynamic canonical tag, alternate hreflang and og:url on activeTab changes
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    try {
+      const tabHash = activeTab === 'dashboard' ? '' : `#${activeTab}`;
+      const cleanOrigin = window.location.origin;
+      const cleanPath = window.location.pathname;
+      
+      // Retain clean parameters (e.g. lang=bn), strip noisy ad trackers
+      const urlParams = new URLSearchParams(window.location.search);
+      const cleanParams = new URLSearchParams();
+      urlParams.forEach((val, key) => {
+        if (!key.startsWith('utm_') && key !== 'fbclid' && key !== 'gclid') {
+          cleanParams.append(key, val);
+        }
+      });
+      const searchStr = cleanParams.toString() ? `?${cleanParams.toString()}` : '';
+      const dynamicCanonicalUrl = `${cleanOrigin}${cleanPath}${searchStr}${tabHash}`;
+
+      let canonicalLink: HTMLLinkElement | null = (document.getElementById('dynamic-canonical') as HTMLLinkElement) || document.querySelector("link[rel='canonical']");
+      if (!canonicalLink) {
+        canonicalLink = document.createElement('link');
+        canonicalLink.setAttribute('rel', 'canonical');
+        canonicalLink.setAttribute('id', 'dynamic-canonical');
+        document.head.appendChild(canonicalLink);
+      }
+      canonicalLink.setAttribute('href', dynamicCanonicalUrl);
+
+      const ogUrl: HTMLMetaElement | null = document.querySelector("meta[property='og:url']");
+      if (ogUrl) {
+        ogUrl.setAttribute('content', dynamicCanonicalUrl);
+      }
+
+      window.dispatchEvent(new Event('soverix_route_change'));
+    } catch {}
+  }, [activeTab]);
 
   const handleOpenAuthModal = (initialTab: 'signin' | 'signup' = 'signin') => {
     soundEffects.playClick();
@@ -419,6 +473,37 @@ function AppContent() {
         </>
       )}
 
+      {/* Admin Top Quick Navigation Bar */}
+      {(isAdminPage || activeTab === 'admin') && (
+        <div className="bg-slate-950/95 border-b border-emerald-500/30 px-4 py-2.5 backdrop-blur-md sticky top-0 z-50">
+          <div className="max-w-7xl mx-auto flex items-center justify-between flex-wrap gap-2 text-xs">
+            <div className="flex items-center gap-2">
+              <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping"></span>
+              <span className="font-black text-white uppercase tracking-wider">
+                ⚡ Soverix Net মাস্টার এডমিন কন্ট্রোল সেন্টার
+              </span>
+              <span className="hidden sm:inline text-slate-400">
+                (ব্যানার, ওয়েবসাইট ডিজাইন ও সকল কন্টেন্ট কন্ট্রোল)
+              </span>
+            </div>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => {
+                  setActiveTab('dashboard');
+                  if (typeof window !== 'undefined' && window.location.pathname.toLowerCase().includes('admin.html')) {
+                    window.location.href = '/';
+                  }
+                }}
+                className="px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-slate-950 font-black text-xs flex items-center gap-1.5 shadow-md shadow-emerald-500/20 transition-all cursor-pointer"
+              >
+                <span>🌐 মূল ড্যাশবোর্ড দেখুন (View Dashboard)</span>
+                <span>→</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Main Top Navbar with Theme Toggle */}
       <Navbar
         activeTab={activeTab}
@@ -440,7 +525,7 @@ function AppContent() {
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 z-10 space-y-6">
         
         {/* Dynamic Promotional Banners Carousel (Managed from Admin Console) */}
-        {siteSettings.sectionVisibility?.bannersSlider !== false && (
+        {!isAdminPage && activeTab !== 'admin' && siteSettings.sectionVisibility?.bannersSlider !== false && (
           <DynamicHeroBanners 
             banners={siteSettings.banners || []} 
             lang={lang} 
@@ -449,9 +534,9 @@ function AppContent() {
         )}
 
         {/* PWA & Mobile Install Strip Banner */}
-        <PwaInstallAndPushBanner lang={lang} />
+        {!isAdminPage && activeTab !== 'admin' && <PwaInstallAndPushBanner lang={lang} />}
         
-        {/* Dashboard Tab */}
+        {/* Page 1: Dashboard Tab (What VPN does, How to use, Connect & Ping) */}
         {activeTab === 'dashboard' && (
           <MainConnectView
             status={status}
@@ -471,19 +556,12 @@ function AppContent() {
           />
         )}
 
-        {/* VIP Plans & Pricing Tab */}
-        {activeTab === 'vipPlans' && (
-          <VipPlansView
+        {/* Page 2: Dedicated Countries & SIMs Guide Tab */}
+        {(activeTab === 'countryGuide' || activeTab === 'arabSim' || activeTab === 'servers') && (
+          <CountryGuideView
             lang={lang}
-            onOpenAuthModal={handleOpenAuthModal}
-          />
-        )}
-
-        {/* Arab SIM Payload & SNI FreeNet Customizer Tab */}
-        {activeTab === 'arabSim' && (
-          <ArabSimPayloadCustomizer
             selectedServer={selectedServer}
-            lang={lang}
+            onSelectServer={handleSelectServer}
             onApplySniToServer={(sni, payload) => {
               setSelectedServer((prev) => ({
                 ...prev,
@@ -492,16 +570,38 @@ function AppContent() {
               }));
               handleUpdateSettings({ customDnsIp: sni });
             }}
-            onNavigateToConfigs={() => setActiveTab('configs')}
+            onNavigateToTab={setActiveTab}
+            onOrderCountry={(countryId) => {
+              setSelectedOrderCountry(countryId);
+              setActiveTab('packages');
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }}
           />
         )}
 
-        {/* Config & Profile Exporter Tab */}
-        {activeTab === 'configs' && (
-          <ConfigGeneratorModal
-            selectedServer={selectedServer}
-            activeProtocol={activeProtocol}
+        {/* Page 3: Dedicated Internet Packages & Order PIN Tab */}
+        {(activeTab === 'packages' || activeTab === 'retailBuy' || activeTab === 'vipPlans') && (
+          <PackagesAndOrderView
             lang={lang}
+            initialCountry={selectedOrderCountry}
+            onNavigateToTab={setActiveTab}
+            onOpenAuthModal={handleOpenAuthModal}
+          />
+        )}
+
+        {/* Page 4: Dedicated Reseller Wholesale Tab */}
+        {activeTab === 'reseller' && (
+          <ResellerPageView
+            lang={lang}
+            onNavigateToTab={setActiveTab}
+          />
+        )}
+
+        {/* Page 5: Dedicated Apps & Video Tutorials Tab */}
+        {(activeTab === 'appsTutorials' || activeTab === 'configs' || activeTab === 'videos') && (
+          <AppsAndTutorialsView
+            lang={lang}
+            onNavigateTab={setActiveTab}
           />
         )}
 

@@ -17,6 +17,7 @@ import {
   LogIn, 
   Crown,
   Briefcase,
+  ShoppingCart,
   Sun,
   Moon,
   Gift,
@@ -83,22 +84,19 @@ export const Navbar: React.FC<NavbarProps> = ({
   }, []);
 
   const rawNavLinks = [
-    { id: 'dashboard', label: lang === 'bn' ? 'হোম' : 'Home', icon: Radio, show: siteSettings.sectionVisibility?.heroConnect !== false },
-    { id: 'vipPlans', label: lang === 'bn' ? 'প্যাকেজ ও মূল্য' : 'Packages & Pricing', icon: Crown, vipHighlight: true, show: siteSettings.sectionVisibility?.vipPlans !== false },
-    { id: 'arabSim', label: lang === 'bn' ? '🇸🇦 আরব ফ্রি-নেট' : '🇸🇦 Arab FreeNet', icon: Zap, highlight: true, show: siteSettings.sectionVisibility?.arabSimPayload !== false },
-    { id: 'videos', label: lang === 'bn' ? 'ভিডিও গাইড' : 'Video Guides', icon: Film, show: siteSettings.sectionVisibility?.videoTutorials !== false },
-    { id: 'configs', label: lang === 'bn' ? 'ডাউনলোড ও কনফিগ' : 'Downloads', icon: FileCode2, show: true },
-    { id: 'servers', label: lang === 'bn' ? 'সার্ভারসমূহ' : 'Servers', icon: Globe, show: siteSettings.sectionVisibility?.serverNodes !== false },
-    { id: 'reviews', label: lang === 'bn' ? 'রিভিউ ও মন্তব্য' : 'Reviews', icon: Star, show: siteSettings.sectionVisibility?.communityReviews !== false },
-    { id: 'benefits', label: lang === 'bn' ? 'সুবিধাসমূহ' : 'Why Us?', icon: Sparkles, show: siteSettings.sectionVisibility?.benefitsFeatures !== false },
+    { id: 'dashboard', label: lang === 'bn' ? 'হোম (কানেক্ট ও গাইড)' : 'Home (Guide & Connect)', icon: Radio, show: true },
+    { id: 'countryGuide', label: lang === 'bn' ? '🗺️ দেশ ও সিম গাইড' : '🗺️ Countries & SIMs', icon: Globe, highlight: true, show: true },
+    { id: 'packages', label: lang === 'bn' ? '🛒 প্যাকেজ ও পিন অর্ডার' : '🛒 Packages & Order', icon: ShoppingCart, highlight: true, show: true },
+    { id: 'reseller', label: lang === 'bn' ? '💼 রিসেলার প্যানেল' : '💼 Reseller Panel', icon: Briefcase, vipHighlight: true, show: true },
+    { id: 'appsTutorials', label: lang === 'bn' ? '📱 অ্যাপস ও ভিডিও' : '📱 Apps & Videos', icon: Download, show: true },
     { id: 'account', label: lang === 'bn' ? 'অ্যাকাউন্ট' : 'Account', icon: User, show: true },
-    ...(canAccessAdminPanel ? [{
+    {
       id: 'admin',
-      label: lang === 'bn' ? '👑 ওনার এডমিন' : '👑 Owner Admin',
+      label: lang === 'bn' ? '⚡ এডমিন প্যানেল' : '⚡ Admin Panel',
       icon: ShieldAlert,
       adminOnly: true,
       show: true
-    }] : []),
+    },
   ];
 
   const navLinks = rawNavLinks.filter((item) => item.show !== false);
@@ -108,15 +106,22 @@ export const Navbar: React.FC<NavbarProps> = ({
   };
 
   const handleNavClick = (tabId: string) => {
-    if (tabId === 'videos') {
-      setActiveTab('dashboard');
+    if (tabId === 'videos' || tabId === 'configs') {
+      setActiveTab('appsTutorials');
       setIsMobileMenuOpen(false);
-      setTimeout(() => {
-        const el = document.getElementById('video-tutorials-section');
-        if (el) {
-          el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
-      }, 100);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
+    if (tabId === 'retailBuy' || tabId === 'vipPlans') {
+      setActiveTab('packages');
+      setIsMobileMenuOpen(false);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
+    if (tabId === 'arabSim' || tabId === 'servers') {
+      setActiveTab('countryGuide');
+      setIsMobileMenuOpen(false);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
       return;
     }
     if (tabId === 'reviews') {
@@ -224,7 +229,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           </div>
 
           {/* Desktop Website Navigation Links */}
-          <nav className="hidden xl:flex items-center gap-1 bg-slate-900/60 p-1.5 rounded-2xl border border-slate-800/80">
+          <nav className="hidden lg:flex items-center gap-1 bg-slate-900/60 p-1.5 rounded-2xl border border-slate-800/80">
             {navLinks.map((item) => {
               const Icon = item.icon;
               const isActive = activeTab === item.id;
@@ -284,7 +289,7 @@ export const Navbar: React.FC<NavbarProps> = ({
 
             {/* VIP Plans Pill Button */}
             <button
-              onClick={() => handleNavClick('vipPlans')}
+              onClick={() => handleNavClick('packages')}
               className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-gradient-to-r from-amber-500/20 to-yellow-400/20 hover:from-amber-500/30 hover:to-yellow-400/30 border border-amber-500/40 text-amber-300 text-xs font-black transition-all cursor-pointer shadow-sm shadow-amber-500/10"
             >
               <Crown className="w-3.5 h-3.5 text-amber-400" />

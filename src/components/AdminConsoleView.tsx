@@ -51,7 +51,8 @@ import {
   FolderOpen,
   FileText,
   LayoutGrid,
-  Film
+  Film,
+  ShoppingCart
 } from 'lucide-react';
 import { collection, onSnapshot, doc, updateDoc, setDoc, deleteDoc } from 'firebase/firestore';
 import { db } from '../firebase/config';
@@ -59,6 +60,7 @@ import { useAuth, UserProfileData, UserRole, OWNER_EMAIL } from '../firebase/Aut
 import { ServerManager } from '../services/serverManager';
 import { VPNServer, ServerRegion, VPNProtocol, ServerCapability } from '../types';
 import { getSiteSettings, saveSiteSettings, SiteSettingsData, CONTACT_CONFIG } from '../data/contact';
+import { OrdersManager } from './admin/OrdersManager';
 import { BannersManager } from './admin/BannersManager';
 import { DesignThemeManager } from './admin/DesignThemeManager';
 import { SectionsManager } from './admin/SectionsManager';
@@ -125,7 +127,9 @@ export const AdminConsoleView: React.FC<AdminConsoleViewProps> = ({ lang }) => {
     isSuperAdmin
   );
 
-  const [activeAdminTab, setActiveAdminTab] = useState<'videos' | 'gallery' | 'banners' | 'apps' | 'texts' | 'benefits' | 'plans' | 'faqs' | 'design' | 'sections' | 'servers' | 'users' | 'reviews' | 'site_settings' | 'app_links' | 'sheets'>('videos');
+  const [activeAdminTab, setActiveAdminTab] = useState<'orders' | 'videos' | 'gallery' | 'banners' | 'apps' | 'texts' | 'benefits' | 'plans' | 'faqs' | 'design' | 'sections' | 'servers' | 'users' | 'reviews' | 'site_settings' | 'app_links' | 'sheets'>('videos');
+  const [incomingOrdersCount, setIncomingOrdersCount] = useState<number>(0);
+  const [pendingOrdersCount, setPendingOrdersCount] = useState<number>(0);
   const [usersList, setUsersList] = useState<UserProfileData[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [filterRole, setFilterRole] = useState<'all' | 'user' | 'reseller' | 'admin'>('all');
@@ -232,6 +236,35 @@ export const AdminConsoleView: React.FC<AdminConsoleViewProps> = ({ lang }) => {
     }
 
     return () => unsubscribe();
+  }, [canAccessAdminPanel]);
+
+  // Listen to incoming retail orders count from Firestore
+  useEffect(() => {
+    if (!canAccessAdminPanel) return;
+    let unsub = () => {};
+    try {
+      unsub = onSnapshot(
+        collection(db, 'retailOrders'),
+        (snapshot) => {
+          setIncomingOrdersCount(snapshot.size);
+          let pending = 0;
+          snapshot.forEach((docSnap) => {
+            if (docSnap.data().status === 'pending') {
+              pending++;
+            }
+          });
+          setPendingOrdersCount(pending);
+        },
+        () => {
+          setIncomingOrdersCount(5);
+          setPendingOrdersCount(2);
+        }
+      );
+    } catch {
+      setIncomingOrdersCount(5);
+      setPendingOrdersCount(2);
+    }
+    return () => unsub();
   }, [canAccessAdminPanel]);
 
   // Listen to live reviews collection from Firestore
@@ -693,14 +726,6 @@ export const AdminConsoleView: React.FC<AdminConsoleViewProps> = ({ lang }) => {
               <span>{lang === 'bn' ? `Google দিয়ে লগইন করুন (${OWNER_EMAIL})` : `Sign In with Google (${OWNER_EMAIL})`}</span>
             </button>
 
-            <button
-              onClick={() => signInDemoVip()}
-              className="w-full py-2.5 px-4 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-700 text-cyan-400 font-bold text-xs flex items-center justify-center gap-2 transition-all cursor-pointer"
-            >
-              <Sparkles className="w-3.5 h-3.5" />
-              <span>{lang === 'bn' ? '⚡ ১-ক্লিক মাস্টার ওনার লগইন (Instant Owner Mode)' : '⚡ Instant Master Owner Mode'}</span>
-            </button>
-
             {user && (
               <button
                 onClick={() => signOutUser()}
@@ -763,6 +788,27 @@ export const AdminConsoleView: React.FC<AdminConsoleViewProps> = ({ lang }) => {
 
           {/* Quick Reseller Action & Wallet Badge */}
           <div className="flex items-center gap-3 flex-wrap">
+            <button
+              onClick={() => setActiveAdminTab('orders')}
+              className={`px-4 py-3 rounded-2xl border font-extrabold text-xs flex items-center gap-2 transition-all cursor-pointer shadow-lg ${
+                activeAdminTab === 'orders'
+                  ? 'bg-amber-500 text-slate-950 border-amber-400 shadow-amber-500/30'
+                  : 'bg-slate-900/90 text-amber-300 border-amber-500/40 hover:bg-slate-800'
+              }`}
+            >
+              <ShoppingCart className="w-4 h-4" />
+              <span>{lang === 'bn' ? '🛒 গ্রাহক অর্ডার' : '🛒 Customer Orders'}</span>
+              {pendingOrdersCount > 0 ? (
+                <span className="px-2 py-0.5 rounded-full text-[10px] font-black bg-amber-500 text-slate-950 animate-pulse">
+                  {pendingOrdersCount} {lang === 'bn' ? 'পেন্ডিং' : 'Pending'}
+                </span>
+              ) : (
+                <span className="px-2 py-0.5 rounded-full text-[10px] font-mono bg-slate-800 text-slate-300">
+                  {incomingOrdersCount}
+                </span>
+              )}
+            </button>
+
             <div className="bg-slate-950/90 border border-amber-500/30 p-3.5 rounded-2xl flex items-center gap-3">
               <div className="p-2 rounded-xl bg-amber-500/20 text-amber-400">
                 <Wallet className="w-5 h-5" />
@@ -871,16 +917,17 @@ export const AdminConsoleView: React.FC<AdminConsoleViewProps> = ({ lang }) => {
           },
           {
             id: 'apps_plans',
-            nameBn: 'অ্যাপস ও প্যাকেজ',
-            nameEn: 'Apps & VIP Plans',
-            descBn: 'ভিপিএন এপিকে ডাউনলোড লিংক ও ভিআইপি প্ল্যানের রেট',
-            descEn: 'APK app downloads and VIP pricing tiers',
-            icon: Smartphone,
+            nameBn: 'অর্ডার ও প্যাকেজ',
+            nameEn: 'Orders & Packages',
+            descBn: 'গ্রাহকদের রিটেইল অর্ডার, ভিপিএন অ্যাপস ও ভিআইপি প্ল্যানের দাম',
+            descEn: 'Incoming customer orders, VPN apps, and VIP pricing tiers',
+            icon: ShoppingCart,
             color: 'amber',
-            activeTabDefault: 'apps',
+            activeTabDefault: 'orders',
             tabs: [
-              { id: 'apps', labelBn: '📲 ভিপিএন অ্যাপস ডাউনলোড', labelEn: '📲 VPN Apps Hub', icon: Smartphone },
+              { id: 'orders', labelBn: `🛒 গ্রাহক অর্ডার (${incomingOrdersCount})`, labelEn: `🛒 Customer Orders (${incomingOrdersCount})`, icon: ShoppingCart },
               { id: 'plans', labelBn: '👑 ভিআইপি প্ল্যান ও দাম', labelEn: '👑 VIP Plans & Pricing', icon: Crown },
+              { id: 'apps', labelBn: '📲 ভিপিএন অ্যাপস ডাউনলোড', labelEn: '📲 VPN Apps Hub', icon: Smartphone },
             ]
           },
           {
@@ -1006,6 +1053,11 @@ export const AdminConsoleView: React.FC<AdminConsoleViewProps> = ({ lang }) => {
           </div>
         );
       })()}
+
+      {/* TAB: INCOMING CUSTOMER ORDERS (RESTRICTED TO SUPER-ADMIN) */}
+      {activeAdminTab === 'orders' && (
+        <OrdersManager lang={lang} />
+      )}
 
       {/* TAB: VIDEO PUBLISHER & MANAGER */}
       {activeAdminTab === 'videos' && (

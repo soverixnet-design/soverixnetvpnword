@@ -693,10 +693,28 @@ export const MainConnectView: React.FC<MainConnectViewProps> = ({
 
 
 
-      {/* Fast Navigation Quick Links with Entry Stagger */}
-      <div className="animate-fade-in-up delay-350 grid grid-cols-1 sm:grid-cols-4 gap-3.5">
+      {/* Fast Navigation to Dedicated Pages */}
+      <div className="animate-fade-in-up delay-350 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
         <button
-          onClick={() => onNavigateTab('vipPlans')}
+          onClick={() => onNavigateTab('countryGuide')}
+          className="p-4 rounded-2xl bg-gradient-to-r from-emerald-950/40 via-slate-900 to-slate-950 border border-emerald-500/40 hover:border-emerald-400 transition-all flex items-center justify-between text-left group cursor-pointer shadow-lg shadow-emerald-500/10"
+        >
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-emerald-300 group-hover:scale-105 transition-transform">
+              <Globe className="w-5 h-5" />
+            </div>
+            <div>
+              <h5 className="text-xs font-bold text-white group-hover:text-emerald-300 transition-colors">
+                {lang === 'bn' ? '🗺️ দেশ ও সিম গাইড' : 'Countries & SIMs'}
+              </h5>
+              <p className="text-[11px] text-slate-400">{lang === 'bn' ? 'সৌদি, দুবাই, ওমান, কুয়েত, মালয়েশিয়া' : 'Gulf, Malaysia & SIM Payloads'}</p>
+            </div>
+          </div>
+          <ChevronRight className="w-4 h-4 text-emerald-400 group-hover:translate-x-0.5 transition-transform" />
+        </button>
+
+        <button
+          onClick={() => onNavigateTab('packages')}
           className="p-4 rounded-2xl bg-gradient-to-r from-amber-950/40 via-slate-900 to-slate-950 border border-amber-500/40 hover:border-amber-400 transition-all flex items-center justify-between text-left group cursor-pointer shadow-lg shadow-amber-500/10"
         >
           <div className="flex items-center gap-3">
@@ -705,358 +723,289 @@ export const MainConnectView: React.FC<MainConnectViewProps> = ({
             </div>
             <div>
               <h5 className="text-xs font-bold text-white group-hover:text-amber-300 transition-colors">
-                {lang === 'bn' ? 'প্যাকেজ ও মূল্য' : 'VIP Plans & Pricing'}
+                {lang === 'bn' ? '🛒 প্যাকেজ ও পিন অর্ডার' : 'Packages & Orders'}
               </h5>
-              <p className="text-[11px] text-slate-400">{lang === 'bn' ? 'বিকাশ/নগদ/মাদা দিয়ে নিন' : 'bKash, Nagad, Mada activation'}</p>
+              <p className="text-[11px] text-slate-400">{lang === 'bn' ? '১ মাস/৩ মাস/লাইফটাইম পিন' : '1-Mo / 3-Mo / Lifetime PIN'}</p>
             </div>
           </div>
           <ChevronRight className="w-4 h-4 text-amber-400 group-hover:translate-x-0.5 transition-transform" />
         </button>
 
         <button
-          onClick={() => onNavigateTab('arabSim')}
-          className="p-4 rounded-2xl bg-gradient-to-r from-emerald-950/40 via-slate-900 to-slate-950 border border-emerald-500/40 hover:border-emerald-400 transition-all flex items-center justify-between text-left group cursor-pointer shadow-lg shadow-emerald-500/10"
-        >
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-emerald-300 group-hover:scale-105 transition-transform">
-              <Zap className="w-5 h-5" />
-            </div>
-            <div>
-              <h5 className="text-xs font-bold text-white group-hover:text-emerald-300 transition-colors">
-                {lang === 'bn' ? '🇸🇦 আরব ফ্রি-নেট' : 'Arab SIM FreeNet'}
-              </h5>
-              <p className="text-[11px] text-slate-400">{lang === 'bn' ? 'STC, Mobily, Zain বাগ' : 'Saudi & Gulf FreeNet setups'}</p>
-            </div>
-          </div>
-          <ChevronRight className="w-4 h-4 text-emerald-400 group-hover:translate-x-0.5 transition-transform" />
-        </button>
-
-        <button
-          onClick={() => onNavigateTab('configs')}
-          className="p-4 rounded-2xl bg-gradient-to-r from-cyan-950/40 via-slate-900 to-slate-950 border border-cyan-500/40 hover:border-cyan-400 transition-all flex items-center justify-between text-left group cursor-pointer shadow-lg shadow-cyan-500/10"
-        >
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-cyan-500/20 border border-cyan-500/40 flex items-center justify-center text-cyan-300 group-hover:scale-105 transition-transform">
-              <Layers className="w-5 h-5" />
-            </div>
-            <div>
-              <h5 className="text-xs font-bold text-white group-hover:text-cyan-300 transition-colors">
-                {lang === 'bn' ? 'ডাউনলোড ও কনফিগ' : 'Downloads & Configs'}
-              </h5>
-              <p className="text-[11px] text-slate-400">{lang === 'bn' ? 'APK ও QR কোড স্ক্যান' : 'Official APK & QR scanner'}</p>
-            </div>
-          </div>
-          <ChevronRight className="w-4 h-4 text-cyan-400 group-hover:translate-x-0.5 transition-transform" />
-        </button>
-
-        <button
-          onClick={() => onNavigateTab('servers')}
+          onClick={() => onNavigateTab('reseller')}
           className="p-4 rounded-2xl bg-gradient-to-r from-purple-950/40 via-slate-900 to-slate-950 border border-purple-500/40 hover:border-purple-400 transition-all flex items-center justify-between text-left group cursor-pointer shadow-lg shadow-purple-500/10"
         >
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-purple-500/20 border border-purple-500/40 flex items-center justify-center text-purple-300 group-hover:scale-105 transition-transform">
-              <Globe2 className="w-5 h-5" />
+              <Crown className="w-5 h-5 text-purple-300" />
             </div>
             <div>
               <h5 className="text-xs font-bold text-white group-hover:text-purple-300 transition-colors">
-                {lang === 'bn' ? 'সার্ভার লিস্ট ও পিং' : 'Servers & Ping'}
+                {lang === 'bn' ? '💼 রিসেলার প্যানেল' : 'Reseller Panel'}
               </h5>
-              <p className="text-[11px] text-slate-400">{lang === 'bn' ? '৫০+ সুপারফাস্ট নোড' : '50+ Ultra-low latency nodes'}</p>
+              <p className="text-[11px] text-slate-400">{lang === 'bn' ? 'পাইকারি রেট ও ইনকাম' : 'Wholesale Rates & Portal'}</p>
             </div>
           </div>
           <ChevronRight className="w-4 h-4 text-purple-400 group-hover:translate-x-0.5 transition-transform" />
         </button>
+
+        <button
+          onClick={() => onNavigateTab('appsTutorials')}
+          className="p-4 rounded-2xl bg-gradient-to-r from-cyan-950/40 via-slate-900 to-slate-950 border border-cyan-500/40 hover:border-cyan-400 transition-all flex items-center justify-between text-left group cursor-pointer shadow-lg shadow-cyan-500/10"
+        >
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-cyan-500/20 border border-cyan-500/40 flex items-center justify-center text-cyan-300 group-hover:scale-105 transition-transform">
+              <Download className="w-5 h-5" />
+            </div>
+            <div>
+              <h5 className="text-xs font-bold text-white group-hover:text-cyan-300 transition-colors">
+                {lang === 'bn' ? '📱 অ্যাপস ও ভিডিও গাইড' : 'Apps & Videos'}
+              </h5>
+              <p className="text-[11px] text-slate-400">{lang === 'bn' ? '৪টি অ্যাপ ও টিউটোরিয়াল' : '4 APKs & Video Tutorials'}</p>
+            </div>
+          </div>
+          <ChevronRight className="w-4 h-4 text-cyan-400 group-hover:translate-x-0.5 transition-transform" />
+        </button>
       </div>
 
-      {/* SECTION 1: Arab SIM FreeNet & Gulf SNI Showcase */}
-      <section className="relative overflow-hidden rounded-3xl p-6 sm:p-8 border border-emerald-500/30 bg-gradient-to-br from-[#021814] via-[#030d11] to-[#041a1a] shadow-xl space-y-6">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-6 border-b border-emerald-500/20">
-          <div>
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 text-xs font-bold border border-emerald-500/30 mb-2">
-              <span>🇸🇦 🇦🇪 🇶🇦</span>
-              <span>{lang === 'bn' ? 'সৌদি আরব ও মধ্যপ্রাচ্য স্পেশাল ফ্রি-নেট' : 'Saudi Arabia & Gulf Free-Net SNI'}</span>
-            </div>
-            <h2 className="text-xl sm:text-2xl font-black text-white">
-              {lang === 'bn' ? 'আরব সিম ফ্রি-নেট ও আনলিমিটেড SNI পেলোড' : 'Arab SIM Free-Net & Unlimited SNI Payloads'}
-            </h2>
-            <p className="text-xs sm:text-sm text-slate-300 mt-1 max-w-2xl">
-              {lang === 'bn' 
-                ? 'সৌদি আরব (STC, Mobily, Zain), সংযুক্ত আরব আমিরাত ও কাতারে ০ ব্যালেন্সে আল্ট্রা-স্পিড ফ্রি ইন্টারনেটের টেস্টেড পেলোড।' 
-                : 'Zero-balance tested FreeNet configurations and SNI payloads for STC, Mobily, Zain, Etisalat & Ooredoo.'}
-            </p>
+      {/* SECTION: ভিপিএন দিয়ে কী কী করা যায়? (What You Can Do With Soverixnet VPN) */}
+      <section className="relative overflow-hidden rounded-3xl p-6 sm:p-8 border border-cyan-500/30 bg-gradient-to-br from-[#02141a] via-slate-950 to-[#040e1f] shadow-2xl space-y-6">
+        <div className="text-center max-w-3xl mx-auto space-y-2">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 text-cyan-400 text-xs font-bold border border-cyan-500/30">
+            <Sparkles className="w-3.5 h-3.5" />
+            <span>{lang === 'bn' ? 'ভিপিএন এর ব্যবহার ও সুবিধাসমূহ' : 'Core Capabilities of VPN'}</span>
           </div>
-
-          <button
-            onClick={() => onNavigateTab('arabSim')}
-            className="px-4 py-2.5 rounded-2xl bg-emerald-500 hover:bg-emerald-400 text-black font-extrabold text-xs flex items-center justify-center gap-2 transition-all shadow-md shadow-emerald-500/20 shrink-0 cursor-pointer"
-          >
-            <span>{lang === 'bn' ? '🇸🇦 সকল পেলোড ও কনফিগ দেখুন ➔' : '🇸🇦 Open Arab SIM Customizer ➔'}</span>
-          </button>
+          <h2 className="text-2xl sm:text-3xl font-black text-white tracking-tight">
+            {lang === 'bn' ? 'ভিপিএন দিয়ে আপনি কী কী করতে পারবেন?' : 'What Can You Do With Soverixnet VPN?'}
+          </h2>
+          <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
+            {lang === 'bn' 
+              ? 'আমাদের ভিপিএন আপনার ইন্টারনেট সংযোগকে সম্পূর্ণ নিরাপদ, দ্রুত এবং রেস্ট্রিকশন-মুক্ত করে তোলে।' 
+              : 'Our quantum-safe VPN secures your connection, restores blocked VoIP calls, and accelerates streaming and gaming.'}
+          </p>
         </div>
 
-        {/* Featured Saudi FreeNet Official Banner (Clickable directly to WhatsApp) */}
-        <div 
-          onClick={() => {
-            const url = CONTACT_CONFIG.getWhatsAppUrl('আসসালামু আলাইকুম, আমি সৌদি আরবে STC / Mobily / Zain 5G আনলিমিটেড ফ্রি-নেট প্যাকেজ ও কনফিগ নিতে চাই।');
-            window.open(url, '_blank', 'noopener,noreferrer');
-          }}
-          className="group relative rounded-2xl overflow-hidden border border-emerald-500/40 hover:border-emerald-400 shadow-2xl shadow-emerald-950/40 cursor-pointer transition-all duration-300"
-        >
-          <img 
-            src="/file_00000000fed471faa1f0ce09aa2e4615.png" 
-            alt="সৌদি আরবে সম্পূর্ণ আনলিমিটেড ফ্রি ইন্টারনেট ব্যবহার করুন - Soverixnet VPN"
-            referrerPolicy="no-referrer"
-            className="w-full h-auto object-cover group-hover:scale-[1.01] transition-transform duration-500"
-          />
-        </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-6">
-          {/* STC KSA */}
-          <div className="p-4 rounded-2xl bg-slate-950/80 border border-emerald-500/30 hover:border-emerald-400 transition-all flex flex-col justify-between">
-            <div>
-              <div className="flex items-center justify-between">
-                <span className="text-xs font-extrabold text-emerald-400">STC KSA (সৌদি আরব)</span>
-                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300">100% Tested</span>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 pt-2">
+          {/* 1. Blocked calling */}
+          <div className="p-5 rounded-2xl bg-slate-900/80 border border-slate-800 hover:border-emerald-500/50 transition-all flex flex-col justify-between group">
+            <div className="space-y-3">
+              <div className="w-10 h-10 rounded-xl bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 flex items-center justify-center font-bold text-lg group-hover:scale-105 transition-transform">
+                📞
               </div>
-              <p className="text-xs text-white font-bold mt-2">Zero-Balance High Speed</p>
-              <div className="mt-2 p-2 rounded-xl bg-slate-900 border border-slate-800 font-mono text-[11px] text-cyan-300 flex items-center justify-between">
-                <span className="truncate">freenet.stc.com.sa</span>
-                <button
-                  onClick={() => handleCopyPayload('freenet.stc.com.sa')}
-                  className="ml-2 text-slate-400 hover:text-emerald-300 cursor-pointer"
-                  title="Copy SNI"
-                >
-                  {copiedPayload === 'freenet.stc.com.sa' ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
-                </button>
-              </div>
+              <h3 className="text-base font-bold text-white group-hover:text-emerald-300 transition-colors">
+                {lang === 'bn' ? 'ব্লক থাকা অডিও/ভিডিও কল আনব্লক' : 'Unblock Audio & Video Calls'}
+              </h3>
+              <p className="text-xs text-slate-300 leading-relaxed">
+                {lang === 'bn' 
+                  ? 'সৌদি আরব, দুবাই, ওমান, কাতার ও কুয়েতে WhatsApp, IMO, Messenger, BOTIM ও FaceTime ১০০% আনব্লক করে দেশে পরিবারের সাথে ক্রিস্টাল ক্লিয়ার ৪K ভিডিও কলে কথা বলুন।' 
+                  : 'Bypass strict telecom firewalls to make crystal-clear WhatsApp, IMO, FaceTime, and BOTIM audio/video calls without drops.'}
+              </p>
             </div>
-            <div className="mt-3 pt-2 border-t border-slate-900 flex items-center justify-between text-[11px] text-slate-400">
-              <span>Port: 443 (SSL/TLS)</span>
-              <span className="text-emerald-400 font-bold">~85 Mbps</span>
+            <div className="mt-4 pt-3 border-t border-slate-800 flex items-center justify-between text-[11px] text-emerald-400 font-bold">
+              <span>WhatsApp / IMO HD</span>
+              <span>১০০% আনব্লক</span>
             </div>
           </div>
 
-          {/* Mobily KSA */}
-          <div className="p-4 rounded-2xl bg-slate-950/80 border border-cyan-500/30 hover:border-cyan-400 transition-all flex flex-col justify-between">
-            <div>
-              <div className="flex items-center justify-between">
-                <span className="text-xs font-extrabold text-cyan-400">Mobily KSA (সৌদি আরব)</span>
-                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-cyan-500/20 text-cyan-300">Active</span>
+          {/* 2. Low Ping Gaming */}
+          <div className="p-5 rounded-2xl bg-slate-900/80 border border-slate-800 hover:border-cyan-500/50 transition-all flex flex-col justify-between group">
+            <div className="space-y-3">
+              <div className="w-10 h-10 rounded-xl bg-cyan-500/20 text-cyan-400 border border-cyan-500/30 flex items-center justify-center font-bold text-lg group-hover:scale-105 transition-transform">
+                🎮
               </div>
-              <p className="text-xs text-white font-bold mt-2">Social & Browsing SNI</p>
-              <div className="mt-2 p-2 rounded-xl bg-slate-900 border border-slate-800 font-mono text-[11px] text-cyan-300 flex items-center justify-between">
-                <span className="truncate">free.mobily.com.sa</span>
-                <button
-                  onClick={() => handleCopyPayload('free.mobily.com.sa')}
-                  className="ml-2 text-slate-400 hover:text-cyan-300 cursor-pointer"
-                  title="Copy SNI"
-                >
-                  {copiedPayload === 'free.mobily.com.sa' ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
-                </button>
-              </div>
+              <h3 className="text-base font-bold text-white group-hover:text-cyan-300 transition-colors">
+                {lang === 'bn' ? 'সুপার লো-পিং গেমিং এক্সিলারেটর' : 'Low Ping Gaming Accelerator'}
+              </h3>
+              <p className="text-xs text-slate-300 leading-relaxed">
+                {lang === 'bn' 
+                  ? 'পাবজি মোবাইল (PUBG), ফ্রিফায়ার (FreeFire) ও মোবাইল লেজেন্ডস (MLBB)-এ ১০–১৮ ms লো-পিং। কোনো ল্যাগ বা প্যাকেট লস ছাড়াই প্রো গেমারদের মতো খেলুন।' 
+                  : 'Direct UDP routing providing ultra-stable 10-18ms latency for PUBG Mobile, FreeFire, Mobile Legends, and Warzone.'}
+              </p>
             </div>
-            <div className="mt-3 pt-2 border-t border-slate-900 flex items-center justify-between text-[11px] text-slate-400">
-              <span>Port: 80 / 443</span>
-              <span className="text-cyan-400 font-bold">~95 Mbps</span>
+            <div className="mt-4 pt-3 border-t border-slate-800 flex items-center justify-between text-[11px] text-cyan-400 font-bold">
+              <span>Zero Packet Loss</span>
+              <span>১০-১৮ ms Ping</span>
             </div>
           </div>
 
-          {/* Zain KSA */}
-          <div className="p-4 rounded-2xl bg-slate-950/80 border border-purple-500/30 hover:border-purple-400 transition-all flex flex-col justify-between">
-            <div>
-              <div className="flex items-center justify-between">
-                <span className="text-xs font-extrabold text-purple-400">Zain KSA (সৌদি আরব)</span>
-                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-purple-500/20 text-purple-300">Turbo</span>
+          {/* 3. Arab & Asian FreeNet */}
+          <div className="p-5 rounded-2xl bg-slate-900/80 border border-slate-800 hover:border-amber-500/50 transition-all flex flex-col justify-between group">
+            <div className="space-y-3">
+              <div className="w-10 h-10 rounded-xl bg-amber-500/20 text-amber-400 border border-amber-500/30 flex items-center justify-center font-bold text-lg group-hover:scale-105 transition-transform">
+                🌐
               </div>
-              <p className="text-xs text-white font-bold mt-2">Streaming Bypass Tunnel</p>
-              <div className="mt-2 p-2 rounded-xl bg-slate-900 border border-slate-800 font-mono text-[11px] text-cyan-300 flex items-center justify-between">
-                <span className="truncate">fast.zain.sa</span>
-                <button
-                  onClick={() => handleCopyPayload('fast.zain.sa')}
-                  className="ml-2 text-slate-400 hover:text-purple-300 cursor-pointer"
-                  title="Copy SNI"
-                >
-                  {copiedPayload === 'fast.zain.sa' ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
-                </button>
-              </div>
+              <h3 className="text-base font-bold text-white group-hover:text-amber-300 transition-colors">
+                {lang === 'bn' ? 'সিম ফ্রি-নেট ও আনলিমিটেড ব্রাউজিং' : 'FreeNet SIM Payloads'}
+              </h3>
+              <p className="text-xs text-slate-300 leading-relaxed">
+                {lang === 'bn' 
+                  ? 'সৌদি STC 5G জিরো ব্যালেন্স, Mobily 60 SAR আনলিমিটেড, Zain, দুবাই du/Etisalat ও মালয়েশিয়া Celcom/Maxis সিমে কোনো ব্যালেন্স বা এমবি ছাড়াই ফুল স্পিডে ইন্টারনেট চালান।' 
+                  : 'Tested working SNI bug hosts and payloads bypassing data caps on STC, Mobily, Zain, du, Etisalat, CelcomDigi, and Maxis.'}
+              </p>
             </div>
-            <div className="mt-3 pt-2 border-t border-slate-900 flex items-center justify-between text-[11px] text-slate-400">
-              <span>Port: 443 (V2Ray)</span>
-              <span className="text-purple-400 font-bold">~75 Mbps</span>
+            <div className="mt-4 pt-3 border-t border-slate-800 flex items-center justify-between text-[11px] text-amber-400 font-bold">
+              <span>০ ব্যালেন্স বাইপাস</span>
+              <span>ফুল স্পিড 5G</span>
             </div>
           </div>
 
-          {/* UAE & Qatar */}
-          <div className="p-4 rounded-2xl bg-slate-950/80 border border-amber-500/30 hover:border-amber-400 transition-all flex flex-col justify-between">
-            <div>
-              <div className="flex items-center justify-between">
-                <span className="text-xs font-extrabold text-amber-400">UAE / Qatar (Etisalat/Ooredoo)</span>
-                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300">Call Unblock</span>
+          {/* 4. Military Encryption & Privacy */}
+          <div className="p-5 rounded-2xl bg-slate-900/80 border border-slate-800 hover:border-purple-500/50 transition-all flex flex-col justify-between group">
+            <div className="space-y-3">
+              <div className="w-10 h-10 rounded-xl bg-purple-500/20 text-purple-400 border border-purple-500/30 flex items-center justify-center font-bold text-lg group-hover:scale-105 transition-transform">
+                🛡️
               </div>
-              <p className="text-xs text-white font-bold mt-2">WhatsApp / IMO Call Shield</p>
-              <div className="mt-2 p-2 rounded-xl bg-slate-900 border border-slate-800 font-mono text-[11px] text-cyan-300 flex items-center justify-between">
-                <span className="truncate">chat.etisalat.ae</span>
-                <button
-                  onClick={() => handleCopyPayload('chat.etisalat.ae')}
-                  className="ml-2 text-slate-400 hover:text-amber-300 cursor-pointer"
-                  title="Copy SNI"
-                >
-                  {copiedPayload === 'chat.etisalat.ae' ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
-                </button>
-              </div>
+              <h3 className="text-base font-bold text-white group-hover:text-purple-300 transition-colors">
+                {lang === 'bn' ? 'কোয়ান্টাম এনক্রিপশন ও নো-লগ প্রাইভেসি' : 'Quantum-Safe Privacy & No-Logs'}
+              </h3>
+              <p className="text-xs text-slate-300 leading-relaxed">
+                {lang === 'bn' 
+                  ? 'আপনার আসল আইপি ও অবস্থান সম্পূর্ণ লুকিয়ে রাখা হয়। ইন্টারনেট সার্ভিস প্রোভাইডার (ISP) বা সরকার কেউ দেখতে পারবে না আপনি কোন সাইটে ঢুকছেন।' 
+                  : 'RAM-only encrypted servers ensuring zero tracking, strict zero-log policy, and military-grade ChaCha20 / AES-256 ciphers.'}
+              </p>
             </div>
-            <div className="mt-3 pt-2 border-t border-slate-900 flex items-center justify-between text-[11px] text-slate-400">
-              <span>Port: 443 (WireGuard)</span>
-              <span className="text-amber-400 font-bold">HD Voice</span>
+            <div className="mt-4 pt-3 border-t border-slate-800 flex items-center justify-between text-[11px] text-purple-400 font-bold">
+              <span>RAM-Only Servers</span>
+              <span>১০০% নো-লগ</span>
+            </div>
+          </div>
+
+          {/* 5. 4K Streaming */}
+          <div className="p-5 rounded-2xl bg-slate-900/80 border border-slate-800 hover:border-pink-500/50 transition-all flex flex-col justify-between group">
+            <div className="space-y-3">
+              <div className="w-10 h-10 rounded-xl bg-pink-500/20 text-pink-400 border border-pink-500/30 flex items-center justify-center font-bold text-lg group-hover:scale-105 transition-transform">
+                📺
+              </div>
+              <h3 className="text-base font-bold text-white group-hover:text-pink-300 transition-colors">
+                {lang === 'bn' ? 'বাফারিং ছাড়া ৪K আল্ট্রা এইচডি স্ট্রিমিং' : 'Zero Buffer 4K Ultra HD Streaming'}
+              </h3>
+              <p className="text-xs text-slate-300 leading-relaxed">
+                {lang === 'bn' 
+                  ? 'ইউটিউব, টিকটক, ফেসবুক ওটিটি এবং বাংলাদেশের লাইভ টিভি চ্যানেলগুলো কোনো প্রকার স্পিড থ্রটলিং ছাড়া ফুল ১০Gbps ব্যান্ডউইথে উপভোগ করুন।' 
+                  : 'Unthrottled 10Gbps transit pipelines optimized for YouTube 4K, TikTok, Netflix, and live sports broadcasting.'}
+              </p>
+            </div>
+            <div className="mt-4 pt-3 border-t border-slate-800 flex items-center justify-between text-[11px] text-pink-400 font-bold">
+              <span>10Gbps Uplink</span>
+              <span>৪K নো-বাফার</span>
+            </div>
+          </div>
+
+          {/* 6. Public WiFi Protection */}
+          <div className="p-5 rounded-2xl bg-slate-900/80 border border-slate-800 hover:border-teal-500/50 transition-all flex flex-col justify-between group">
+            <div className="space-y-3">
+              <div className="w-10 h-10 rounded-xl bg-teal-500/20 text-teal-400 border border-teal-500/30 flex items-center justify-center font-bold text-lg group-hover:scale-105 transition-transform">
+                📶
+              </div>
+              <h3 className="text-base font-bold text-white group-hover:text-teal-300 transition-colors">
+                {lang === 'bn' ? 'পাবলিক ওয়াইফাই ও ব্যাংকিং সিকিউরিটি' : 'Public Wi-Fi & Banking Shield'}
+              </h3>
+              <p className="text-xs text-slate-300 leading-relaxed">
+                {lang === 'bn' 
+                  ? 'এয়ারপোর্ট, শপিং মল বা হোটেলের উন্মুক্ত ওয়াইফাইয়ে আপনার ব্যাংক অ্যাকাউন্ট, পাসওয়ার্ড এবং ব্যক্তিগত চ্যাট হ্যাকারদের নজরদারি থেকে ১০০% সুরক্ষিত রাখে।' 
+                  : 'Bulletproof defense against packet sniffers, man-in-the-middle attacks, and rogue hotspots on open hotel and airport Wi-Fi.'}
+              </p>
+            </div>
+            <div className="mt-4 pt-3 border-t border-slate-800 flex items-center justify-between text-[11px] text-teal-400 font-bold">
+              <span>Anti-Sniffing Shield</span>
+              <span>ব্যাংকিং সেফ</span>
             </div>
           </div>
         </div>
       </section>
 
-      {/* SECTION 2: Global Countries & Server Locations (Prominent Country Names & 1-Click Connect) */}
-      <section className="relative overflow-hidden rounded-3xl p-6 sm:p-8 border border-cyan-500/20 bg-gradient-to-br from-slate-900/90 via-slate-950 to-[#02050e] shadow-xl">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-slate-800">
-          <div>
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 text-cyan-400 text-xs font-bold border border-cyan-500/30 mb-2">
-              <Globe className="w-3.5 h-3.5" />
-              <span>{lang === 'bn' ? 'গ্লোবাল কান্ট্রি নেটওয়ার্ক' : 'Global Country Network'}</span>
+      {/* SECTION: ৩টি সহজ ধাপে কীভাবে ভিপিএন ব্যবহার করবেন? (How to Use VPN in 3 Easy Steps) */}
+      <section className="p-6 sm:p-8 rounded-3xl bg-slate-950/80 border border-slate-800 shadow-xl space-y-6">
+        <div className="text-center max-w-2xl mx-auto space-y-1">
+          <span className="text-xs font-black text-emerald-400 uppercase tracking-wider block">
+            {lang === 'bn' ? 'টিউটোরিয়াল গাইড' : 'Quick Tutorial'}
+          </span>
+          <h2 className="text-xl sm:text-2xl font-black text-white">
+            {lang === 'bn' ? '৩টি সহজ ধাপে কীভাবে আমাদের ভিপিএন ব্যবহার করবেন?' : 'How to Use Soverixnet VPN in 3 Simple Steps'}
+          </h2>
+          <p className="text-xs text-slate-400">
+            {lang === 'bn' ? 'কোনো জটিল টেকনিক্যাল জ্ঞানের প্রয়োজন নেই, যে কেউ ১ মিনিটে চালু করতে পারবেন।' : 'No complex setup required. Anyone can connect and enjoy in 60 seconds.'}
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+          {/* Step 1 */}
+          <div className="p-5 rounded-2xl bg-slate-900/90 border border-slate-800 flex flex-col justify-between hover:border-cyan-500/40 transition-all group">
+            <div>
+              <div className="flex items-center justify-between mb-4">
+                <span className="w-9 h-9 rounded-xl bg-cyan-500/20 text-cyan-400 border border-cyan-500/40 font-black text-base flex items-center justify-center font-mono">
+                  ১
+                </span>
+                <span className="text-[11px] font-bold px-2.5 py-1 rounded-full bg-cyan-500/10 text-cyan-300">ধাপ ১ / Step 1</span>
+              </div>
+              <h4 className="text-base font-bold text-white group-hover:text-cyan-300 transition-colors">
+                {lang === 'bn' ? 'অ্যাপস ডাউনলোড করুন' : 'Download the App'}
+              </h4>
+              <p className="text-xs text-slate-300 mt-2 leading-relaxed">
+                {lang === 'bn'
+                  ? 'আমাদের অফিসিয়াল ৪টি অ্যাপ (Mohin VIP, Net Solution, AF V2Ray, Jiyam Plus) অথবা প্লে-স্টোর থেকে v2rayNG / WireGuard ডাউনলোড করে নিন।'
+                  : 'Download any of our 4 official verified APKs or v2rayNG / WireGuard on your Android, iOS, or Windows device.'}
+              </p>
             </div>
-            <h2 className="text-xl sm:text-2xl font-black text-white">
-              {lang === 'bn' ? 'বিশ্বজুড়ে আমাদের দেশ ও সার্ভার লোকেশনসমূহ' : 'Global Countries & Server Locations'}
-            </h2>
-            <p className="text-xs sm:text-sm text-slate-400 mt-1">
-              {lang === 'bn' 
-                ? 'বাংলাদেশ, সৌদি আরব, আরব আমিরাত, সিঙ্গাপুর, আমেরিকা সহ ৫০+ দেশের ডেডিকেটেড নোড।' 
-                : 'Ultra low-latency dedicated nodes across Bangladesh, Saudi Arabia, UAE, Singapore, USA & 50+ countries.'}
-            </p>
+            <button
+              onClick={() => onNavigateTab('appsTutorials')}
+              className="mt-4 pt-3 border-t border-slate-800/80 text-xs font-bold text-cyan-400 hover:text-cyan-300 flex items-center justify-between cursor-pointer"
+            >
+              <span>{lang === 'bn' ? '📱 অ্যাপস ডাউনলোড পেজে যান' : 'Go to Apps Page'}</span>
+              <span>➔</span>
+            </button>
           </div>
 
-          <button
-            onClick={() => onNavigateTab('servers')}
-            className="px-4 py-2.5 rounded-2xl bg-slate-900 hover:bg-slate-800 text-cyan-400 border border-cyan-500/30 text-xs font-bold flex items-center justify-center gap-1.5 transition-all cursor-pointer shrink-0"
-          >
-            <span>{lang === 'bn' ? 'সকল ৫০+ দেশ ও সার্ভার দেখুন ➔' : 'View All 50+ Countries & Servers ➔'}</span>
-          </button>
-        </div>
-
-        {/* Country categories filter tabs */}
-        <div className="flex flex-wrap items-center gap-2 mt-5">
-          {[
-            { id: 'all', label: lang === 'bn' ? 'সব দেশ (All Countries)' : 'All Countries' },
-            { id: 'asia_me', label: lang === 'bn' ? '🇧🇩 🇸🇦 এশিয়া ও মধ্যপ্রাচ্য' : 'Asia & Middle East' },
-            { id: 'europe_us', label: lang === 'bn' ? '🇺🇸 🇪🇺 ইউরোপ ও আমেরিকা' : 'Europe & Americas' },
-            { id: 'free', label: lang === 'bn' ? '⚡ ফ্রি ট্রায়াল নোডস' : 'Free Trial Nodes' },
-          ].map((tab) => (
-            <button
-              key={tab.id}
-              onClick={() => setCountryFilter(tab.id as any)}
-              className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
-                countryFilter === tab.id
-                  ? 'bg-cyan-500 text-black shadow-md shadow-cyan-500/20'
-                  : 'bg-slate-900 text-slate-400 hover:text-white border border-slate-800 hover:border-slate-700'
-              }`}
-            >
-              {tab.label}
-            </button>
-          ))}
-        </div>
-
-        {/* Country Server Cards Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-6">
-          {SERVERS_DATA.filter((s) => {
-            if (countryFilter === 'free') return s.isFreeNet || !s.isVip;
-            if (countryFilter === 'asia_me') return s.region === 'asia' || s.region === 'middle_east';
-            if (countryFilter === 'europe_us') return s.region === 'europe' || s.region === 'north_america';
-            return true;
-          }).slice(0, 9).map((server) => {
-            const isThisSelected = selectedServer.id === server.id;
-            return (
-              <div
-                key={server.id}
-                className={`p-4 rounded-2xl border transition-all flex flex-col justify-between ${
-                  isThisSelected 
-                    ? 'bg-cyan-950/30 border-cyan-400 shadow-lg shadow-cyan-500/10' 
-                    : 'bg-slate-950/70 border-slate-800 hover:border-cyan-500/40'
-                }`}
-              >
-                <div>
-                  <div className="flex items-start justify-between gap-3">
-                    <div className="flex items-center gap-3">
-                      <span className="text-3xl leading-none">{server.flag}</span>
-                      <div>
-                        <span className="text-[10px] text-cyan-400 font-mono font-bold uppercase tracking-wider block">
-                          {lang === 'bn' ? 'দেশ' : 'Country'}
-                        </span>
-                        <h4 className="text-base font-black text-white">
-                          {lang === 'bn' ? server.countryBn : server.country}
-                        </h4>
-                        <span className="text-xs text-slate-400 block mt-0.5">{server.city}</span>
-                      </div>
-                    </div>
-                    
-                    <div className="flex flex-col items-end gap-1 shrink-0">
-                      <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 font-mono">
-                        {server.ping}ms
-                      </span>
-                      {server.isFreeNet && (
-                        <span className="text-[9px] font-extrabold px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
-                          ফ্রি-নেট
-                        </span>
-                      )}
-                      {server.isVip && (
-                        <span className="text-[9px] font-extrabold px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-300 border border-amber-500/30">
-                          VIP
-                        </span>
-                      )}
-                    </div>
-                  </div>
-
-                  <div className="mt-3 flex items-center justify-between text-[11px] text-slate-400">
-                    <span>{lang === 'bn' ? 'সার্ভার লোড:' : 'Server Load:'}</span>
-                    <span className="text-cyan-300 font-mono font-bold">{server.load}%</span>
-                  </div>
-
-                  <div className="w-full bg-slate-900 rounded-full h-1.5 mt-1 overflow-hidden">
-                    <div 
-                      className={`h-full rounded-full ${server.load > 70 ? 'bg-amber-400' : 'bg-cyan-400'}`} 
-                      style={{ width: `${server.load}%` }}
-                    />
-                  </div>
-                </div>
-
-                <div className="mt-4 pt-3 border-t border-slate-900 flex items-center justify-between">
-                  <span className="text-[10px] font-mono text-slate-500">{server.protocols?.[0] || 'WireGuard'} • 10Gbps</span>
-                  <button
-                    onClick={() => {
-                      if (onSelectServer) {
-                        onSelectServer(server);
-                      }
-                      if (status === 'disconnected') {
-                        onToggleConnect();
-                      }
-                    }}
-                    className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1 ${
-                      isThisSelected
-                        ? 'bg-cyan-500 text-black shadow-md'
-                        : 'bg-slate-900 hover:bg-cyan-500/20 text-slate-300 hover:text-cyan-300 border border-slate-700'
-                    }`}
-                  >
-                    {isThisSelected ? (
-                      <>
-                        <Check className="w-3.5 h-3.5" />
-                        <span>{lang === 'bn' ? 'কানেক্টেড' : 'Selected'}</span>
-                      </>
-                    ) : (
-                      <>
-                        <Zap className="w-3.5 h-3.5" />
-                        <span>{lang === 'bn' ? 'সংযোগ করুন' : 'Connect'}</span>
-                      </>
-                    )}
-                  </button>
-                </div>
+          {/* Step 2 */}
+          <div className="p-5 rounded-2xl bg-slate-900/90 border border-slate-800 flex flex-col justify-between hover:border-amber-500/40 transition-all group">
+            <div>
+              <div className="flex items-center justify-between mb-4">
+                <span className="w-9 h-9 rounded-xl bg-amber-500/20 text-amber-400 border border-amber-500/40 font-black text-base flex items-center justify-center font-mono">
+                  ২
+                </span>
+                <span className="text-[11px] font-bold px-2.5 py-1 rounded-full bg-amber-500/10 text-amber-300">ধাপ ২ / Step 2</span>
               </div>
-            );
-          })}
+              <h4 className="text-base font-bold text-white group-hover:text-amber-300 transition-colors">
+                {lang === 'bn' ? 'পিন বা ইউজারনেম বসান' : 'Enter PIN / Username'}
+              </h4>
+              <p className="text-xs text-slate-300 mt-2 leading-relaxed">
+                {lang === 'bn'
+                  ? 'আমাদের ওয়েবসাইট থেকে কেনা ১ মাস বা ৩ মাসের ভিআইপি পিন কোড অথবা ফ্রি ট্রায়াল ইউজারনেম/পাসওয়ার্ডটি অ্যাপে পেস্ট করুন।'
+                  : 'Enter the VIP PIN code or test pass you received from our order form or WhatsApp customer support.'}
+              </p>
+            </div>
+            <button
+              onClick={() => onNavigateTab('packages')}
+              className="mt-4 pt-3 border-t border-slate-800/80 text-xs font-bold text-amber-400 hover:text-amber-300 flex items-center justify-between cursor-pointer"
+            >
+              <span>{lang === 'bn' ? '🛒 পিন অর্ডার পেজে যান' : 'Order a PIN'}</span>
+              <span>➔</span>
+            </button>
+          </div>
+
+          {/* Step 3 */}
+          <div className="p-5 rounded-2xl bg-slate-900/90 border border-slate-800 flex flex-col justify-between hover:border-emerald-500/40 transition-all group">
+            <div>
+              <div className="flex items-center justify-between mb-4">
+                <span className="w-9 h-9 rounded-xl bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 font-black text-base flex items-center justify-center font-mono">
+                  ৩
+                </span>
+                <span className="text-[11px] font-bold px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-300">ধাপ ৩ / Step 3</span>
+              </div>
+              <h4 className="text-base font-bold text-white group-hover:text-emerald-300 transition-colors">
+                {lang === 'bn' ? '১-ক্লিকে কানেক্ট করে চালান' : '1-Click Connect & Enjoy'}
+              </h4>
+              <p className="text-xs text-slate-300 mt-2 leading-relaxed">
+                {lang === 'bn'
+                  ? 'অ্যাপের মাঝে বড় কানেক্ট বাটনে চাপ দিন। ২ সেকেন্ডেই কানেক্ট হয়ে যাবে এবং আনলিমিটেড ইন্টারনেট ও এইচডি কলিং উপভোগ করুন!'
+                  : 'Press the Connect button. Within 2 seconds you are securely connected to our 10Gbps private network.'}
+              </p>
+            </div>
+            <div className="mt-4 pt-3 border-t border-slate-800/80 flex items-center justify-between text-xs font-bold text-emerald-400">
+              <span>⚡ ১০০% আনলিমিটেড স্পিড</span>
+              <span>✓ প্রস্তুত</span>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -1122,52 +1071,6 @@ export const MainConnectView: React.FC<MainConnectViewProps> = ({
           >
             <span>{lang === 'bn' ? 'কেন আমাদের ভিপিএন ব্যবহার করবেন বিস্তারিত পড়ুন ➔' : 'Learn More About Why Choose Us ➔'}</span>
           </button>
-        </div>
-      </section>
-
-      {/* SECTION 4: Dedicated VIP Packages & Pricing Hub */}
-      <section className="relative overflow-hidden rounded-3xl p-6 sm:p-8 border border-amber-500/20 bg-gradient-to-br from-[#120e03] via-slate-950 to-[#02050f] shadow-xl">
-        <div className="flex flex-col lg:flex-row items-center justify-between gap-6">
-          <div className="space-y-3 text-center lg:text-left">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/20 text-amber-300 text-xs font-bold border border-amber-500/30">
-              <Crown className="w-3.5 h-3.5" />
-              <span>{lang === 'bn' ? 'আলাদা প্যাকেজ ও মূল্যতালিকা হাব' : 'VIP Packages & Pricing Hub'}</span>
-            </div>
-            <h2 className="text-xl sm:text-3xl font-black text-white">
-              {lang === 'bn' ? 'সাশ্রয়ী মূল্যে প্রিমিয়াম ভিপিএন প্যাকেজসমূহ' : 'Affordable Premium VIP Packages'}
-            </h2>
-            <p className="text-xs sm:text-sm text-slate-400 max-w-xl">
-              {lang === 'bn' 
-                ? '১ মাস, ৩ মাস, ১ বছর এবং লাইফটাইম প্যাকেজগুলো বিস্তারিত দেখতে এবং বিকাশ, নগদ, রকেট, সৌদি মাদা বা ক্রিপ্টো দিয়ে নিতে আমাদের আলাদা প্যাকেজ পেইজ ভিজিট করুন।' 
-                : 'Explore our 1-Month, 3-Month, 1-Year, and Lifetime VIP passes. Instant activation via bKash, Nagad, Mada, and Cards.'}
-            </p>
-
-            {/* Price Preview Badges */}
-            <div className="flex flex-wrap items-center justify-center lg:justify-start gap-2 pt-1">
-              <span className="px-3 py-1 rounded-xl bg-slate-900 border border-slate-800 text-xs font-bold text-slate-300">
-                {lang === 'bn' ? '১ মাস: ৳১৫০' : '1 Month: $1.49'}
-              </span>
-              <span className="px-3 py-1 rounded-xl bg-amber-500/10 border border-amber-500/30 text-xs font-bold text-amber-300">
-                {lang === 'bn' ? '৩ মাস: ৳৩৯৯' : '3 Months: $3.89'}
-              </span>
-              <span className="px-3 py-1 rounded-xl bg-cyan-500/10 border border-cyan-500/30 text-xs font-bold text-cyan-300">
-                {lang === 'bn' ? '১ বছর: ৳১,৯৫০' : '1 Year: $19.99'}
-              </span>
-              <span className="px-3 py-1 rounded-xl bg-purple-500/10 border border-purple-500/30 text-xs font-bold text-purple-300">
-                {lang === 'bn' ? 'লাইফটাইম: ৳২,৪৯৯' : 'Lifetime: $23.99'}
-              </span>
-            </div>
-          </div>
-
-          <div className="flex flex-col sm:flex-row items-center gap-3 shrink-0">
-            <button
-              onClick={() => onNavigateTab('vipPlans')}
-              className="px-6 py-3.5 rounded-2xl bg-gradient-to-r from-amber-500 to-yellow-400 hover:from-amber-400 hover:to-yellow-300 text-black font-black text-sm flex items-center justify-center gap-2 transition-all shadow-xl shadow-amber-500/20 cursor-pointer"
-            >
-              <Crown className="w-4 h-4" />
-              <span>{lang === 'bn' ? 'সকল প্যাকেজ ও মূল্যতালিকা দেখুন ➔' : 'View All VIP Packages & Pricing ➔'}</span>
-            </button>
-          </div>
         </div>
       </section>
 

@@ -35,27 +35,11 @@ export const WelcomePromoModal: React.FC<WelcomePromoModalProps> = ({
       return;
     }
 
-    const currentSettings = getSiteSettings();
-    if (!currentSettings.promoModalEnabled || currentSettings.sectionVisibility?.promoModal === false) {
-      return;
-    }
-
-    // Check if modal was already dismissed in this session
-    try {
-      const dismissed = sessionStorage.getItem('soverix_welcome_popup_seen');
-      if (!dismissed) {
-        // Pop up smoothly after initial site load
-        const timer = setTimeout(() => {
-          const check = getSiteSettings();
-          if (check.promoModalEnabled && check.sectionVisibility?.promoModal !== false) {
-            setIsOpen(true);
-          }
-        }, 700);
-        return () => clearTimeout(timer);
-      }
-    } catch {
+    // Always pop up smoothly after 500ms when any user enters the site
+    const timer = setTimeout(() => {
       setIsOpen(true);
-    }
+    }, 500);
+    return () => clearTimeout(timer);
   }, [forceOpen]);
 
   const handleClose = () => {
@@ -106,7 +90,7 @@ export const WelcomePromoModal: React.FC<WelcomePromoModalProps> = ({
                 </span>
               </div>
               <p className="text-[10px] text-slate-400">
-                {lang === 'bn' ? 'সৌদি আরব ও গাল্ফ স্পেশাল ফ্রি-নেট অফার' : 'Gulf & Global Free-Net Special Offer'}
+                {lang === 'bn' ? 'সৌদি আরব, গাল্ফ ও মালয়েশিয়া স্পেশাল ফ্রি-নেট অফার' : 'Gulf, Malaysia & Global Free-Net Special Offer'}
               </p>
             </div>
           </div>
@@ -219,8 +203,19 @@ export const WelcomePromoModal: React.FC<WelcomePromoModalProps> = ({
               </button>
 
               <button
+                onClick={() => handleOpenWhatsApp('আসসালামু আলাইকুম, আমি মালয়েশিয়ায় Celcom / Digi / Maxis সিমের হাই-স্পিড ভিপিএন পিন নিতে চাই।')}
+                className="p-2.5 rounded-xl bg-slate-900/80 hover:bg-emerald-950/40 border border-slate-800 hover:border-emerald-500/50 text-left transition-all group cursor-pointer"
+              >
+                <div className="flex items-center justify-between text-xs font-bold text-white group-hover:text-emerald-300">
+                  <span>🇲🇾 মালয়েশিয়া Celcom/Maxis</span>
+                  <ArrowRight className="w-3.5 h-3.5 text-slate-500 group-hover:text-emerald-400 transform group-hover:translate-x-0.5 transition-transform" />
+                </div>
+                <span className="text-[10px] text-slate-400 block mt-0.5">লো-পিং গেমিং ও এইচডি কল</span>
+              </button>
+
+              <button
                 onClick={() => handleOpenWhatsApp('আসসালামু আলাইকুম, আমি Soverixnet VPN এর ১ মাসের টেস্ট পিন বা ভিআইপি একাউন্ট নিতে চাই।')}
-                className="p-2.5 rounded-xl bg-slate-900/80 hover:bg-cyan-950/40 border border-slate-800 hover:border-cyan-500/50 text-left transition-all group cursor-pointer"
+                className="p-2.5 rounded-xl bg-slate-900/80 hover:bg-cyan-950/40 border border-slate-800 hover:border-cyan-500/50 text-left transition-all group cursor-pointer sm:col-span-2"
               >
                 <div className="flex items-center justify-between text-xs font-bold text-white group-hover:text-cyan-300">
                   <span>🛡️ ১ মাসের VIP আইডি</span>

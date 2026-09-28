@@ -98,6 +98,7 @@ const PACKAGES_LIST = [
   'বাংলাদেশ সকল সিম (Airtel/GP/Robi BDIX)',
   'দুবাই / ইউএই (WhatsApp & BOTIM Unblock)',
   'কাতার / ওমান / কুয়েত গাল্ফ সিম',
+  'মালয়েশিয়া (Celcom/Digi/Maxis/U Mobile)',
   'Soverix VIP লাইফটাইম প্যাকেজ',
   'অন্যান্য / Other'
 ];
@@ -405,6 +406,7 @@ export const CommunityReviewsSection: React.FC<CommunityReviewsSectionProps> = (
                 <option value="🇧🇩 বাংলাদেশ গেমার (PUBG/FF)">🇧🇩 বাংলাদেশ গেমার (Low Ping BDIX)</option>
                 <option value="🇦🇪 দুবাই প্রবাসী (UAE)">🇦🇪 দুবাই / ইউএই প্রবাসী (Dubai)</option>
                 <option value="🇶🇦 কাতার / কুয়েত / ওমান প্রবাসী">🇶🇦 কাতার / কুয়েত / ওমান প্রবাসী</option>
+                <option value="🇲🇾 মালয়েশিয়া প্রবাসী (Malaysia)">🇲🇾 মালয়েশিয়া প্রবাসী (Malaysia Expat)</option>
                 <option value="👑 VIP মেম্বার (Verified)">👑 VIP মেম্বার (Verified Customer)</option>
                 <option value="💡 সাধারণ ব্যবহারকারী">💡 সাধারণ ব্যবহারকারী (Visitor)</option>
               </select>
