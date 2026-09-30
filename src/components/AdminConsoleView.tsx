@@ -52,7 +52,9 @@ import {
   FileText,
   LayoutGrid,
   Film,
-  ShoppingCart
+  ShoppingCart,
+  Bell,
+  CloudLightning
 } from 'lucide-react';
 import { collection, onSnapshot, doc, updateDoc, setDoc, deleteDoc } from 'firebase/firestore';
 import { db } from '../firebase/config';
@@ -61,6 +63,7 @@ import { ServerManager } from '../services/serverManager';
 import { VPNServer, ServerRegion, VPNProtocol, ServerCapability } from '../types';
 import { getSiteSettings, saveSiteSettings, SiteSettingsData, CONTACT_CONFIG } from '../data/contact';
 import { OrdersManager } from './admin/OrdersManager';
+import { AnnouncementsManager } from './admin/AnnouncementsManager';
 import { BannersManager } from './admin/BannersManager';
 import { DesignThemeManager } from './admin/DesignThemeManager';
 import { SectionsManager } from './admin/SectionsManager';
@@ -127,7 +130,7 @@ export const AdminConsoleView: React.FC<AdminConsoleViewProps> = ({ lang }) => {
     isSuperAdmin
   );
 
-  const [activeAdminTab, setActiveAdminTab] = useState<'orders' | 'videos' | 'gallery' | 'banners' | 'apps' | 'texts' | 'benefits' | 'plans' | 'faqs' | 'design' | 'sections' | 'servers' | 'users' | 'reviews' | 'site_settings' | 'app_links' | 'sheets'>('videos');
+  const [activeAdminTab, setActiveAdminTab] = useState<'announcements' | 'orders' | 'videos' | 'gallery' | 'banners' | 'apps' | 'texts' | 'benefits' | 'plans' | 'faqs' | 'design' | 'sections' | 'servers' | 'users' | 'reviews' | 'site_settings' | 'app_links' | 'sheets'>('announcements');
   const [incomingOrdersCount, setIncomingOrdersCount] = useState<number>(0);
   const [pendingOrdersCount, setPendingOrdersCount] = useState<number>(0);
   const [usersList, setUsersList] = useState<UserProfileData[]>([]);
@@ -789,6 +792,18 @@ export const AdminConsoleView: React.FC<AdminConsoleViewProps> = ({ lang }) => {
           {/* Quick Reseller Action & Wallet Badge */}
           <div className="flex items-center gap-3 flex-wrap">
             <button
+              onClick={() => setActiveAdminTab('announcements')}
+              className={`px-4 py-3 rounded-2xl border font-extrabold text-xs flex items-center gap-2 transition-all cursor-pointer shadow-lg ${
+                activeAdminTab === 'announcements'
+                  ? 'bg-emerald-500 text-slate-950 border-emerald-400 shadow-emerald-500/30'
+                  : 'bg-slate-900/90 text-emerald-300 border-emerald-500/40 hover:bg-slate-800'
+              }`}
+            >
+              <Bell className="w-4 h-4" />
+              <span>{lang === 'bn' ? '📢 লাইভ নোটিফিকেশন ও সিঙ্ক' : '📢 Broadcast & Sync'}</span>
+            </button>
+
+            <button
               onClick={() => setActiveAdminTab('orders')}
               className={`px-4 py-3 rounded-2xl border font-extrabold text-xs flex items-center gap-2 transition-all cursor-pointer shadow-lg ${
                 activeAdminTab === 'orders'
@@ -955,6 +970,7 @@ export const AdminConsoleView: React.FC<AdminConsoleViewProps> = ({ lang }) => {
             color: 'teal',
             activeTabDefault: 'site_settings',
             tabs: [
+              { id: 'announcements', labelBn: '📢 লাইভ নোটিফিকেশন ও ক্লাউডফ্লেয়ার', labelEn: '📢 Broadcast & Cloudflare', icon: Bell },
               { id: 'site_settings', labelBn: '📞 হোয়াটসঅ্যাপ নাম্বার', labelEn: '📞 WhatsApp Contacts', icon: Settings },
               { id: 'sections', labelBn: '👁️ সেকশন চালু/বন্ধ', labelEn: '👁️ Show / Hide Sections', icon: SlidersHorizontal },
               { id: 'sheets', labelBn: '📊 গুগল শিট সিঙ্ক', labelEn: '📊 Google Sheets', icon: FileSpreadsheet },
@@ -1053,6 +1069,11 @@ export const AdminConsoleView: React.FC<AdminConsoleViewProps> = ({ lang }) => {
           </div>
         );
       })()}
+
+      {/* TAB: LIVE BROADCAST ANNOUNCEMENTS & CLOUDFLARE PURGE */}
+      {activeAdminTab === 'announcements' && (
+        <AnnouncementsManager lang={lang} />
+      )}
 
       {/* TAB: INCOMING CUSTOMER ORDERS (RESTRICTED TO SUPER-ADMIN) */}
       {activeAdminTab === 'orders' && (

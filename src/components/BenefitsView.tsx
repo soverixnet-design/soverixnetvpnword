@@ -10,6 +10,7 @@ import {
   Sparkles, 
   Globe2, 
   ArrowRight, 
+  ArrowLeft,
   CreditCard, 
   Ban, 
   HelpCircle, 
@@ -143,9 +144,19 @@ export const BenefitsView: React.FC<BenefitsViewProps> = ({ lang, onConnectNow }
 
         <div className="relative z-10 max-w-4xl mx-auto text-center">
           
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-cyan-300 text-xs font-bold mb-4 uppercase tracking-widest">
-            <Sparkles className="w-4 h-4 text-cyan-400" />
-            <span>{lang === 'bn' ? 'ডিজিটাল নিরাপত্তার এক নতুন দিগন্ত' : 'Next-Generation Cyber Protection'}</span>
+          <div className="flex items-center justify-center gap-3 flex-wrap mb-4">
+            <button
+              onClick={onConnectNow}
+              className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-slate-800/90 hover:bg-slate-700 text-slate-200 hover:text-white border border-slate-700 hover:border-cyan-500/50 text-xs font-bold transition-all shadow-md group active:scale-95 cursor-pointer"
+              title={lang === 'bn' ? 'মূল ড্যাশবোর্ডে ফিরে যান' : 'Back to Dashboard'}
+            >
+              <ArrowLeft className="w-3.5 h-3.5 text-cyan-400 group-hover:-translate-x-1 transition-transform" />
+              <span>{lang === 'bn' ? '← ব্যাকে যান (হোম ড্যাশবোর্ড)' : '← Back to Dashboard'}</span>
+            </button>
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-cyan-300 text-xs font-bold uppercase tracking-widest">
+              <Sparkles className="w-4 h-4 text-cyan-400" />
+              <span>{lang === 'bn' ? 'ডিজিটাল নিরাপত্তার এক নতুন দিগন্ত' : 'Next-Generation Cyber Protection'}</span>
+            </div>
           </div>
 
           <h2 className="text-2xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-white leading-tight">

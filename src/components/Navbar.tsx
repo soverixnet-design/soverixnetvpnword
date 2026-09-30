@@ -28,7 +28,9 @@ import {
   Download,
   ChevronDown,
   Star,
-  Film
+  Film,
+  Search,
+  Bell
 } from 'lucide-react';
 import { ConnectionStatus } from '../types';
 import { TRANSLATIONS } from '../data/translations';
@@ -49,6 +51,8 @@ interface NavbarProps {
   onOpenQuickSettings?: () => void;
   onOpenAuthModal: (tab?: 'signin' | 'signup') => void;
   onOpenPromoModal?: () => void;
+  onOpenSearch?: () => void;
+  onOpenAnnouncements?: () => void;
   siteSettings?: SiteSettingsData;
 }
 
@@ -66,10 +70,13 @@ export const Navbar: React.FC<NavbarProps> = ({
   onOpenQuickSettings,
   onOpenAuthModal,
   onOpenPromoModal,
+  onOpenSearch,
+  onOpenAnnouncements,
   siteSettings: incomingSettings,
 }) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [localSettings, setLocalSettings] = useState(getSiteSettings());
+  const [unreadCount, setUnreadCount] = useState<number>(0);
   const siteSettings = incomingSettings || localSettings;
   const t = TRANSLATIONS[lang];
   const isConnected = status === 'connected';
@@ -81,6 +88,16 @@ export const Navbar: React.FC<NavbarProps> = ({
     };
     window.addEventListener('soverix_settings_changed', handleUpdate);
     return () => window.removeEventListener('soverix_settings_changed', handleUpdate);
+  }, []);
+
+  React.useEffect(() => {
+    const handleUnread = (e: any) => {
+      if (e.detail && typeof e.detail.unread === 'number') {
+        setUnreadCount(e.detail.unread);
+      }
+    };
+    window.addEventListener('soverix_unread_announcements', handleUnread);
+    return () => window.removeEventListener('soverix_unread_announcements', handleUnread);
   }, []);
 
   const rawNavLinks = [
@@ -268,6 +285,38 @@ export const Navbar: React.FC<NavbarProps> = ({
 
           {/* Right Action Utilities (Website Style) */}
           <div className="flex items-center gap-2 sm:gap-2.5">
+
+            {/* Global Search Button */}
+            <button
+              type="button"
+              onClick={onOpenSearch}
+              className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-xl bg-slate-900 border border-slate-700/80 hover:border-emerald-500/60 text-slate-300 hover:text-white transition-all cursor-pointer shadow-sm group"
+              title={lang === 'bn' ? 'সার্চ করুন (Ctrl+K)' : 'Search (Ctrl+K)'}
+            >
+              <Search className="w-3.5 h-3.5 text-emerald-400 group-hover:scale-110 transition-transform" />
+              <span className="text-xs font-semibold hidden md:inline">{lang === 'bn' ? 'সার্চ' : 'Search'}</span>
+              <kbd className="hidden lg:inline-block px-1.5 py-0.2 text-[9px] font-mono font-bold text-slate-500 bg-slate-950 border border-slate-800 rounded">
+                ⌘K
+              </kbd>
+            </button>
+
+            {/* Live Announcements Notification Bell */}
+            <button
+              type="button"
+              onClick={onOpenAnnouncements}
+              className="relative p-2 rounded-xl bg-slate-900 border border-slate-700/80 hover:border-amber-500/60 text-slate-300 hover:text-white transition-all cursor-pointer shadow-sm group"
+              title={lang === 'bn' ? 'সকল আপডেট ও নোটিফিকেশন' : 'Live Notifications'}
+            >
+              <Bell className="w-4 h-4 text-amber-400 group-hover:scale-110 transition-transform" />
+              {unreadCount > 0 && (
+                <span className="absolute -top-1 -right-1 flex h-4 w-4">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-4 w-4 bg-gradient-to-r from-amber-500 to-orange-500 text-black text-[9px] font-black items-center justify-center shadow-sm">
+                    {unreadCount > 9 ? '9+' : unreadCount}
+                  </span>
+                </span>
+              )}
+            </button>
             
             {/* WhatsApp Direct Order CTA Button */}
             <a
@@ -379,6 +428,38 @@ export const Navbar: React.FC<NavbarProps> = ({
         {/* Mobile Navigation Dropdown Drawer (Website style) */}
         {isMobileMenuOpen && (
           <div className="xl:hidden py-4 border-t border-slate-800 animate-fade-in-up">
+            {/* Quick Search & Notification in Mobile Drawer */}
+            <div className="grid grid-cols-2 gap-2 mb-3">
+              <button
+                type="button"
+                onClick={() => {
+                  setIsMobileMenuOpen(false);
+                  if (onOpenSearch) onOpenSearch();
+                }}
+                className="flex items-center justify-center gap-2 p-2.5 rounded-xl bg-slate-900 border border-slate-700/80 text-white font-bold text-xs"
+              >
+                <Search className="w-4 h-4 text-emerald-400" />
+                <span>{lang === 'bn' ? 'সার্চ করুন' : 'Search'}</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => {
+                  setIsMobileMenuOpen(false);
+                  if (onOpenAnnouncements) onOpenAnnouncements();
+                }}
+                className="flex items-center justify-center gap-2 p-2.5 rounded-xl bg-slate-900 border border-slate-700/80 text-white font-bold text-xs relative"
+              >
+                <Bell className="w-4 h-4 text-amber-400" />
+                <span>{lang === 'bn' ? 'আপডেট ও নোটিশ' : 'Updates'}</span>
+                {unreadCount > 0 && (
+                  <span className="px-1.5 py-0.2 rounded-full bg-amber-500 text-black text-[9px] font-black">
+                    {unreadCount}
+                  </span>
+                )}
+              </button>
+            </div>
+
             <div className="grid grid-cols-2 gap-2 pb-3">
               {navLinks.map((item) => {
                 const Icon = item.icon;

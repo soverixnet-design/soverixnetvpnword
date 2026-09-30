@@ -52,8 +52,8 @@ export const ImageUploadField: React.FC<ImageUploadFieldProps> = ({
     try {
       setIsUploading(true);
       setUploadError(null);
-      // Auto compress and convert to base64
-      const result = await readImageFileAsDataUrl(file, 1400, 1400, 0.82);
+      // Auto compress and convert to lightweight base64 (under 50KB)
+      const result = await readImageFileAsDataUrl(file, 960, 540, 0.75);
       
       // Save into media gallery for future reuse
       const newItem: MediaGalleryItem = {

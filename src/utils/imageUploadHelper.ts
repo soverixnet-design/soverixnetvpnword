@@ -59,9 +59,9 @@ export const DEFAULT_GALLERY_PRESETS: MediaGalleryItem[] = [
  */
 export const readImageFileAsDataUrl = (
   file: File,
-  maxWidth = 1200,
-  maxHeight = 1200,
-  quality = 0.82
+  maxWidth = 1000,
+  maxHeight = 1000,
+  quality = 0.78
 ): Promise<{ dataUrl: string; sizeKb: number; name: string }> => {
   return new Promise((resolve, reject) => {
     if (!file.type.startsWith('image/')) {
@@ -104,14 +104,14 @@ export const readImageFileAsDataUrl = (
         ctx.imageSmoothingQuality = 'high';
         ctx.drawImage(img, 0, 0, width, height);
 
-        // Convert to webp if supported, or jpeg
-        let format = 'image/jpeg';
-        if (file.type === 'image/png') {
-          // If PNG has transparency, preserve png or webp
-          format = 'image/png';
+        // Convert to webp if supported, or jpeg for compact payload
+        let format = 'image/webp';
+        let dataUrl = canvas.toDataURL(format, quality);
+        if (!dataUrl.startsWith('data:image/webp')) {
+          format = file.type === 'image/png' ? 'image/png' : 'image/jpeg';
+          dataUrl = canvas.toDataURL(format, quality);
         }
 
-        const dataUrl = canvas.toDataURL(format, quality);
         const approxSizeKb = Math.round((dataUrl.length * 3) / 4 / 1024);
 
         resolve({
@@ -126,6 +126,17 @@ export const readImageFileAsDataUrl = (
 
     reader.readAsDataURL(file);
   });
+};
+
+/**
+ * Generates an instant cache-busted image URL to bypass Cloudflare CDN and browser caching
+ */
+export const getCacheBustedImageUrl = (url?: string, buster?: number): string => {
+  if (!url || typeof url !== 'string') return '';
+  if (url.startsWith('data:') || url.startsWith('blob:')) return url;
+  const ts = buster || Date.now();
+  const sep = url.includes('?') ? '&' : '?';
+  return `${url}${sep}_cf_ts=${ts}`;
 };
 
 /**

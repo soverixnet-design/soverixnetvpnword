@@ -6,13 +6,12 @@ import firebaseConfig from '../../firebase-applet-config.json';
 // Initialize Firebase App
 export const app = initializeApp(firebaseConfig);
 
-// Initialize Firestore with long polling to ensure reliable connectivity in iframe and Cloud Run environments
+// Initialize Firestore with auto-detecting long polling for resilient connectivity across all networks and browsers
 try {
   initializeFirestore(
     app,
     {
       experimentalAutoDetectLongPolling: true,
-      experimentalForceLongPolling: true,
     },
     firebaseConfig.firestoreDatabaseId
   );
@@ -31,15 +30,16 @@ googleProvider.setCustomParameters({
   prompt: 'select_account',
 });
 
-// Test initial connection to Firestore as mandated by skill
+// Non-blocking connection check with graceful fallback
 async function testConnection() {
   try {
     await getDocFromServer(doc(db, 'test', 'connection'));
-  } catch (error) {
-    if (error instanceof Error && error.message.includes('the client is offline')) {
-      console.error('Please check your Firebase configuration.');
+  } catch (error: any) {
+    // Gracefully handle offline or transient state without crashing
+    if (error && error.code !== 'unavailable' && !error.message?.includes('offline')) {
+      console.warn('Firestore initial connection notice:', error.message || error);
     }
   }
 }
-testConnection();
+setTimeout(testConnection, 1000);
 

@@ -9,7 +9,7 @@ import { SERVERS_DATA } from './data/servers';
 import { ServerManager } from './services/serverManager';
 import { TRANSLATIONS } from './data/translations';
 import { CONTACT_CONFIG, saveSiteSettings, getSiteSettings, SiteSettingsData } from './data/contact';
-import { doc, onSnapshot } from 'firebase/firestore';
+import { doc, onSnapshot, setDoc } from 'firebase/firestore';
 import { db } from './firebase/config';
 import { Navbar } from './components/Navbar';
 import { MainConnectView } from './components/MainConnectView';
@@ -33,16 +33,51 @@ import { PackagesAndOrderView } from './components/PackagesAndOrderView';
 import { AppsAndTutorialsView } from './components/AppsAndTutorialsView';
 import { AuthModal } from './components/AuthModal';
 import { ActionFeedbackToast, ToastFeedbackData } from './components/ActionFeedbackToast';
+import { LiveNotificationAlert } from './components/LiveNotificationAlert';
+import { AnnouncementsModal } from './components/AnnouncementsModal';
+import { GlobalSearchModal } from './components/GlobalSearchModal';
 import { soundEffects } from './services/soundEffects';
 import { autoReconnectService } from './services/autoReconnectService';
 import { AuthProvider, useAuth } from './firebase/AuthContext';
 import { 
   ShieldCheck, 
   Globe2, 
-  X
+  X,
+  ArrowLeft,
+  Home,
+  ChevronRight
 } from 'lucide-react';
 
 const THEME_STORAGE_KEY = 'soverix_app_theme';
+
+const normalizeTabName = (tab: string): string => {
+  const clean = (tab || '').toLowerCase().replace(/[-_\s]/g, '');
+  if (['regionalguide', 'countryguide', 'arabsim', 'saudi', 'uae', 'qatar', 'bahrain', 'malaysia', 'oman', 'kuwait', 'countries', 'sim'].includes(clean)) {
+    return 'countryGuide';
+  }
+  if (['packages', 'package', 'retailbuy', 'retail', 'vipplans', 'plans', 'pricing', 'order'].includes(clean)) {
+    return 'packages';
+  }
+  if (['reseller', 'wholesale', 'dealer', 'subdealer'].includes(clean)) {
+    return 'reseller';
+  }
+  if (['appstutorials', 'apps', 'tutorials', 'configs', 'videos', 'troubleshoot', 'guide', 'guides', 'apk'].includes(clean)) {
+    return 'appsTutorials';
+  }
+  if (['benefits', 'whysoverix', 'features'].includes(clean)) {
+    return 'benefits';
+  }
+  if (['account', 'profile', 'vip', 'myaccount'].includes(clean)) {
+    return 'account';
+  }
+  if (['admin', 'adminconsole', 'masteradmin'].includes(clean)) {
+    return 'admin';
+  }
+  if (['servers', 'nodes'].includes(clean)) {
+    return 'servers';
+  }
+  return 'dashboard';
+};
 
 function AppContent() {
   const [lang, setLang] = useState<'bn' | 'en'>('bn');
@@ -63,6 +98,92 @@ function AppContent() {
   const [activeTab, setActiveTab] = useState<string>(() => {
     return isAdminPage ? 'admin' : 'dashboard';
   });
+  const [tabHistory, setTabHistory] = useState<string[]>(() => [isAdminPage ? 'admin' : 'dashboard']);
+
+  const handleNavigateTab = (rawTab: string, extraParam?: string) => {
+    const normTab = normalizeTabName(rawTab);
+    if (extraParam) {
+      setSelectedOrderCountry(extraParam);
+    }
+    setTabHistory((prev) => {
+      const filtered = prev.filter((t) => t !== normTab);
+      return [...filtered, normTab];
+    });
+    setActiveTab(normTab);
+    try {
+      window.history.pushState({ tab: normTab }, '', normTab === 'dashboard' ? '/' : `#${normTab}`);
+    } catch {}
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleGoBack = () => {
+    setTabHistory((prev) => {
+      if (prev.length > 1) {
+        const nextHistory = [...prev];
+        nextHistory.pop(); // remove active tab
+        const targetTab = nextHistory[nextHistory.length - 1] || 'dashboard';
+        setActiveTab(targetTab);
+        try {
+          window.history.pushState({ tab: targetTab }, '', targetTab === 'dashboard' ? '/' : `#${targetTab}`);
+        } catch {}
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        return nextHistory;
+      }
+      setActiveTab('dashboard');
+      try {
+        window.history.pushState({ tab: 'dashboard' }, '', '/');
+      } catch {}
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return ['dashboard'];
+    });
+  };
+
+  const getTabTitle = (tab: string, currentLang: 'bn' | 'en') => {
+    switch (tab) {
+      case 'countryGuide':
+      case 'arabSim':
+        return currentLang === 'bn' ? '🌍 দেশ ও সিম ফ্রি-নেট গাইড' : '🌍 Country & SIM Network Hub';
+      case 'packages':
+      case 'retailBuy':
+      case 'vipPlans':
+        return currentLang === 'bn' ? '📦 ভিআইপি প্যাকেজ ও পিন অর্ডার' : '📦 VIP Packages & PIN Order';
+      case 'reseller':
+        return currentLang === 'bn' ? '💼 রিসেলার ও হোলসেল প্যানেল' : '💼 Reseller & Wholesale Panel';
+      case 'appsTutorials':
+      case 'configs':
+      case 'videos':
+        return currentLang === 'bn' ? '📱 অ্যাপস, কনফিগ ও ভিডিও টিউটোরিয়াল' : '📱 Apps, Configs & Tutorials';
+      case 'benefits':
+        return currentLang === 'bn' ? '⚡ কেন সোভরিক্সনেট ভিপিএন' : '⚡ Why SoverixNet VPN';
+      case 'account':
+        return currentLang === 'bn' ? '👑 ভিআইপি অ্যাকাউন্ট ও প্রোফাইল' : '👑 VIP Account & Profile';
+      case 'admin':
+        return currentLang === 'bn' ? '⚙️ মাস্টার অ্যাডমিন কনসোল' : '⚙️ Master Admin Console';
+      case 'servers':
+        return currentLang === 'bn' ? '🌐 গ্লোবাল সার্ভার নোডস' : '🌐 Global Server Nodes';
+      default:
+        return currentLang === 'bn' ? 'মূল ড্যাশবোর্ড' : 'Main Dashboard';
+    }
+  };
+
+  // Browser popstate listener for back/forward buttons
+  useEffect(() => {
+    const handlePopState = (e: PopStateEvent) => {
+      if (e.state && e.state.tab) {
+        setActiveTab(normalizeTabName(e.state.tab));
+      } else {
+        const hash = window.location.hash.replace('#', '');
+        if (hash) {
+          setActiveTab(normalizeTabName(hash));
+        } else {
+          setActiveTab('dashboard');
+        }
+      }
+    };
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
+
   const [status, setStatus] = useState<ConnectionStatus>('disconnected');
   const [selectedServer, setSelectedServer] = useState<VPNServer>(SERVERS_DATA[0]);
   const [activeProtocol, setActiveProtocol] = useState<VPNProtocol>('wireguard');
@@ -74,6 +195,15 @@ function AppContent() {
   const [toastFeedback, setToastFeedback] = useState<ToastFeedbackData | null>(null);
   const [isWelcomePromoOpen, setIsWelcomePromoOpen] = useState<boolean>(true);
   const [selectedOrderCountry, setSelectedOrderCountry] = useState<string>('saudi');
+  const [isAnnouncementsModalOpen, setIsAnnouncementsModalOpen] = useState<boolean>(false);
+  const [isGlobalSearchOpen, setIsGlobalSearchOpen] = useState<boolean>(false);
+
+  // Listen to global open search event
+  useEffect(() => {
+    const handleOpenSearch = () => setIsGlobalSearchOpen(true);
+    window.addEventListener('soverix_open_global_search', handleOpenSearch);
+    return () => window.removeEventListener('soverix_open_global_search', handleOpenSearch);
+  }, []);
 
   const { user, userProfile, isSuperAdmin, isAdmin, updateUserPreferences, saveConnectionSession } = useAuth();
 
@@ -174,9 +304,24 @@ function AppContent() {
     try {
       unsub = onSnapshot(doc(db, 'settings', 'general'), (snap) => {
         if (snap.exists()) {
-          const updated = saveSiteSettings(snap.data() as Partial<SiteSettingsData>);
-          setSiteSettings(updated);
-          applySiteBranding(updated);
+          const firestoreData = snap.data() as Partial<SiteSettingsData>;
+          const currentLocal = getSiteSettings();
+
+          const firestoreTime = new Date(firestoreData.updatedAt || 0).getTime();
+          const localTime = new Date(currentLocal.updatedAt || 0).getTime();
+
+          // Only apply Firestore if it has newer or equal timestamp, or local has none
+          if (firestoreTime >= localTime || !currentLocal.updatedAt) {
+            const updated = saveSiteSettings(firestoreData);
+            setSiteSettings(updated);
+            applySiteBranding(updated);
+          } else if (localTime > firestoreTime) {
+            // Local has newer changes (e.g. admin edited banners right now). Heal Firestore with latest data!
+            try {
+              const cleanPayload = JSON.parse(JSON.stringify(currentLocal));
+              setDoc(doc(db, 'settings', 'general'), cleanPayload, { merge: true }).catch(() => {});
+            } catch {}
+          }
         }
       }, (err) => {
         if (err && (err as any).code !== 'unavailable') {
@@ -507,7 +652,7 @@ function AppContent() {
       {/* Main Top Navbar with Theme Toggle */}
       <Navbar
         activeTab={activeTab}
-        setActiveTab={setActiveTab}
+        setActiveTab={handleNavigateTab}
         lang={lang}
         setLang={setLang}
         theme={theme}
@@ -518,18 +663,75 @@ function AppContent() {
         killSwitchActive={settings.killSwitch}
         onOpenAuthModal={handleOpenAuthModal}
         onOpenPromoModal={() => setIsWelcomePromoOpen(true)}
+        onOpenSearch={() => setIsGlobalSearchOpen(true)}
+        onOpenAnnouncements={() => setIsAnnouncementsModalOpen(true)}
         siteSettings={siteSettings}
       />
 
       {/* Main App Content View Container */}
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 z-10 space-y-6">
+
+        {/* Universal Sticky Back Bar when user enters any section or option */}
+        {activeTab !== 'dashboard' && (
+          <div className="sticky top-16 z-30 mb-4 sm:mb-6 bg-slate-900/95 dark:bg-slate-900/95 border border-slate-700/80 rounded-2xl p-2.5 sm:p-3.5 shadow-2xl backdrop-blur-md flex items-center justify-between gap-2.5 sm:gap-4 animate-fadeIn">
+            <div className="flex items-center gap-2 sm:gap-3 min-w-0">
+              {/* Primary Back Button */}
+              <button
+                onClick={handleGoBack}
+                className="flex items-center gap-2 px-3.5 sm:px-4 py-2 sm:py-2.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-slate-950 font-black text-xs sm:text-sm shadow-md shadow-emerald-500/25 active:scale-95 transition-all cursor-pointer group shrink-0"
+                title={lang === 'bn' ? 'পেছনে ফিরে যান' : 'Go Back'}
+              >
+                <ArrowLeft className="w-4 h-4 text-slate-950 group-hover:-translate-x-1 transition-transform" />
+                <span>{lang === 'bn' ? '← ব্যাকে যান (Back)' : '← Go Back'}</span>
+              </button>
+
+              {/* Direct Home Dashboard Shortcut */}
+              <button
+                onClick={() => handleNavigateTab('dashboard')}
+                className="hidden sm:flex items-center gap-1.5 px-3 py-2 rounded-xl bg-slate-800/80 hover:bg-slate-700 text-slate-300 hover:text-white text-xs font-bold border border-slate-700 transition-all cursor-pointer shrink-0"
+                title={lang === 'bn' ? 'মূল ড্যাশবোর্ডে ফিরে যান' : 'Back to Home Dashboard'}
+              >
+                <Home className="w-3.5 h-3.5 text-emerald-400" />
+                <span>{lang === 'bn' ? 'হোম ড্যাশবোর্ড' : 'Home'}</span>
+              </button>
+
+              {/* Breadcrumb location */}
+              <div className="hidden md:flex items-center gap-1.5 text-xs text-slate-400 min-w-0 truncate">
+                <ChevronRight className="w-3.5 h-3.5 text-slate-600 shrink-0" />
+                <span className="font-semibold text-emerald-400 truncate">
+                  {getTabTitle(activeTab, lang)}
+                </span>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-2 shrink-0">
+              {/* Mobile Home shortcut */}
+              <button
+                onClick={() => handleNavigateTab('dashboard')}
+                className="sm:hidden p-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white border border-slate-700 transition-all"
+                title={lang === 'bn' ? 'হোম ড্যাশবোর্ড' : 'Home'}
+              >
+                <Home className="w-4 h-4 text-emerald-400" />
+              </button>
+
+              {/* Search shortcut button */}
+              <button
+                onClick={() => setIsGlobalSearchOpen(true)}
+                className="flex items-center gap-1.5 px-2.5 sm:px-3 py-2 rounded-xl bg-slate-800/80 hover:bg-slate-700 text-slate-300 hover:text-white text-xs font-bold border border-slate-700 transition-all cursor-pointer"
+              >
+                <span className="text-emerald-400">🔍</span>
+                <span className="hidden sm:inline">{lang === 'bn' ? 'অনুসন্ধান' : 'Search'}</span>
+              </button>
+            </div>
+          </div>
+        )}
         
         {/* Dynamic Promotional Banners Carousel (Managed from Admin Console) */}
         {!isAdminPage && activeTab !== 'admin' && siteSettings.sectionVisibility?.bannersSlider !== false && (
           <DynamicHeroBanners 
             banners={siteSettings.banners || []} 
             lang={lang} 
-            onNavigateTab={setActiveTab} 
+            onNavigateTab={handleNavigateTab} 
           />
         )}
 
@@ -549,7 +751,7 @@ function AppContent() {
             settings={settings}
             onUpdateSettings={handleUpdateSettings}
             lang={lang}
-            onNavigateTab={setActiveTab}
+            onNavigateTab={handleNavigateTab}
             onOpenAuthModal={handleOpenAuthModal}
             onSelectFreeServer={handleSelectFreeServer}
             onSimulateDrop={() => handleTriggerConnectionDrop('Manual test simulation')}
@@ -570,11 +772,10 @@ function AppContent() {
               }));
               handleUpdateSettings({ customDnsIp: sni });
             }}
-            onNavigateToTab={setActiveTab}
+            onNavigateToTab={handleNavigateTab}
             onOrderCountry={(countryId) => {
               setSelectedOrderCountry(countryId);
-              setActiveTab('packages');
-              window.scrollTo({ top: 0, behavior: 'smooth' });
+              handleNavigateTab('packages');
             }}
           />
         )}
@@ -584,7 +785,7 @@ function AppContent() {
           <PackagesAndOrderView
             lang={lang}
             initialCountry={selectedOrderCountry}
-            onNavigateToTab={setActiveTab}
+            onNavigateToTab={handleNavigateTab}
             onOpenAuthModal={handleOpenAuthModal}
           />
         )}
@@ -593,7 +794,7 @@ function AppContent() {
         {activeTab === 'reseller' && (
           <ResellerPageView
             lang={lang}
-            onNavigateToTab={setActiveTab}
+            onNavigateToTab={handleNavigateTab}
           />
         )}
 
@@ -601,7 +802,7 @@ function AppContent() {
         {(activeTab === 'appsTutorials' || activeTab === 'configs' || activeTab === 'videos') && (
           <AppsAndTutorialsView
             lang={lang}
-            onNavigateTab={setActiveTab}
+            onNavigateTab={handleNavigateTab}
           />
         )}
 
@@ -611,7 +812,7 @@ function AppContent() {
             selectedServer={selectedServer}
             onSelectServer={handleSelectServer}
             lang={lang}
-            onNavigateTab={setActiveTab}
+            onNavigateTab={handleNavigateTab}
           />
         )}
 
@@ -620,7 +821,7 @@ function AppContent() {
           <BenefitsView
             lang={lang}
             onConnectNow={() => {
-              setActiveTab('dashboard');
+              handleNavigateTab('dashboard');
               if (status === 'disconnected') {
                 handleToggleConnect();
               }
@@ -795,6 +996,33 @@ function AppContent() {
           onClose={() => setIsWelcomePromoOpen(false)} 
         />
       )}
+
+      {/* Real-Time Live Auto-Notification Popup for Visitors */}
+      <LiveNotificationAlert 
+        lang={lang} 
+        onOpenAnnouncementList={() => setIsAnnouncementsModalOpen(true)} 
+      />
+
+      {/* Recent Updates & Announcements Drawer / Modal */}
+      <AnnouncementsModal 
+        isOpen={isAnnouncementsModalOpen} 
+        onClose={() => setIsAnnouncementsModalOpen(false)} 
+        lang={lang} 
+      />
+
+      {/* Global Instant Search Modal (Regions, SIMs, Guides, Packages) */}
+      <GlobalSearchModal
+        isOpen={isGlobalSearchOpen}
+        onClose={() => setIsGlobalSearchOpen(false)}
+        lang={lang}
+        onNavigateTab={(tab, extra) => {
+          handleNavigateTab(tab, extra);
+        }}
+        onSelectServer={(srv) => {
+          setSelectedServer(srv);
+          handleNavigateTab('dashboard');
+        }}
+      />
 
     </div>
   );

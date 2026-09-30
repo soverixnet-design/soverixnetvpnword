@@ -9,7 +9,8 @@ import {
   Sparkles, 
   Layers, 
   FileCode2, 
-  ChevronRight 
+  ChevronRight,
+  ArrowLeft
 } from 'lucide-react';
 import { OfficialAppsGrid } from './OfficialAppsGrid';
 import { VideoTutorialsSection } from './VideoTutorialsSection';
@@ -28,10 +29,20 @@ export const AppsAndTutorialsView: React.FC<AppsAndTutorialsViewProps> = ({
       {/* Top Banner */}
       <div className="relative overflow-hidden rounded-3xl p-6 sm:p-8 border border-cyan-500/30 bg-gradient-to-br from-[#02141a] via-slate-950 to-[#0c0418] shadow-2xl">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
-          <div className="space-y-2">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 text-xs font-bold">
-              <Download className="w-3.5 h-3.5" />
-              <span>{lang === 'bn' ? 'অফিসিয়াল অ্যাপস ও ভিডিও টিউটোরিয়াল' : 'Official Apps & Video Guides'}</span>
+          <div className="space-y-3">
+            <div className="flex items-center gap-3 flex-wrap">
+              <button
+                onClick={() => onNavigateTab('dashboard')}
+                className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-slate-900/90 hover:bg-slate-800 text-slate-200 hover:text-white border border-slate-700 hover:border-cyan-500/50 text-xs font-bold transition-all shadow-md group active:scale-95 cursor-pointer"
+                title={lang === 'bn' ? 'মূল ড্যাশবোর্ডে ফিরে যান' : 'Back to Dashboard'}
+              >
+                <ArrowLeft className="w-3.5 h-3.5 text-cyan-400 group-hover:-translate-x-1 transition-transform" />
+                <span>{lang === 'bn' ? '← ব্যাকে যান (হোম ড্যাশবোর্ড)' : '← Back to Dashboard'}</span>
+              </button>
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 text-xs font-bold">
+                <Download className="w-3.5 h-3.5" />
+                <span>{lang === 'bn' ? 'অফিসিয়াল অ্যাপস ও ভিডিও টিউটোরিয়াল' : 'Official Apps & Video Guides'}</span>
+              </div>
             </div>
             <h1 className="text-2xl sm:text-3xl font-black text-white tracking-tight">
               {lang === 'bn' 

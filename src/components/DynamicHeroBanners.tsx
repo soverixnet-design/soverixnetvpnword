@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { SiteBanner, CONTACT_CONFIG } from '../data/contact';
 import { ChevronLeft, ChevronRight, MessageCircle, ExternalLink, Sparkles, ArrowRight } from 'lucide-react';
+import { getCacheBustedImageUrl } from '../utils/imageUploadHelper';
 
 interface DynamicHeroBannersProps {
   banners: SiteBanner[];
@@ -15,13 +16,20 @@ export const DynamicHeroBanners: React.FC<DynamicHeroBannersProps> = ({
   onNavigateTab,
   placement = 'hero'
 }) => {
-  // If placement is specified, match placement (defaulting untagged to hero)
+  // Match placement (defaulting untagged to hero, and allowing isActive unless explicitly false)
   const activeBanners = banners.filter((b) => {
-    if (!b.isActive) return false;
+    if (b.isActive === false) return false;
     const bannerPlacement = b.placement || 'hero';
-    return bannerPlacement === placement;
+    return bannerPlacement === placement || (placement === 'hero' && bannerPlacement !== 'bottom' && bannerPlacement !== 'promo_modal');
   });
   const [currentIndex, setCurrentIndex] = useState(0);
+
+  // Keep currentIndex in bounds if banners are added or removed
+  useEffect(() => {
+    if (currentIndex >= activeBanners.length && activeBanners.length > 0) {
+      setCurrentIndex(0);
+    }
+  }, [activeBanners.length, currentIndex]);
 
   // Auto-advance slider every 6 seconds if multiple banners exist
   useEffect(() => {
@@ -93,7 +101,7 @@ export const DynamicHeroBanners: React.FC<DynamicHeroBannersProps> = ({
         <div className="relative w-full aspect-[21/9] sm:aspect-[24/8] md:aspect-[3/1] max-h-[340px] overflow-hidden bg-slate-950 flex items-center justify-center">
           {currentBanner.imageUrl ? (
             <img
-              src={currentBanner.imageUrl}
+              src={getCacheBustedImageUrl(currentBanner.imageUrl)}
               alt={currentBanner.titleBn || currentBanner.titleEn}
               referrerPolicy="no-referrer"
               className="w-full h-full object-cover object-center group-hover:scale-[1.01] transition-transform duration-700"

@@ -541,9 +541,104 @@
         }
       },
       "required": ["orderId", "name", "phone", "packageId", "status", "createdAt"]
+    },
+    "Announcement": {
+      "title": "Announcement",
+      "description": "Live broadcast update or notification sent by administrator to visitors and users",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique announcement ID",
+          "maxLength": 128
+        },
+        "titleBn": {
+          "type": "string",
+          "description": "Headline in Bengali",
+          "maxLength": 256
+        },
+        "titleEn": {
+          "type": "string",
+          "description": "Headline in English",
+          "maxLength": 256
+        },
+        "contentBn": {
+          "type": "string",
+          "description": "Announcement details in Bengali",
+          "maxLength": 2000
+        },
+        "contentEn": {
+          "type": "string",
+          "description": "Announcement details in English",
+          "maxLength": 2000
+        },
+        "category": {
+          "type": "string",
+          "description": "Category tag for the update",
+          "enum": ["offer", "server", "freenet", "notice", "update"],
+          "maxLength": 32
+        },
+        "badgeBn": {
+          "type": "string",
+          "description": "Badge label in Bengali",
+          "maxLength": 64
+        },
+        "badgeEn": {
+          "type": "string",
+          "description": "Badge label in English",
+          "maxLength": 64
+        },
+        "actionUrl": {
+          "type": "string",
+          "description": "Optional CTA click destination",
+          "maxLength": 1024
+        },
+        "actionLabelBn": {
+          "type": "string",
+          "description": "CTA button label in Bengali",
+          "maxLength": 64
+        },
+        "actionLabelEn": {
+          "type": "string",
+          "description": "CTA button label in English",
+          "maxLength": 64
+        },
+        "imageUrl": {
+          "type": "string",
+          "description": "Banner or preview image URL",
+          "maxLength": 2048
+        },
+        "soundAlert": {
+          "type": "boolean",
+          "description": "Whether to play audio chime when notification arrives"
+        },
+        "isActive": {
+          "type": "boolean",
+          "description": "Whether announcement is currently active and broadcasted to visitors"
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "ISO timestamp of creation",
+          "maxLength": 64
+        },
+        "updatedAt": {
+          "type": "string",
+          "description": "ISO timestamp of update",
+          "maxLength": 64
+        },
+        "viewsCount": {
+          "type": "number",
+          "description": "Total times viewed by visitors"
+        }
+      },
+      "required": ["id", "titleBn", "category", "isActive", "createdAt"]
     }
   },
   "firestore": {
+    "/announcements/{announcementId}": {
+      "schema": "Announcement",
+      "description": "Live real-time broadcast notices and auto-notifications pushed to all website visitors"
+    },
     "/retailOrders/{orderId}": {
       "schema": "RetailOrder",
       "description": "Incoming customer orders for VIP PINs and packages"

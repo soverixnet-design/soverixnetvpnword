@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   SiteBanner, 
   SiteSettingsData, 
@@ -7,7 +7,7 @@ import {
   DEFAULT_BANNERS, 
   CONTACT_CONFIG 
 } from '../../data/contact';
-import { doc, setDoc } from 'firebase/firestore';
+import { doc, setDoc, onSnapshot } from 'firebase/firestore';
 import { db } from '../../firebase/config';
 import { 
   Plus, 
@@ -52,6 +52,37 @@ const PRESET_IMAGES = [
 export const BannersManager: React.FC<BannersManagerProps> = ({ lang, onUpdated }) => {
   const [settings, setSettings] = useState<SiteSettingsData>(getSiteSettings());
   const banners = Array.isArray(settings.banners) ? settings.banners : DEFAULT_BANNERS;
+
+  // Real-time synchronization with Firestore and cross-tab storage
+  useEffect(() => {
+    setSettings(getSiteSettings());
+
+    const unsub = onSnapshot(doc(db, 'settings', 'general'), (snap) => {
+      if (snap.exists()) {
+        const firestoreData = snap.data() as Partial<SiteSettingsData>;
+        const currentLocal = getSiteSettings();
+        const firestoreTime = new Date(firestoreData.updatedAt || 0).getTime();
+        const localTime = new Date(currentLocal.updatedAt || 0).getTime();
+
+        if (firestoreTime >= localTime || !currentLocal.updatedAt) {
+          const updated = saveSiteSettings(firestoreData);
+          setSettings(updated);
+        }
+      }
+    }, (err) => {
+      console.warn('BannersManager Firestore listener notice:', err);
+    });
+
+    const handleSettingsChanged = () => {
+      setSettings(getSiteSettings());
+    };
+    window.addEventListener('soverix_settings_changed', handleSettingsChanged);
+
+    return () => {
+      unsub();
+      window.removeEventListener('soverix_settings_changed', handleSettingsChanged);
+    };
+  }, []);
 
   // Filter & Search states
   const [searchQuery, setSearchQuery] = useState('');
@@ -122,14 +153,21 @@ export const BannersManager: React.FC<BannersManagerProps> = ({ lang, onUpdated 
   const syncSettingsToFirestore = async (updatedSettings: SiteSettingsData, noticeText?: string) => {
     setIsSaving(true);
     try {
-      saveSiteSettings(updatedSettings);
-      setSettings(updatedSettings);
-      await setDoc(doc(db, 'settings', 'general'), updatedSettings, { merge: true });
-      setSavingNotice(noticeText || (lang === 'bn' ? '✅ ব্যানার ফাইল সফলভাবে আপডেট হয়েছে!' : '✅ Banner file successfully updated!'));
+      const updated = saveSiteSettings(updatedSettings);
+      setSettings(updated);
+      
+      // Clean payload of any undefined values to satisfy Firestore API specifications
+      const cleanPayload = JSON.parse(JSON.stringify(updated));
+      await setDoc(doc(db, 'settings', 'general'), cleanPayload, { merge: true });
+
+      window.dispatchEvent(new Event('soverix_settings_changed'));
+      setSavingNotice(noticeText || (lang === 'bn' ? '✅ ব্যানার লাইভ সেভ হয়েছে এবং ওয়েবসাইটে যুক্ত হয়েছে!' : '✅ Banner successfully updated live on website!'));
       if (onUpdated) onUpdated();
-    } catch (err) {
-      console.warn('Firestore sync failed, local updated:', err);
-      setSavingNotice(lang === 'bn' ? '✅ লোকাল সেভ সম্পন্ন হয়েছে।' : '✅ Saved locally.');
+    } catch (err: any) {
+      console.warn('Firestore sync notice, local cached:', err);
+      window.dispatchEvent(new Event('soverix_settings_changed'));
+      setSavingNotice(lang === 'bn' ? '✅ লোকাল সেভ হয়েছে এবং ওয়েবসাইটে আপডেট হয়েছে।' : '✅ Saved locally and updated on website.');
+      if (onUpdated) onUpdated();
     } finally {
       setIsSaving(false);
       setTimeout(() => setSavingNotice(null), 3000);

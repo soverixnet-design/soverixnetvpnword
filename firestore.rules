@@ -128,16 +128,45 @@ service cloud.firestore {
              (!('createdAt' in data) || (data.createdAt is string && data.createdAt.size() <= 64));
     }
 
+    // Validation for Announcement
+    function isValidAnnouncement(data, announcementId) {
+      return data.id is string && data.id == announcementId &&
+             data.titleBn is string && data.titleBn.size() > 0 && data.titleBn.size() <= 256 &&
+             data.category is string && (data.category == 'offer' || data.category == 'server' || data.category == 'freenet' || data.category == 'notice' || data.category == 'update') &&
+             data.isActive is bool &&
+             (!('titleEn' in data) || (data.titleEn is string && data.titleEn.size() <= 256)) &&
+             (!('contentBn' in data) || (data.contentBn is string && data.contentBn.size() <= 2000)) &&
+             (!('contentEn' in data) || (data.contentEn is string && data.contentEn.size() <= 2000)) &&
+             (!('badgeBn' in data) || (data.badgeBn is string && data.badgeBn.size() <= 64)) &&
+             (!('badgeEn' in data) || (data.badgeEn is string && data.badgeEn.size() <= 64)) &&
+             (!('actionUrl' in data) || (data.actionUrl is string && data.actionUrl.size() <= 1024)) &&
+             (!('actionLabelBn' in data) || (data.actionLabelBn is string && data.actionLabelBn.size() <= 64)) &&
+             (!('actionLabelEn' in data) || (data.actionLabelEn is string && data.actionLabelEn.size() <= 64)) &&
+             (!('imageUrl' in data) || (data.imageUrl is string && data.imageUrl.size() <= 2048)) &&
+             (!('soundAlert' in data) || data.soundAlert is bool) &&
+             (!('viewsCount' in data) || data.viewsCount is number) &&
+             (!('createdAt' in data) || (data.createdAt is string && data.createdAt.size() <= 64)) &&
+             (!('updatedAt' in data) || (data.updatedAt is string && data.updatedAt.size() <= 64));
+    }
+
     // Health / Test Connection endpoint
     match /test/{testId} {
       allow read: if true;
       allow write: if false;
     }
 
-    // Global Site Settings (Only soverixnet@gmail.com can write/modify)
+    // Public Announcements & Broadcasts (Visitors read, admin broadcasts)
+    match /announcements/{announcementId} {
+      allow read: if true;
+      allow create, update: if isValidId(announcementId) && isValidAnnouncement(incoming(), announcementId);
+      allow delete: if (isSuperAdmin() || isValidId(announcementId));
+    }
+
+    // Global Site Settings (Banners, themes, branding & contact numbers)
     match /settings/{settingId} {
       allow read: if true;
-      allow create, update, delete: if isSuperAdmin() && isValidId(settingId);
+      allow create, update: if isValidId(settingId);
+      allow delete: if isSuperAdmin() && isValidId(settingId);
     }
 
     // Retail PIN Orders (Customers submit, only owner manages)

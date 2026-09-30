@@ -5,6 +5,7 @@ import {
   Check, 
   Copy, 
   ArrowRight, 
+  ArrowLeft,
   Zap, 
   Users, 
   TrendingUp, 
@@ -207,9 +208,21 @@ Hello Soverixnet, I submitted a wholesale reseller application. Please approve m
         <div className="absolute top-0 right-0 w-96 h-96 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
         
         <div className="relative z-10 max-w-3xl space-y-3">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/40 text-xs font-black uppercase tracking-wider">
-            <Crown className="w-3.5 h-3.5 text-amber-400" />
-            <span>{lang === 'bn' ? 'সোভারিক্সনেট হোলসেল রিসেলার প্রোগ্রাম' : 'Soverixnet Wholesale Reseller Program'}</span>
+          <div className="flex items-center gap-3 flex-wrap">
+            {onNavigateToTab && (
+              <button
+                onClick={() => onNavigateToTab('dashboard')}
+                className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-slate-900/90 hover:bg-slate-800 text-slate-200 hover:text-white border border-slate-700 hover:border-amber-500/50 text-xs font-bold transition-all shadow-md group active:scale-95 cursor-pointer"
+                title={lang === 'bn' ? 'মূল ড্যাশবোর্ডে ফিরে যান' : 'Back to Dashboard'}
+              >
+                <ArrowLeft className="w-3.5 h-3.5 text-amber-400 group-hover:-translate-x-1 transition-transform" />
+                <span>{lang === 'bn' ? '← ব্যাকে যান (হোম ড্যাশবোর্ড)' : '← Back to Dashboard'}</span>
+              </button>
+            )}
+            <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/40 text-xs font-black uppercase tracking-wider">
+              <Crown className="w-3.5 h-3.5 text-amber-400" />
+              <span>{lang === 'bn' ? 'সোভারিক্সনেট হোলসেল রিসেলার প্রোগ্রাম' : 'Soverixnet Wholesale Reseller Program'}</span>
+            </div>
           </div>
 
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-white tracking-tight">

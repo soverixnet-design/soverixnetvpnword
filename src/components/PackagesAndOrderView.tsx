@@ -7,7 +7,8 @@ import {
   Zap, 
   Check, 
   CreditCard,
-  ArrowRight
+  ArrowRight,
+  ArrowLeft
 } from 'lucide-react';
 import { RetailBuyView } from './RetailBuyView';
 import { VipPlansView } from './VipPlansView';
@@ -32,10 +33,20 @@ export const PackagesAndOrderView: React.FC<PackagesAndOrderViewProps> = ({
       {/* Top Banner with Toggle */}
       <div className="relative overflow-hidden rounded-3xl p-6 sm:p-8 border border-amber-500/30 bg-gradient-to-br from-[#1c1404] via-slate-950 to-[#0c0d18] shadow-2xl">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
-          <div className="space-y-2">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-400 text-xs font-bold">
-              <Crown className="w-3.5 h-3.5" />
-              <span>{lang === 'bn' ? 'ইন্টারনেট প্যাকেজ ও পিন অর্ডার হাব' : 'Internet Packages & Order Hub'}</span>
+          <div className="space-y-3">
+            <div className="flex items-center gap-3 flex-wrap">
+              <button
+                onClick={() => onNavigateToTab('dashboard')}
+                className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-slate-900/90 hover:bg-slate-800 text-slate-200 hover:text-white border border-slate-700 hover:border-amber-500/50 text-xs font-bold transition-all shadow-md group active:scale-95 cursor-pointer"
+                title={lang === 'bn' ? 'মূল ড্যাশবোর্ডে ফিরে যান' : 'Back to Dashboard'}
+              >
+                <ArrowLeft className="w-3.5 h-3.5 text-amber-400 group-hover:-translate-x-1 transition-transform" />
+                <span>{lang === 'bn' ? '← ব্যাকে যান (হোম ড্যাশবোর্ড)' : '← Back to Dashboard'}</span>
+              </button>
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-400 text-xs font-bold">
+                <Crown className="w-3.5 h-3.5" />
+                <span>{lang === 'bn' ? 'ইন্টারনেট প্যাকেজ ও পিন অর্ডার হাব' : 'Internet Packages & Order Hub'}</span>
+              </div>
             </div>
             <h1 className="text-2xl sm:text-3xl font-black text-white tracking-tight">
               {lang === 'bn' 

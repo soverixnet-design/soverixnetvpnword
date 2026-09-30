@@ -172,3 +172,25 @@ export interface RetailOrder {
   completedAt?: string;
   assignedPin?: string;
 }
+
+export type AnnouncementCategory = 'offer' | 'server' | 'freenet' | 'notice' | 'update';
+
+export interface SiteAnnouncement {
+  id: string;
+  titleBn: string;
+  titleEn?: string;
+  contentBn?: string;
+  contentEn?: string;
+  category: AnnouncementCategory;
+  badgeBn?: string;
+  badgeEn?: string;
+  actionUrl?: string;
+  actionLabelBn?: string;
+  actionLabelEn?: string;
+  imageUrl?: string;
+  soundAlert?: boolean;
+  isActive: boolean;
+  createdAt: string;
+  updatedAt?: string;
+  viewsCount?: number;
+}

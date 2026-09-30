@@ -43,6 +43,14 @@ const SOVERIX_CONFIG = {
 
 window.SOVERIX_CONFIG = SOVERIX_CONFIG;
 
+function getCacheBustedUrl(url, buster) {
+  if (!url || typeof url !== 'string') return '';
+  if (url.startsWith('data:') || url.startsWith('blob:')) return url;
+  const ts = buster || Date.now();
+  const sep = url.includes('?') ? '&' : '?';
+  return `${url}${sep}_cf_ts=${ts}`;
+}
+
 // Apply all dynamic branding and texts across the website
 function applyDynamicSettings(settings) {
   if (!settings) return;
@@ -102,9 +110,10 @@ function applyDynamicSettings(settings) {
 
   // 6. Site Logo & Favicon
   if (settings.designTheme?.logoUrl) {
+    const freshLogo = getCacheBustedUrl(settings.designTheme.logoUrl, settings.cacheBuster);
     document.querySelectorAll('[data-site-logo]').forEach(el => {
       if (el.tagName === 'IMG') {
-        el.setAttribute('src', settings.designTheme.logoUrl);
+        el.setAttribute('src', freshLogo);
       }
     });
   }
@@ -165,7 +174,7 @@ function renderDynamicHeroBanners(banners) {
       <div class="hero-slide ${isFirst ? 'active' : ''} w-full flex flex-col items-center justify-center text-center px-4 relative transition-all duration-500">
         ${hasImage ? `
           <div class="absolute inset-0 opacity-10 pointer-events-none overflow-hidden rounded-2xl">
-            <img src="${b.imageUrl}" alt="" class="w-full h-full object-cover blur-sm" />
+            <img src="${getCacheBustedUrl(b.imageUrl, b.cacheBuster)}" alt="" class="w-full h-full object-cover blur-sm" />
           </div>
         ` : ''}
         <div class="relative z-10 flex flex-col items-center justify-center text-center max-w-2xl mx-auto">
@@ -289,6 +298,18 @@ document.addEventListener('DOMContentLoaded', () => {
       applyDynamicSettings(e.detail);
     }
   });
+
+  // Cross-Tab Instant Sync via BroadcastChannel
+  if (typeof BroadcastChannel !== 'undefined') {
+    try {
+      const bc = new BroadcastChannel('soverix_sync_bus');
+      bc.onmessage = (event) => {
+        if (event.data?.payload) {
+          applyDynamicSettings(event.data.payload);
+        }
+      };
+    } catch {}
+  }
 
   // Real-time synchronization from Firestore
   try {

@@ -167,6 +167,14 @@ export interface WhatsappCtaConfig {
   imageUrl?: string;
 }
 
+export interface CloudflareSyncConfig {
+  zoneId?: string;
+  apiToken?: string;
+  lastPurgedAt?: string;
+  autoPurgeOnSave?: boolean;
+  statusNotice?: string;
+}
+
 export interface SiteSettingsData {
   settingId: string;
   whatsappNumber: string;
@@ -191,6 +199,8 @@ export interface SiteSettingsData {
   customVideos?: CustomVideoItem[];
   heroContent?: HeroContentConfig;
   whatsappCtaContent?: WhatsappCtaConfig;
+  cacheBuster?: number;
+  cloudflareSync?: CloudflareSyncConfig;
   updatedBy?: string;
   updatedAt?: string;
 }
@@ -655,15 +665,26 @@ export const getSiteSettings = (): SiteSettingsData => {
 
 export const saveSiteSettings = (newSettings: Partial<SiteSettingsData>): SiteSettingsData => {
   const current = getSiteSettings();
+  const cacheBuster = Date.now();
   const updated: SiteSettingsData = {
     ...current,
     ...newSettings,
+    cacheBuster: newSettings.cacheBuster || cacheBuster,
     updatedAt: new Date().toISOString()
   };
   try {
     if (typeof window !== 'undefined') {
       localStorage.setItem(SITE_SETTINGS_STORAGE_KEY, JSON.stringify(updated));
       window.dispatchEvent(new CustomEvent('soverix_settings_changed', { detail: updated }));
+
+      // Broadcast across all open browser tabs and windows
+      if (typeof BroadcastChannel !== 'undefined') {
+        try {
+          const bc = new BroadcastChannel('soverix_sync_bus');
+          bc.postMessage({ type: 'SOVERIX_SETTINGS_UPDATED', payload: updated, timestamp: cacheBuster });
+          bc.close();
+        } catch {}
+      }
     }
   } catch {}
   return updated;
